@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
 
   ## Remove the "#" sign from the beginning of the line below to get automated builds on push (code changes in your repository)
-  push:
+  #push:
 
   ## Remove the "#" sign from the beginning of the two lines below to get automated builds every two months
-  schedule:
-    - cron: '0 17 1 */2 *' # Runs at 17:00 UTC on the 1st in Jan, Mar, May, Jul, Sep and Nov.
+  #schedule:
+    #- cron: '0 17 1 */2 *' # Runs at 17:00 UTC on the 1st in Jan, Mar, May, Jul, Sep and Nov.
 
 
 jobs:
@@ -18,11 +18,11 @@ jobs:
 
   build:
     needs: secrets
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
-      # Uncomment to manually select latest Xcode if needed
-      - name: Select Latest Xcode
-        run: "sudo xcode-select --switch /Applications/Xcode_14.1.app/Contents/Developer"
+      # Uncomment to manually select Xcode version if needed
+      - name: Select Xcode version
+        run: "sudo xcode-select --switch /Applications/Xcode_14.3.app/Contents/Developer"
 
       # Checks-out the repo
       - name: Checkout Repo
