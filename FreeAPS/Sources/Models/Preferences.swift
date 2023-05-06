@@ -41,7 +41,8 @@ struct Preferences: JSON {
     var noisyCGMTargetMultiplier: Decimal = 1.3
     var suspendZerosIOB: Bool = true
     var timestamp: Date?
-    var maxDeltaBGthreshold: Decimal = 0.2
+    var maxDeltaBGthreshold: Decimal = 0.3
+    // start dynISF config for oref variables
     var adjustmentFactor: Decimal = 0.5
     var sigmoid: Bool = false
     var enableDynamicCR: Bool = false
@@ -53,6 +54,38 @@ struct Preferences: JSON {
     var enableSMB_high_bg_target: Decimal = 110
     var threshold_setting: Decimal = 65
     var updateInterval: Decimal = 20
+    // start autoISF config
+    var floatingcarbs: Bool = false
+    var autoisf: Bool = true
+    var autoISFmax: Decimal = 2
+    var autoISFmin: Decimal = 0.5
+    var smbMaxRangeExtension: Decimal = 3
+    var smbDeliveryRatioBGrange: Decimal = 90
+    var smbDeliveryRatioMin: Decimal = 0.65
+    var smbDeliveryRatioMax: Decimal = 0.80
+    var enableautoISFwithCOB: Bool = true
+    var autoISFhourlyChange: Decimal = 0.6
+    var higherISFrangeWeight: Decimal = 0.3
+    var lowerISFrangeWeight: Decimal = 0.7
+    var deltaISFrangeWeight: Decimal = 0.6
+    var postMealISFalways: Bool = true
+    var postMealISFweight: Decimal = 0.02
+    var postMealISFduration: Decimal = 3
+    var enableBGacceleration: Bool = true
+    var bgAccelISFweight: Decimal = 0.1
+    var bgBrakeISFweight: Decimal = 0.15
+    var iobThreshold: Decimal = 0
+    var enableSMBEvenOnOddOff: Bool = true
+    var enableSMBEvenOnOddOffalways: Bool = true
+    var autoISFoffSport: Bool = true
+    // start B30 config
+    var enableB30: Bool = false
+    var B30iTimeStartBolus: Decimal = 1.5
+    var B30iTime: Decimal = 30
+    var B30iTimeTarget: Decimal = 90
+    var B30upperLimit: Decimal = 130
+    var B30upperDelta: Decimal = 8
+    var B30basalFactor: Decimal = 7
 }
 
 extension Preferences {
@@ -97,6 +130,7 @@ extension Preferences {
         case noisyCGMTargetMultiplier
         case suspendZerosIOB = "suspend_zeros_iob"
         case maxDeltaBGthreshold = "maxDelta_bg_threshold"
+        // start dynISF config for oref variables
         case adjustmentFactor
         case sigmoid
         case enableDynamicCR
@@ -108,6 +142,38 @@ extension Preferences {
         case enableSMB_high_bg_target
         case threshold_setting
         case updateInterval
+        // start autoISF config for oref variables
+        case autoisf = "use_autoisf"
+        case autoISFhourlyChange = "dura_ISF_weight"
+        case autoISFmax = "autoISF_max"
+        case autoISFmin = "autoISF_min"
+        case smbMaxRangeExtension = "smb_max_range_extension"
+        case floatingcarbs = "floating_carbs"
+        case iobThreshold = "iob_threshold"
+        case enableSMBEvenOnOddOff = "enableSMB_EvenOn_OddOff"
+        case enableSMBEvenOnOddOffalways = "enableSMB_EvenOn_OddOff_always"
+        case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
+        case smbDeliveryRatioMin = "smb_delivery_ratio_min"
+        case smbDeliveryRatioMax = "smb_delivery_ratio_max"
+        case enableautoISFwithCOB = "enableautoisf_with_COB"
+        case higherISFrangeWeight = "higher_ISFrange_weight"
+        case lowerISFrangeWeight = "lower_ISFrange_weight"
+        case deltaISFrangeWeight = "delta_ISFrange_weight"
+        case postMealISFweight = "pp_ISF_weight"
+        case postMealISFduration = "pp_ISF_hours"
+        case postMealISFalways = "enable_pp_ISF_always"
+        case bgAccelISFweight = "bgAccel_ISF_weight"
+        case bgBrakeISFweight = "bgBrake_ISF_weight"
+        case enableBGacceleration = "enable_BG_acceleration"
+        case autoISFoffSport = "autoISF_off_Sport"
+        // start B30 config
+        case enableB30 = "use_B30"
+        case B30iTimeStartBolus = "iTime_Start_Bolus"
+        case B30iTime = "b30_duration"
+        case B30iTimeTarget = "iTime_target"
+        case B30upperLimit = "b30_upperBG"
+        case B30upperDelta = "b30_upperdelta"
+        case B30basalFactor = "b30_factor"
     }
 }
 

@@ -285,7 +285,7 @@ extension Home {
                 }
 
                 Spacer()
-                
+
                 if let overrideString = overrideString {
                     Text(overrideString)
                         .font(.system(size: 12))
@@ -310,9 +310,8 @@ extension Home {
         var legendPanel: some View {
             HStack(alignment: .center) {
                 Group {
-                    Circle().fill(Color.loopGreen).frame(width: 8, height: 8)
-                    Text("BG")
-                        .font(.system(size: 12, weight: .bold)).foregroundColor(.loopGreen)
+                    Text("Predictions")
+                        .font(.system(size: 10)).foregroundColor(.secondary)
                 }
                 Group {
                     Circle().fill(Color.insulin).frame(width: 8, height: 8)

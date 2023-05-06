@@ -12,7 +12,7 @@ extension Settings {
             Form {
                 Section(
                     header: Text(
-                        "iAPS v\(state.versionNumber) - \(state.buildNumber) \nBranch: \(state.branch) \(state.copyrightNotice) "
+                        "iAPS v\(state.versionNumber) - \(state.buildNumber) \nBranch: \(state.branch) \nVariant: \(state.copyrightNotice) "
                     ).textCase(nil)
                 ) {
                     Toggle("Closed loop", isOn: $state.closedLoop)
@@ -21,10 +21,14 @@ extension Settings {
                 Section(header: Text("Devices")) {
                     Text("Pump").navigationLink(to: .pumpConfig, from: self)
                     Text("CGM").navigationLink(to: .cgm, from: self)
-                    Text("Watch Devices").navigationLink(to: .watch, from: self)
+                    Text("Watch").navigationLink(to: .watch, from: self)
                 }
 
                 Section(header: Text("Services")) {
+                    Text("Preferences").navigationLink(to: .preferencesEditor, from: self)
+                    Text("Statistics and Home View").navigationLink(to: .statisticsConfig, from: self)
+                    Text("Middleware")
+                        .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
                     Text("Nightscout").navigationLink(to: .nighscoutConfig, from: self)
                     if HKHealthStore.isHealthDataAvailable() {
                         Text("Apple Health").navigationLink(to: .healthkit, from: self)
@@ -33,11 +37,11 @@ extension Settings {
                     Text("Fat And Protein Conversion").navigationLink(to: .fpuConfig, from: self)
                     Text("Profile Override").navigationLink(to: .overrideProfilesConfig, from: self)
                     Text("App Icons").navigationLink(to: .iconConfig, from: self)
-                    Text("Statistics and Home View").navigationLink(to: .statisticsConfig, from: self)
+
                 }
 
                 Section(header: Text("Configuration")) {
-                    Text("Preferences").navigationLink(to: .preferencesEditor, from: self)
+
                     Text("Pump Settings").navigationLink(to: .pumpSettingsEditor, from: self)
                     Text("Basal Profile").navigationLink(to: .basalProfileEditor, from: self)
                     Text("Insulin Sensitivities").navigationLink(to: .isfEditor, from: self)
@@ -99,8 +103,6 @@ extension Settings {
                                 .navigationLink(to: .configEditor(file: OpenAPS.FreeAPS.tempTargetsPresets), from: self)
                             Text("Calibrations")
                                 .navigationLink(to: .configEditor(file: OpenAPS.FreeAPS.calibrations), from: self)
-                            Text("Middleware")
-                                .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
                             Text("Statistics")
                                 .navigationLink(to: .configEditor(file: OpenAPS.Monitor.statistics), from: self)
                             Text("Edit settings json")
