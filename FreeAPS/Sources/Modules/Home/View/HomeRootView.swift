@@ -102,37 +102,32 @@ extension Home {
         }
 
         var cobIobView: some View {
-            HStack(alignment: .bottom) {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        //                        Text("IOB").font(.caption2).foregroundColor(.secondary)
-                        Image("bolus1")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 14, height: 14)
-                            .foregroundColor(.insulin)
-                        Text(
-                            (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
-                                NSLocalizedString(" U", comment: "Insulin unit")
-                        )
-                        .font(.system(size: 12, weight: .bold))
-                    }
-                    HStack {
-                        //                        Text("COB").font(.caption2).foregroundColor(.secondary)
-                        Image("premeal")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 12, height: 12)
-                            .foregroundColor(.loopYellow)
-                            .padding(.bottom, 2)
-                            .padding(.leading, 1)
-                            .padding(.trailing, 1)
-                        Text(
-                            (numberFormatter.string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0") +
-                                NSLocalizedString(" g", comment: "gram of carbs")
-                        )
-                        .font(.system(size: 12, weight: .bold))
-                    }
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+//                    Text("IOB").font(.caption2).foregroundColor(.secondary)
+                    Image("bolus1")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 12, height: 12)
+                        .foregroundColor(.insulin)
+                    Text(
+                        (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
+                            NSLocalizedString(" U", comment: "Insulin unit")
+                    )
+                    .font(.system(size: 12, weight: .bold))
+                }
+                HStack {
+//                    Text("COB").font(.caption2).foregroundColor(.secondary)
+                    Image("premeal")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 12, height: 12)
+                        .foregroundColor(.loopYellow)
+                    Text(
+                        (numberFormatter.string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0") +
+                            NSLocalizedString(" g", comment: "gram of carbs")
+                    )
+                    .font(.system(size: 12, weight: .bold))
                 }
             }
         }
@@ -142,8 +137,11 @@ extension Home {
                 recentGlucose: $state.recentGlucose,
                 delta: $state.glucoseDelta,
                 units: $state.units,
+                eventualBG: $state.eventualBG,
+                currentISF: $state.isf,
                 alarm: $state.alarm,
                 lowGlucose: $state.lowGlucose,
+
                 highGlucose: $state.highGlucose
             )
             .onTapGesture {
@@ -310,50 +308,39 @@ extension Home {
         }
 
         var legendPanel: some View {
-            ZStack {
-                HStack(alignment: .center) {
-                    Group {
-                        Circle().fill(Color.loopGreen).frame(width: 8, height: 8)
-                        Text("BG")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.loopGreen)
-                    }
-                    Group {
-                        Circle().fill(Color.insulin).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("IOB")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
-                    }
-                    Group {
-                        Circle().fill(Color.zt).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("ZT")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.zt)
-                    }
-                    Group {
-                        Circle().fill(Color.loopYellow).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("COB")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.loopYellow)
-                    }
-                    Group {
-                        Circle().fill(Color.uam).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("UAM")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.uam)
-                    }
-
-                    if let eventualBG = state.eventualBG {
-                        Text(
-                            "⇢ " + numberFormatter.string(
-                                from: (state.units == .mmolL ? eventualBG.asMmolL : Decimal(eventualBG)) as NSNumber
-                            )!
-                        )
-                        .font(.system(size: 12, weight: .bold)).foregroundColor(.secondary)
-                    }
+            HStack(alignment: .center) {
+                Group {
+                    Circle().fill(Color.loopGreen).frame(width: 8, height: 8)
+                    Text("BG")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.loopGreen)
                 }
-                .frame(maxWidth: .infinity)
-                .padding([.bottom], 20)
+                Group {
+                    Circle().fill(Color.insulin).frame(width: 8, height: 8)
+                        .padding(.leading, 8)
+                    Text("IOB")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
+                }
+                Group {
+                    Circle().fill(Color.zt).frame(width: 8, height: 8)
+                        .padding(.leading, 8)
+                    Text("ZT")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.zt)
+                }
+                Group {
+                    Circle().fill(Color.loopYellow).frame(width: 8, height: 8)
+                        .padding(.leading, 8)
+                    Text("COB")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.loopYellow)
+                }
+                Group {
+                    Circle().fill(Color.uam).frame(width: 8, height: 8)
+                        .padding(.leading, 8)
+                    Text("UAM")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.uam)
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: 30)
+            .padding(.bottom, 4)
         }
 
         var mainChart: some View {
@@ -432,7 +419,6 @@ extension Home {
                             .frame(width: 30, height: 30)
                             .padding(8)
                     }.foregroundColor(.loopGreen)
-
                     Spacer()
                     if state.allowManualTemp {
                         Button { state.showModal(for: .manualTempBasal) }
@@ -448,12 +434,12 @@ extension Home {
                     Button { state.showModal(for: .statistics)
                     }
                     label: {
-                        Image(systemName: "chart.xyaxis.line")
+                        Image("target")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 24, height: 24)
+                            .frame(width: 30, height: 30)
                             .padding(8)
-                    }.foregroundColor(.purple)
+                    }.foregroundColor(.uam)
                     Spacer()
                     Button { state.showModal(for: .settings) }
                     label: {
@@ -473,7 +459,7 @@ extension Home {
             GeometryReader { geo in
                 VStack(spacing: 0) {
                     header(geo)
-                    Divider().background(Color.gray) // Added 29/4
+                    Divider().background(Color.gray)
                     infoPanel
                     mainChart
                     legendPanel
