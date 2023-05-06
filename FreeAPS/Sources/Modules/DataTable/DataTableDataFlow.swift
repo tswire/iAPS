@@ -118,7 +118,7 @@ enum DataTable {
             }
 
             if amount == 0, duration == 0 {
-                return "Cancel temp"
+                return "Cancel"
             }
 
             switch type {
@@ -139,14 +139,14 @@ enum DataTable {
                 }
 
                 guard var secondAmount = secondAmount else {
-                    return numberFormater.string(from: converted as NSNumber)! + " \(units.rawValue)"
+                    return numberFormater.string(from: converted as NSNumber)! // + " \(units.rawValue)"
                 }
                 if units == .mmolL {
                     secondAmount = secondAmount.asMmolL
                 }
 
-                return tempTargetFormater.string(from: converted as NSNumber)! + " - " + tempTargetFormater
-                    .string(from: secondAmount as NSNumber)! + " \(units.rawValue)"
+                return numberFormater.string(from: converted as NSNumber)! + " - " + numberFormater
+                    .string(from: secondAmount as NSNumber)! // +  " \(units.rawValue)"
             case .resume,
                  .suspend:
                 return type.name
@@ -163,9 +163,10 @@ enum DataTable {
                 return .insulin
             case .tempBasal:
                 return Color.insulin.opacity(0.5)
+            case .tempTarget:
+                return .loopGreen.opacity(0.5)
             case .resume,
-                 .suspend,
-                 .tempTarget:
+                 .suspend:
                 return .loopGray
             }
         }
@@ -174,7 +175,7 @@ enum DataTable {
             guard let duration = duration, duration > 0 else {
                 return nil
             }
-            return numberFormater.string(from: duration as NSNumber)! + " min"
+            return numberFormater.string(from: duration as NSNumber)! + "m"
         }
     }
 
