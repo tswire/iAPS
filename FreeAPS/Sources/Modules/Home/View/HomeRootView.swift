@@ -372,22 +372,22 @@ extension Home {
                     thresholdLines: $state.thresholdLines
                 )
             }
-            .padding(.bottom)
+            .padding(.bottom, 4)
             .modal(for: .dataTable, from: self)
         }
 
         @ViewBuilder private func bottomPanel(_ geo: GeometryProxy) -> some View {
             ZStack {
-                Rectangle().fill(Color.gray.opacity(0.2)).frame(height: 50 + geo.safeAreaInsets.bottom)
+                Rectangle().fill(Color.gray.opacity(0.2)).frame(height: 50 + geo.safeAreaInsets.bottom - 10)
 
                 HStack {
                     Button { state.showModal(for: .addCarbs) }
                     label: {
                         ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom)) {
-                            Image("carbs")
+                            Image("carbs1")
                                 .renderingMode(.template)
                                 .resizable()
-                                .frame(width: 24, height: 24)
+                                .frame(width: 30, height: 30)
                                 .foregroundColor(.loopYellow)
                                 .padding(8)
                             if let carbsReq = state.carbsRequired {
@@ -400,23 +400,24 @@ extension Home {
                         }
                     }
                     Spacer()
-                    Button { state.showModal(for: .addTempTarget) }
-                    label: {
-                        Image("target")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .padding(8)
-                    }.foregroundColor(.loopGreen)
-                    Spacer()
                     Button { state.showModal(for: .bolus(waitForSuggestion: false)) }
                     label: {
                         Image("bolus")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 24, height: 24)
+                            .frame(width: 30, height: 30)
                             .padding(8)
                     }.foregroundColor(.insulin)
+                    Spacer()
+                    Button { state.showModal(for: .addTempTarget) }
+                    label: {
+                        Image("target1")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .padding(8)
+                    }.foregroundColor(.loopGreen)
+
                     Spacer()
                     if state.allowManualTemp {
                         Button { state.showModal(for: .manualTempBasal) }
@@ -424,9 +425,9 @@ extension Home {
                             Image("bolus1")
                                 .renderingMode(.template)
                                 .resizable()
-                                .frame(width: 24, height: 24)
+                                .frame(width: 30, height: 30)
                                 .padding(8)
-                        }.foregroundColor(.insulin)
+                        }.foregroundColor(.basal)
                         Spacer()
                     }
                     Button { state.showModal(for: .statistics)
@@ -441,15 +442,15 @@ extension Home {
                     Spacer()
                     Button { state.showModal(for: .settings) }
                     label: {
-                        Image("settings1")
+                        Image("settings")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 24, height: 24)
+                            .frame(width: 30, height: 30)
                             .padding(8)
                     }.foregroundColor(.loopGray)
                 }
                 .padding(.horizontal, 24)
-                .padding(.bottom, geo.safeAreaInsets.bottom)
+                .padding(.bottom, geo.safeAreaInsets.bottom - 10)
             }
         }
 
@@ -457,9 +458,12 @@ extension Home {
             GeometryReader { geo in
                 VStack(spacing: 0) {
                     header(geo)
+                    Divider().background(Color.gray) // Added 29/4
                     infoPanel
                     mainChart
                     legendPanel
+                        .background(Color.secondary.opacity(0.05))
+                    Divider().background(Color.gray) // Added 29/4
                     bottomPanel(geo)
                 }
                 .edgesIgnoringSafeArea(.vertical)
