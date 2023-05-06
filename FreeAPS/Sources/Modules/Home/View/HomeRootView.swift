@@ -461,6 +461,7 @@ extension Home {
                     Divider().background(Color.gray)
                     infoPanel
                     mainChart
+                    Divider().background(Color.gray) // Added 29/4
                     legendPanel
                         .background(Color.secondary.opacity(0.05))
                     Divider().background(Color.gray) // Added 29/4
@@ -474,7 +475,7 @@ extension Home {
             .ignoresSafeArea(.keyboard)
             .popup(isPresented: isStatusPopupPresented, alignment: .top, direction: .top) {
                 VStack {
-                    Rectangle().opacity(0).frame(height: 75)
+                    Rectangle().opacity(0).frame(height: 85)
                     popup
                         .padding()
                         .background(
