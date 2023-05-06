@@ -35,13 +35,11 @@ extension Settings {
                     }
                     Text("Notifications").navigationLink(to: .notificationsConfig, from: self)
                     Text("Fat And Protein Conversion").navigationLink(to: .fpuConfig, from: self)
-                    Text("Profile Override").navigationLink(to: .overrideProfilesConfig, from: self)
+//                    Text("Profile Override").navigationLink(to: .overrideProfilesConfig, from: self)
                     Text("App Icons").navigationLink(to: .iconConfig, from: self)
-
                 }
 
                 Section(header: Text("Configuration")) {
-
                     Text("Pump Settings").navigationLink(to: .pumpSettingsEditor, from: self)
                     Text("Basal Profile").navigationLink(to: .basalProfileEditor, from: self)
                     Text("Insulin Sensitivities").navigationLink(to: .isfEditor, from: self)
