@@ -1,6 +1,8 @@
 import Foundation
 
 struct Oref2_variables: JSON, Equatable {
+    var tddYtd: Decimal
+    var tdd7d: Decimal
     var average_total_data: Decimal
     var weightedAverage: Decimal
     var past2hoursAverage: Decimal
@@ -15,6 +17,8 @@ struct Oref2_variables: JSON, Equatable {
     var overrideTarget: Decimal
 
     init(
+        tddYtd: Decimal,
+        tdd7d: Decimal,
         average_total_data: Decimal,
         weightedAverage: Decimal,
         past2hoursAverage: Decimal,
@@ -28,6 +32,8 @@ struct Oref2_variables: JSON, Equatable {
         hbt: Decimal,
         overrideTarget: Decimal
     ) {
+        self.tddYtd = tddYtd
+        self.tdd7d = tdd7d
         self.average_total_data = average_total_data
         self.weightedAverage = weightedAverage
         self.past2hoursAverage = past2hoursAverage
@@ -45,6 +51,8 @@ struct Oref2_variables: JSON, Equatable {
 
 extension Oref2_variables {
     private enum CodingKeys: String, CodingKey {
+        case tddYtd
+        case tdd7d
         case average_total_data
         case weightedAverage
         case past2hoursAverage

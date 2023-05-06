@@ -340,8 +340,7 @@ extension Home {
                         "TDD " + (numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0")
                     ).font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
                     Text(
-                        "ytd. 59.8"
-                        //    "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
+                        "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
                     ).font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
                 }
             }
