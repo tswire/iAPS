@@ -488,23 +488,26 @@ extension Home {
             .navigationBarHidden(true)
             .ignoresSafeArea(.keyboard)
             .popup(isPresented: isStatusPopupPresented, alignment: .top, direction: .top) {
-                popup
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(Color(UIColor.darkGray))
-                    )
-                    .onTapGesture {
-                        isStatusPopupPresented = false
-                    }
-                    .gesture(
-                        DragGesture(minimumDistance: 10, coordinateSpace: .local)
-                            .onEnded { value in
-                                if value.translation.height < 0 {
-                                    isStatusPopupPresented = false
+                VStack {
+                    Rectangle().opacity(0).frame(height: 75)
+                    popup
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color(UIColor.darkGray).opacity(0.8))
+                        )
+                        .onTapGesture {
+                            isStatusPopupPresented = false
+                        }
+                        .gesture(
+                            DragGesture(minimumDistance: 10, coordinateSpace: .local)
+                                .onEnded { value in
+                                    if value.translation.height < 0 {
+                                        isStatusPopupPresented = false
+                                    }
                                 }
-                            }
-                    )
+                        )
+                }
             }
         }
 
@@ -514,9 +517,7 @@ extension Home {
                     .padding(.bottom, 4)
                 if let suggestion = state.suggestion {
                     TagCloudView(tags: suggestion.reasonParts).animation(.none, value: false)
-
                     Text(suggestion.reasonConclusion.capitalizingFirstLetter()).font(.caption).foregroundColor(.white)
-
                 } else {
                     Text("No sugestion found").font(.body).foregroundColor(.white)
                 }
