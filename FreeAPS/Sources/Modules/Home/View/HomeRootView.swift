@@ -310,10 +310,6 @@ extension Home {
         var legendPanel: some View {
             HStack(alignment: .center) {
                 Group {
-                    Text("Predictions")
-                        .font(.system(size: 10)).foregroundColor(.secondary)
-                }
-                Group {
                     Circle().fill(Color.insulin).frame(width: 8, height: 8)
                         .padding(.leading, 8)
                     Text("IOB")
@@ -336,6 +332,17 @@ extension Home {
                         .padding(.leading, 8)
                     Text("UAM")
                         .font(.system(size: 12, weight: .bold)).foregroundColor(.uam)
+                }
+                Text(" | ").foregroundColor(.secondary)
+                    .font(.system(size: 12, weight: .light))
+                Group {
+                    Text(
+                        "TDD " + (numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0")
+                    ).font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
+                    Text(
+                        "ytd. 59.8"
+                        //    "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
+                    ).font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: 30)
