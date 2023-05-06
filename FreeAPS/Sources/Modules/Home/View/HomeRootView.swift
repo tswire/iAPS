@@ -102,23 +102,38 @@ extension Home {
         }
 
         var cobIobView: some View {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Text("IOB").font(.footnote).foregroundColor(.secondary)
-                    Text(
-                        (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
-                            NSLocalizedString(" U", comment: "Insulin unit")
-                    )
-                    .font(.footnote).fontWeight(.bold)
-                }.frame(alignment: .top)
-                HStack {
-                    Text("COB").font(.footnote).foregroundColor(.secondary)
-                    Text(
-                        (numberFormatter.string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0") +
-                            NSLocalizedString(" g", comment: "gram of carbs")
-                    )
-                    .font(.footnote).fontWeight(.bold)
-                }.frame(alignment: .bottom)
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        //                        Text("IOB").font(.caption2).foregroundColor(.secondary)
+                        Image("bolus1")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                            .foregroundColor(.insulin)
+                        Text(
+                            (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
+                                NSLocalizedString(" U", comment: "Insulin unit")
+                        )
+                        .font(.system(size: 12, weight: .bold))
+                    }
+                    HStack {
+                        //                        Text("COB").font(.caption2).foregroundColor(.secondary)
+                        Image("premeal")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 12, height: 12)
+                            .foregroundColor(.loopYellow)
+                            .padding(.bottom, 2)
+                            .padding(.leading, 1)
+                            .padding(.trailing, 1)
+                        Text(
+                            (numberFormatter.string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0") +
+                                NSLocalizedString(" g", comment: "gram of carbs")
+                        )
+                        .font(.system(size: 12, weight: .bold))
+                    }
+                }
             }
         }
 
