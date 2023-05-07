@@ -439,10 +439,10 @@ extension Home {
                     Button { state.showModal(for: .statistics)
                     }
                     label: {
-                        Image("target")
+                        Image("statistics")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 30, height: 30)
+                            .frame(width: 28, height: 28)
                             .padding(8)
                     }.foregroundColor(.uam)
                     Spacer()
