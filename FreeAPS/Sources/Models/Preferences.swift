@@ -1,19 +1,19 @@
 import Foundation
 
 struct Preferences: JSON {
-    var maxIOB: Decimal = 0
-    var maxDailySafetyMultiplier: Decimal = 3
-    var currentBasalSafetyMultiplier: Decimal = 4
-    var autosensMax: Decimal = 1.2
-    var autosensMin: Decimal = 0.7
-    var smbDeliveryRatio: Decimal = 0.5
+    var maxIOB: Decimal = 9
+    var maxDailySafetyMultiplier: Decimal = 7
+    var currentBasalSafetyMultiplier: Decimal = 8
+    var autosensMax: Decimal = 1
+    var autosensMin: Decimal = 1
+    var smbDeliveryRatio: Decimal = 0.85
     var rewindResetsAutosens: Bool = true
     var highTemptargetRaisesSensitivity: Bool = false
     var lowTemptargetLowersSensitivity: Bool = false
     var sensitivityRaisesTarget: Bool = true
     var resistanceLowersTarget: Bool = false
     var advTargetAdjustments: Bool = false
-    var exerciseMode: Bool = false
+    var exerciseMode: Bool = true
     var halfBasalExerciseTarget: Decimal = 160
     var maxCOB: Decimal = 120
     var wideBGTargetRange: Bool = false
@@ -23,17 +23,19 @@ struct Preferences: JSON {
     var autotuneISFAdjustmentFraction: Decimal = 1.0
     var remainingCarbsFraction: Decimal = 1.0
     var remainingCarbsCap: Decimal = 90
-    var enableUAM: Bool = false
+    var enableUAM: Bool = true
     var a52RiskEnable: Bool = false
-    var enableSMBWithCOB: Bool = false
-    var enableSMBWithTemptarget: Bool = false
-    var enableSMBAlways: Bool = false
-    var enableSMBAfterCarbs: Bool = false
+    var enableSMBWithCOB: Bool = true
+    var enableSMBWithTemptarget: Bool = true
+    var enableSMBAlways: Bool = true
+    var enableSMB_high_bg: Bool = false
+    var enableSMB_high_bg_target: Decimal = 110
+    var enableSMBAfterCarbs: Bool = true
     var allowSMBWithHighTemptarget: Bool = false
-    var maxSMBBasalMinutes: Decimal = 30
-    var maxUAMSMBBasalMinutes: Decimal = 30
-    var smbInterval: Decimal = 3
-    var bolusIncrement: Decimal = 0.1
+    var maxSMBBasalMinutes: Decimal = 120
+    var maxUAMSMBBasalMinutes: Decimal = 120
+    var smbInterval: Decimal = 2
+    var bolusIncrement: Decimal = 0.05
     var curve: InsulinCurve = .rapidActing
     var useCustomPeakTime: Bool = false
     var insulinPeakTime: Decimal = 75
@@ -50,8 +52,6 @@ struct Preferences: JSON {
     var useWeightedAverage: Bool = false
     var weightPercentage: Decimal = 0.65
     var tddAdjBasal: Bool = false
-    var enableSMB_high_bg: Bool = false
-    var enableSMB_high_bg_target: Decimal = 110
     var threshold_setting: Decimal = 65
     var updateInterval: Decimal = 20
     // start autoISF config
@@ -59,7 +59,7 @@ struct Preferences: JSON {
     var autoisf: Bool = true
     var autoISFmax: Decimal = 2
     var autoISFmin: Decimal = 0.5
-    var smbMaxRangeExtension: Decimal = 3
+    var smbMaxRangeExtension: Decimal = 2
     var smbDeliveryRatioBGrange: Decimal = 90
     var smbDeliveryRatioMin: Decimal = 0.65
     var smbDeliveryRatioMax: Decimal = 0.80
@@ -79,7 +79,7 @@ struct Preferences: JSON {
     var enableSMBEvenOnOddOffalways: Bool = true
     var autoISFoffSport: Bool = true
     // start B30 config
-    var enableB30: Bool = false
+    var enableB30: Bool = true
     var B30iTimeStartBolus: Decimal = 1.5
     var B30iTime: Decimal = 30
     var B30iTimeTarget: Decimal = 90
