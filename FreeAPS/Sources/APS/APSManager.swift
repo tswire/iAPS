@@ -872,7 +872,7 @@ final class BaseAPSManager: APSManager, Injectable {
                             if timeIntervalLoops < minimumInt, i != 1 {
                                 minimumInt = timeIntervalLoops
                             }
-                            timeForOneLoop = loopDuration
+                            timeForOneLoop = loopDuration * 60
                             timeForOneLoopArray.append(timeForOneLoop)
 
                             if timeForOneLoop >= maximumLoopTime, timeForOneLoop != 0.0 {
@@ -884,7 +884,8 @@ final class BaseAPSManager: APSManager, Injectable {
                             previousTimeLoop = loopEnd
                         }
                     }
-                    successRate = (Double(successNR) / Double(i)) * 100
+                    // successRate = (Double(successNR) / Double(i)) * 100
+                    successRate = (Double(successNR) / 284 * 100)
 
                     // Average Loop Interval in minutes
                     let timeOfFirstIndex = lsr[0].start ?? Date()
@@ -1156,9 +1157,9 @@ final class BaseAPSManager: APSManager, Injectable {
                     median_interval: roundDecimal(Decimal(medianInterval), 1),
                     min_interval: roundDecimal(Decimal(minimumInt), 1),
                     max_interval: roundDecimal(Decimal(maximumInt), 1),
-                    avg_duration: Decimal(roundDouble(averageLoopDuration, 2)),
-                    median_duration: Decimal(roundDouble(medianLoopTime, 2)),
-                    min_duration: roundDecimal(Decimal(minimumLoopTime), 2),
+                    avg_duration: Decimal(roundDouble(averageLoopDuration, 1)),
+                    median_duration: Decimal(roundDouble(medianLoopTime, 1)),
+                    min_duration: roundDecimal(Decimal(minimumLoopTime), 1),
                     max_duration: Decimal(roundDouble(maximumLoopTime, 1))
                 )
 

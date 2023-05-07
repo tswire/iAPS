@@ -142,7 +142,7 @@ extension Stat {
                             Text(
                                 index == 0 ? loops_[index].double.formatted() : (
                                     index == 2 ? loops_[index].double
-                                        .formatted(.number.grouping(.never).rounded().precision(.fractionLength(2))) :
+                                        .formatted(.number.grouping(.never).rounded().precision(.fractionLength(1))) :
                                         loops_[index]
                                         .double
                                         .formatted(.number.grouping(.never).rounded().precision(.fractionLength(1)))
@@ -584,7 +584,8 @@ extension Stat {
             let medianDuration = medianCalculationDouble(array: durationArray)
             let successsNR = loops.compactMap({ each in each.loopStatus }).filter({ each in each!.contains("Success") }).count
             let errorNR = durationArrayCount - successsNR
-            let successRate: Double? = (Double(successsNR) / Double(successsNR + errorNR)) * 100
+//            let successRate: Double? = (Double(successsNR) / Double(successsNR + errorNR)) * 100
+            let successRate: Double? = (Double(successsNR) / 284 * 100)
 
             for each in loops {
                 if let loopEnd = each.end {
@@ -617,8 +618,8 @@ extension Stat {
             var array: [(double: Double, string: String)] = []
 
             array.append((double: Double(successsNR + errorNR), string: "Loops"))
-            array.append((double: averageInterval, string: "Interval"))
-            array.append((double: medianDuration, string: "Duration"))
+            array.append((double: averageInterval, string: "∅Interval (min)"))
+            array.append((double: medianDuration, string: "~Duration (s)"))
             array.append((double: successRate ?? 100, string: "%"))
 
             return array
