@@ -72,18 +72,42 @@ struct MainView: View {
 
     var header: some View {
         VStack {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text(state.glucose).font(.title)
-                        Text(state.trend)
+            HStack(alignment: .lastTextBaseline) {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(alignment: .bottom) {
+                        Text(state.glucose).font(.largeTitle).foregroundColor(colorOfGlucose)
+                            .scaledToFill()
+                            .minimumScaleFactor(0.5)
+                        // .padding(.top, 2)
+                        if state.timerDate.timeIntervalSince(state.lastUpdate) > 10 {
+                            withAnimation {
+                                BlinkingView(count: 8, size: 3)
+                                    .frame(width: 25, height: 18)
+                                    .padding(.bottom, 15)
+                            }
+                        }
+                        Spacer()
+                        Text("TDD").foregroundColor(.insulin).font(.caption).fixedSize()
+                            .scaledToFill()
+                            .minimumScaleFactor(0.5)
+                            .padding(.bottom, 6)
+                    }
+                    HStack(alignment: .lastTextBaseline) {
+                        Text(state.delta).font(.caption).foregroundColor(.gray)
+                            .scaledToFill()
+                            .minimumScaleFactor(0.5)
+                        // Text(state.trend).foregroundColor(.gray)
+                        Text(state.eventualBG).font(.caption)
+                            .scaledToFill()
+                            .minimumScaleFactor(0.5)
+                        Spacer()
+                        Text(iobFormatter.string(from: (state.tdd ?? 33.3) as NSNumber)! + " U").font(.caption).fixedSize()
+                            .foregroundColor(.insulin)
                             .scaledToFill()
                             .minimumScaleFactor(0.5)
                     }
-                    Text(state.delta).font(.caption2).foregroundColor(.gray)
                 }
                 Spacer()
-
                 VStack(spacing: 0) {
                     HStack {
                         Circle().stroke(color, lineWidth: 5).frame(width: 26, height: 26).padding(10)
@@ -176,8 +200,8 @@ struct MainView: View {
                         Image(systemName: "arrow.up.arrow.down")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 16, height: 16)
-                            .foregroundColor(.blue)
+                            .frame(width: 13, height: 13)
+                            .foregroundColor(.loopGreen)
                         Text("\(isf)")
                             .fontWeight(.regular)
                             .font(.caption2)
@@ -243,29 +267,11 @@ struct MainView: View {
                 CarbsView()
                     .environmentObject(state)
             } label: {
-                Image("carbs", bundle: nil)
+                Image("carbs1", bundle: nil)
                     .renderingMode(.template)
                     .resizable()
                     .frame(width: 24, height: 24)
                     .foregroundColor(.loopYellow)
-            }
-
-            NavigationLink(isActive: $state.isTempTargetViewActive) {
-                TempTargetsView()
-                    .environmentObject(state)
-            } label: {
-                VStack {
-                    Image("target", bundle: nil)
-                        .renderingMode(.template)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.loopGreen)
-                    if let until = state.tempTargets.compactMap(\.until).first, until > Date() {
-                        Text(until, style: .timer)
-                            .scaledToFill()
-                            .font(.system(size: 8))
-                    }
-                }
             }
 
             NavigationLink(isActive: $state.isBolusViewActive) {
@@ -277,6 +283,24 @@ struct MainView: View {
                     .resizable()
                     .frame(width: 24, height: 24)
                     .foregroundColor(.insulin)
+            }
+
+            NavigationLink(isActive: $state.isTempTargetViewActive) {
+                TempTargetsView()
+                    .environmentObject(state)
+            } label: {
+                VStack {
+                    Image("target1", bundle: nil)
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.loopGreen)
+                    if let until = state.tempTargets.compactMap(\.until).first, until > Date() {
+                        Text(until, style: .timer)
+                            .scaledToFill()
+                            .font(.system(size: 8))
+                    }
+                }
             }
         }
     }
@@ -381,7 +405,23 @@ struct MainView: View {
         if minAgo > 1440 {
             return "--"
         }
-        return "\(minAgo) " + NSLocalizedString("min", comment: "Minutes ago since last loop")
+        return "\(minAgo) " + NSLocalizedString("m", comment: "Minutes ago since last loop")
+    }
+
+    var colorOfGlucose: Color {
+        guard let recentBG = Int(state.glucose)
+        else { return .loopYellow }
+
+        switch recentBG {
+        case 61 ... 69:
+            return .loopOrange
+        case 70 ... 140:
+            return .loopGreen
+        case 141 ... 180:
+            return .loopYellow
+        default:
+            return .loopRed
+        }
     }
 
     private var color: Color {

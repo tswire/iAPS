@@ -71,6 +71,8 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             self.state.maxCOB = self.settingsManager.preferences.maxCOB
             self.state.maxBolus = self.settingsManager.pumpSettings.maxBolus
             self.state.carbsRequired = self.suggestion?.carbsReq
+            self.state.lowGlucose = self.settingsManager.settings.lowGlucose
+            self.state.highGlucose = self.settingsManager.settings.highGlucose
 
             let insulinRequired = self.suggestion?.insulinReq ?? 0
             self.state.bolusRecommended = self.apsManager
@@ -78,6 +80,7 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
 
             self.state.iob = self.suggestion?.iob
             self.state.cob = self.suggestion?.cob
+            self.state.tdd = self.suggestion?.tdd
             self.state.tempTargets = self.tempTargetsStorage.presets()
                 .map { target -> TempTargetWatchPreset in
                     let untilDate = self.tempTargetsStorage.current().flatMap { currentTarget -> Date? in

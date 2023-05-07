@@ -141,7 +141,6 @@ extension Home {
                 currentISF: $state.isf,
                 alarm: $state.alarm,
                 lowGlucose: $state.lowGlucose,
-
                 highGlucose: $state.highGlucose
             )
             .onTapGesture {
