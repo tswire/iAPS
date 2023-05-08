@@ -23,31 +23,45 @@ To use it, it needs 2 conditions besides setting all preferences:
 * Setting a TT with a specific adjustable target level.
 * A bolus above a specified level, which results in a drastically increased Temp Basal Rate for a short time. If one cancels the TT, also the TBR will cease.
 
+## Exercise Modes & Advanced TT's
+Exercise Mode with high/low TT can be combined with autoISF. The ratio from the TT, calculated with the Half Basal Exercise target, will be adjusted with the strongest (>1) or weakest (<1) ISF-Ratio from autoISF. This can be substantial. I myself prefer to disable autoISF adjustments while exercising, relying on the TT Ratio, by setting `Exercise toggles all autoISF adjustments off` to on.
+There was some discussion how to implement the excercise targets with configurable half basal exercise target variable and a specific desired insulin ratio in iAPS. This requires highTTraisesSens and lowTTlowersSens setting. In this implementation, which is a little different than in iAPS, you first define at which TT level you want to be. Frome this the available insulin percentages are derived:
+* with a TT above 100mg/dL you can only have a insulin percentage below 100% (more sensitive to insulin while exercising)
+* If you don't have the setting exercise mode or highTTraisesSens enabled, you will not be able to specify an insulin percentage below 100% with a high TT.
+* with a TT below 100 mg/dL you can have an Insulin ratio above 100% (less sensitive to insulin) but less than what your autosens_max setting defines. E.g. if you have autosens_max = 2, that means your increased insulin percentage can be max. 200%.
+* If you have lowTTlowersSens disabled or you have autosens_max=1, you cannot specify a percentage >100% for low TTs.
+
+If you do have the appropriate settings, you can chose an insulin ratio with the slider for the TT you have set and the half basal exercise target will be calculated and set in background for the time the TT is active.
+
 ## Screen Shots
 
 on iPhone 13 mini:
 
-<img src="FAX_autoISF.png"
-     alt="FreeAPS-X iPhone screen"
+<img src="iAPS_iPhone_01.png"
+     alt="standard"
+	 width=350
+	  />
+<img src="iAPS_iPhone_02.png"
+     alt="autoISF results"
 	 width=350
 	 />
-<img src="FAX_autoISF2.png"
-     alt="FreeAPS-X iPhone screen2"
+<img src="iAPS_iPhone_03.png"
+     alt="advanced exercise TTs"
+	 width=350
+	 />
+<img src="iAPS_iPhone_04.png"
+     alt="advanced exercise TTs - missing prefs"
 	 width=350
 	 />
 
-Apple Watch:
+Watches:
 
-<img src="FAX_appleW1.png"
+<img src="iAPS_AppleWatch_01.png"
      alt="AppleWatch screen"
 	 width=200
 	 />
-<img src="FAX_appleW2.png"
-     alt="AppleWatch Bolus screen"
-	 width=200
-	 />
-<img src="FAX_appleW3.png"
-     alt="AppleWatch TempTarget screen"
+<img src="Garmin_DataField.png"
+     alt="Garmin screen"
 	 width=200
 	 />
 
@@ -78,8 +92,8 @@ Refers to the changes done to the original oref0 used in FAX, the source can be 
 	* documentation at https://github.com/ga-zelle/autoISF
 
 ## Release
-Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [github repository](https://github.com/Artificial-Pancreas/iAPS)
-I had to disable dynISF and Overrides from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original with those features.
+Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [github repository](https://github.com/Artificial-Pancreas/iAPS).
+I had to disable Overrides from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 
 * 1.6.0
 	* Garmin watch
@@ -112,9 +126,6 @@ I had to disable dynISF and Overrides from the original iAPS, as Jon does not pu
 
 ## Remarks
 Due to the heavy refactoring and my changes to Jon's CoreData, when moving from a version (below 1.07) to (1.07 or above) it is advised to delete FAX and install with a new clone. All current stats will be gone and build up again. All settings will be at default values, like `maxIOB = 0`. Due to deleting FAX you should do it in between pods, as you loose this information. Now with iAPS starting v1.6 and autoISF 2.2.8.3 also all settings will revert to standard.
-
-## Exercise Modes
-Exercise Mode with high TT can be combined with autoISF. The Ratio from the TT, calculated with the Half Basal target, will be adjusted with the strongest (>1) or weakest (<1) ISF-Ratio from autoISF. This can be substantial. I myself prefer to disable autoISF adjustments while exercising, relying on the TT Ratio, by setting `Exercise toggles all autoISF adjustments off` to on.
 
 # Documentation
 
