@@ -83,7 +83,7 @@ extension AddTempTarget {
                                 .font(.caption).italic()
                             } else {
                                 Text(
-                                    "You have not enabled the proper Preferences to change sensitivity with chosen TempTarget. Verify Autosens Max, lowTT lowers Sens and highTT raises Sens (or Exercise Mode)!"
+                                    "You have not enabled the proper Preferences to change sensitivity with chosen TempTarget. Verify Autosens Max > 1 & lowTT lowers Sens is on for lowTT's. For high TTs check highTT raises Sens is on (or Exercise Mode)!"
                                 )
                                 // .foregroundColor(.loopRed)
                                 .font(.caption).italic()
@@ -220,7 +220,11 @@ extension AddTempTarget {
             if state.units == .mmolL {
                 target = Decimal(round(Double(state.low.asMgdL))) }
             if target == 0 { return minSens }
-            if target < 100 { minSens = 100 }
+            if target < 100 ||
+                (
+                    !state.settingsManager.preferences.highTemptargetRaisesSensitivity && !state.settingsManager.preferences
+                        .exerciseMode
+                ) { minSens = 100 }
             return minSens
         }
 
@@ -230,7 +234,7 @@ extension AddTempTarget {
             if target == 0 { return maxSens }
             if state.units == .mmolL {
                 target = Decimal(round(Double(state.low.asMgdL))) }
-            if target > 100 { maxSens = 100 }
+            if target > 100 || !state.settingsManager.preferences.lowTemptargetLowersSensitivity { maxSens = 100 }
             return maxSens
         }
     }
