@@ -581,7 +581,7 @@ extension Stat {
             let durationArrayCount = durationArray.count
             // var durationAverage = durationArray.reduce(0, +) / Double(durationArrayCount)
 
-            let medianDuration = medianCalculationDouble(array: durationArray)
+            let medianDuration = medianCalculationDouble(array: durationArray) * 60
             let successsNR = loops.compactMap({ each in each.loopStatus }).filter({ each in each!.contains("Success") }).count
             let errorNR = durationArrayCount - successsNR
 //            let successRate: Double? = (Double(successsNR) / Double(successsNR + errorNR)) * 100
