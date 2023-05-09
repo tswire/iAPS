@@ -9,7 +9,9 @@ Thousands of commits later, with many new and unique features added, the iOS app
 iAPS uses lot of frameworks published by the Loop community.
 
 # autoISF
-This branch includes autoISF to adjust ISF depending on 4 different effects in glucose behaviour that autoISF checks and reacts to:
+The autoISF branch is based on dev from the original [iAPS repo](https://github.com/artificial-pancreas/iaps) and includes my implementation of [autoISF by ga-zelle](https://github.com/T-o-b-i-a-s/AndroidAPS) for AAPS and some other extra features. autoISF is off by default.
+
+autoISF adjusts ISF depending on 4 different effects in glucose behaviour that autoISF checks and reacts to:
 * acce_ISF is a factor derived from acceleration of glucose levels
 * bg_ISF is a factor derived from the deviation of glucose from target
 * delta_ISF and pp_ISF are factors derived from glucose rise, 5min, 10min and 45min deltas and postprandial time frames
@@ -66,15 +68,25 @@ Watches:
 	 />
 
 ## Install
-To use this branch :
+In Terminal:
 
-git clone --branch=dev-aisf_TDD https://github.com/mountrcg/iAPS.git
+git clone --branch=devAutoISF https://github.com/mountrcg/iAPS.git
+cd iaps
+xed .
 
-The autoISF branch includes my implementation of autoISF by ga-zelle and some other extra features. autoISF is off by default.
+Or using the GitHub interface:
+Download and open in Xcode directly using the Code button: "Open with Xcode".
 
-Please understand that this version is :
-- highly experimental
-- not approved for therapy
+## To build directly in GitHub, without using Xcode:
+
+Intructions:
+https://github.com/Artificial-Pancreas/iAPS/blob/main/fastlane/testflight.md
+Instructions in greater detail, but not iAPS-specific:
+https://loopkit.github.io/loopdocs/gh-actions/gh-overview/
+
+## Please understand that iAPS is:
+- highly experimental and evolving rapidly.
+- not CE approved for therapy.
 
 # Changes
 
@@ -129,9 +141,14 @@ Due to the heavy refactoring and my changes to Jon's CoreData, when moving from 
 
 # Documentation
 
-Most of the changes are made in oref code of OpenAPS, which is part of FreeAPS-X. But it is not really readable in FAX, so refer to my [oref0-repository](https://github.com/mountrcg/oref0/tree/dev_aisf_TDD).
+Most of the changes are made in oref code of OpenAPS, which is minimized in iAPS. So it is not really readable in Xcode, therefore refer to my [oref0-repository](https://github.com/mountrcg/oref0/tree/dev_aisf_TDD).
 
-[Original autoISF implementation for AAPS](https://github.com/ga-zelle/autoISF)
+
+[iAPS documentation (under development)](https://iaps.readthedocs.io/en/latest/)
+
+[OpenAPS documentation](https://openaps.readthedocs.io/en/latest/)
+
+[Documentation of autoISF implementation for AAPS](https://github.com/ga-zelle/autoISF)
 
 [Discord autoISF - FreeAPS-X channel](https://discord.com/channels/953929437894803478/1025731124615458848)
 
@@ -141,21 +158,13 @@ Most of the changes are made in oref code of OpenAPS, which is part of FreeAPS-X
 
 [Middleware code for iAPS](https://github.com/Jon-b-m/middleware)
 
-[iAPS repo github](https://github.com/artificial-pancreas/iaps.git)
+[iAPS repo github](https://github.com/artificial-pancreas/iaps)
 
 [FreeAPS-X original github](https://github.com/ivalkou/freeaps)
 
 [ADD DASH PUMP and SETTINGS](https://loopkit.github.io/loopdocs/loop-3/omnipod/)
 
 [Overview & Onboarding Tips on Loop&Learn](https://www.loopandlearn.org/freeaps-x/)
-
-[OpenAPS documentation](https://openaps.readthedocs.io/en/latest/)
-
-[iAPS documentation (under development)](https://iaps.readthedocs.io/en/latest/)
-
-Please understand that this version is:
-- highly experimental and evolving rapidly.
-- not CE approved for therapy.
 
 # Pumps
 
