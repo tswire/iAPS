@@ -55,31 +55,38 @@ struct TagCloudView: View {
     private func item(for textTag: String) -> some View {
         var colorOfTag: Color {
             switch textTag {
-            case textTag where textTag.contains("SMB Delivery Ratio:"):
-                return .uam
-            case textTag where textTag.contains("Bolus"):
-                return .green
-            case textTag where textTag.contains("Total insulin:"),
-                 textTag where textTag.contains("tdd_factor"),
-                 textTag where textTag.contains("Sigmoid function"),
-                 textTag where textTag.contains("Logarithmic formula"),
-                 textTag where textTag.contains("AF:"),
-                 textTag where textTag.contains("Autosens/Dynamic Limit:"),
-                 textTag where textTag.contains("Dynamic ISF/CR"),
-                 textTag where textTag.contains("Basal ratio"):
+            case textTag where textTag.contains("Floating"),
+                 textTag where textTag.contains("enforced"),
+                 textTag where textTag.contains("enabled"):
+                return .loopYellow
+            case "autoISF",
+                 "AIMI B30",
+                 textTag where textTag.contains("disabled"),
+                 textTag where textTag.contains("final"):
+                return .loopRed
+            case "SMB Del.Ratio:":
+                return .loopGreen
+            case "Parabolic Fit",
+                 textTag where textTag.contains("acce-ISF"):
                 return .zt
-            default:
+            case "Autosens",
+                 "Standard",
+                 "TDD":
                 return .insulin
+            case textTag where textTag.contains("Exercise"),
+                 textTag where textTag.contains("Ratio TT"):
+                return .uam
+            default:
+                return .basal
             }
         }
-
         return ZStack { Text(textTag)
             .padding(.vertical, 2)
             .padding(.horizontal, 4)
-            .font(.subheadline)
+            .font(.caption)
             .background(colorOfTag.opacity(0.8))
             .foregroundColor(Color.white)
-            .cornerRadius(2) }
+            .cornerRadius(5) }
     }
 
     private func viewHeightReader(_ binding: Binding<CGFloat>) -> some View {

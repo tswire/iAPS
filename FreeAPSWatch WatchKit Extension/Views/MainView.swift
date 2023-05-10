@@ -13,6 +13,7 @@ struct MainView: View {
     @State var isTargetsActive = false
     @State var isBolusActive = false
     @State private var pulse = 0
+    @State private var steps = 0
 
     @GestureState var isDetectingLongPress = false
     @State var completedLongPress = false
@@ -71,18 +72,42 @@ struct MainView: View {
 
     var header: some View {
         VStack {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text(state.glucose).font(.title)
-                        Text(state.trend)
+            HStack(alignment: .lastTextBaseline) {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(alignment: .bottom) {
+                        Text(state.glucose).font(.largeTitle).foregroundColor(colorOfGlucose)
+                            .scaledToFill()
+                            .minimumScaleFactor(0.5)
+                        // .padding(.top, 2)
+                        if state.timerDate.timeIntervalSince(state.lastUpdate) > 10 {
+                            withAnimation {
+                                BlinkingView(count: 8, size: 3)
+                                    .frame(width: 25, height: 18)
+                                    .padding(.bottom, 15)
+                            }
+                        }
+                        Spacer()
+                        Text("TDD").foregroundColor(.insulin).font(.caption).fixedSize()
+                            .scaledToFill()
+                            .minimumScaleFactor(0.5)
+                            .padding(.bottom, 6)
+                    }
+                    HStack(alignment: .lastTextBaseline) {
+                        Text(state.delta).font(.caption).foregroundColor(.gray)
+                            .scaledToFill()
+                            .minimumScaleFactor(0.5)
+                        // Text(state.trend).foregroundColor(.gray)
+                        Text(state.eventualBG).font(.caption)
+                            .scaledToFill()
+                            .minimumScaleFactor(0.5)
+                        Spacer()
+                        Text(iobFormatter.string(from: (state.tdd ?? 33.3) as NSNumber)! + " U").font(.caption).fixedSize()
+                            .foregroundColor(.insulin)
                             .scaledToFill()
                             .minimumScaleFactor(0.5)
                     }
-                    Text(state.delta).font(.caption2).foregroundColor(.gray)
                 }
                 Spacer()
-
                 VStack(spacing: 0) {
                     HStack {
                         Circle().stroke(color, lineWidth: 5).frame(width: 26, height: 26).padding(10)
@@ -118,7 +143,8 @@ struct MainView: View {
                     .scaledToFill()
                     .minimumScaleFactor(0.5)
 
-                if state.displayHR {
+                switch state.displayOnWatch {
+                case .HR:
                     Spacer()
                     HStack {
                         if completedLongPress {
@@ -146,14 +172,41 @@ struct MainView: View {
                             .gesture(longPress)
                         }
                     }
-
-                } else if let eventualBG = state.eventualBG.nonEmpty {
+                case .BGTarget:
+                    if let eventualBG = state.eventualBG.nonEmpty {
+                        Spacer()
+                        HStack {
+                            Text(eventualBG)
+                                .font(.caption2)
+                                .scaledToFill()
+                                .foregroundColor(.secondary)
+                                .minimumScaleFactor(0.5)
+                        }
+                    }
+                case .steps:
                     Spacer()
                     HStack {
-                        Text(eventualBG)
+                        Text("🦶" + " \(steps)")
+                            .fontWeight(.regular)
                             .font(.caption2)
                             .scaledToFill()
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.white)
+                            .minimumScaleFactor(0.5)
+                    }
+                case .isf:
+                    Spacer()
+                    let isf: String = state.isf != nil ? "\(state.isf ?? 0)" : "-"
+                    HStack {
+                        Image(systemName: "arrow.up.arrow.down")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 13, height: 13)
+                            .foregroundColor(.loopGreen)
+                        Text("\(isf)")
+                            .fontWeight(.regular)
+                            .font(.caption2)
+                            .scaledToFill()
+                            .foregroundColor(.white)
                             .minimumScaleFactor(0.5)
                     }
                 }
@@ -214,29 +267,11 @@ struct MainView: View {
                 CarbsView()
                     .environmentObject(state)
             } label: {
-                Image("carbs", bundle: nil)
+                Image("carbs1", bundle: nil)
                     .renderingMode(.template)
                     .resizable()
                     .frame(width: 24, height: 24)
                     .foregroundColor(.loopYellow)
-            }
-
-            NavigationLink(isActive: $state.isTempTargetViewActive) {
-                TempTargetsView()
-                    .environmentObject(state)
-            } label: {
-                VStack {
-                    Image("target", bundle: nil)
-                        .renderingMode(.template)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.loopGreen)
-                    if let until = state.tempTargets.compactMap(\.until).first, until > Date() {
-                        Text(until, style: .timer)
-                            .scaledToFill()
-                            .font(.system(size: 8))
-                    }
-                }
             }
 
             NavigationLink(isActive: $state.isBolusViewActive) {
@@ -249,19 +284,83 @@ struct MainView: View {
                     .frame(width: 24, height: 24)
                     .foregroundColor(.insulin)
             }
+
+            NavigationLink(isActive: $state.isTempTargetViewActive) {
+                TempTargetsView()
+                    .environmentObject(state)
+            } label: {
+                VStack {
+                    Image("target1", bundle: nil)
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.loopGreen)
+                    if let until = state.tempTargets.compactMap(\.until).first, until > Date() {
+                        Text(until, style: .timer)
+                            .scaledToFill()
+                            .font(.system(size: 8))
+                    }
+                }
+            }
         }
     }
 
     func start() {
         autorizeHealthKit()
         startHeartRateQuery(quantityTypeIdentifier: .heartRate)
+        startStepsQuery(quantityTypeIdentifier: .stepCount)
     }
 
     func autorizeHealthKit() {
         let healthKitTypes: Set = [
+            HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!,
             HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!
         ]
         healthStore.requestAuthorization(toShare: healthKitTypes, read: healthKitTypes) { _, _ in }
+    }
+
+    private func startStepsQuery(quantityTypeIdentifier _: HKQuantityTypeIdentifier) {
+        let type = HKQuantityType.quantityType(forIdentifier: .stepCount)!
+        let now = Date()
+        let startOfDay = Calendar.current.startOfDay(for: now)
+        var interval = DateComponents()
+        interval.day = 1
+        let query = HKStatisticsCollectionQuery(
+            quantityType: type,
+            quantitySamplePredicate: nil,
+            options: [.cumulativeSum],
+            anchorDate: startOfDay,
+            intervalComponents: interval
+        )
+
+        query.initialResultsHandler = { _, result, _ in
+            var resultCount = 0.0
+            guard let result = result else {
+                self.steps = 0
+                return
+            }
+            result.enumerateStatistics(from: startOfDay, to: now) { statistics, _ in
+
+                if let sum = statistics.sumQuantity() {
+                    // Get steps (they are of double type)
+                    resultCount = sum.doubleValue(for: HKUnit.count())
+                } // end if
+                // Return
+                self.steps = Int(resultCount)
+            }
+        }
+
+        query.statisticsUpdateHandler = {
+            _, statistics, _, _ in
+
+            // If new statistics are available
+            if let sum = statistics?.sumQuantity() {
+                let resultCount = sum.doubleValue(for: HKUnit.count())
+                // Return
+                self.steps = Int(resultCount)
+            } // end if
+        }
+        healthStore.execute(query)
     }
 
     private func startHeartRateQuery(quantityTypeIdentifier: HKQuantityTypeIdentifier) {
@@ -306,7 +405,23 @@ struct MainView: View {
         if minAgo > 1440 {
             return "--"
         }
-        return "\(minAgo) " + NSLocalizedString("min", comment: "Minutes ago since last loop")
+        return "\(minAgo) " + NSLocalizedString("m", comment: "Minutes ago since last loop")
+    }
+
+    var colorOfGlucose: Color {
+        guard let recentBG = Int(state.glucose)
+        else { return .loopYellow }
+
+        switch recentBG {
+        case 61 ... 69:
+            return .loopOrange
+        case 70 ... 140:
+            return .loopGreen
+        case 141 ... 180:
+            return .loopYellow
+        default:
+            return .loopRed
+        }
     }
 
     private var color: Color {

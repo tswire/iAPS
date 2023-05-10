@@ -10,7 +10,6 @@ extension Home {
 
         @StateObject var state = StateModel()
         @State var isStatusPopupPresented = false
-        @State var selectedState: durationState
 
         // Average/Median/Readings and CV/SD titles and values switches when you tap them
         @State var averageOrMedianTitle = NSLocalizedString("Average", comment: "")
@@ -45,6 +44,15 @@ extension Home {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
             formatter.maximumFractionDigits = 2
+            return formatter
+        }
+
+        private var fetchedTargetFormatter: NumberFormatter {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            if state.units == .mmolL {
+                formatter.maximumFractionDigits = 1
+            } else { formatter.maximumFractionDigits = 0 }
             return formatter
         }
 
@@ -96,21 +104,31 @@ extension Home {
         var cobIobView: some View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text("IOB").font(.footnote).foregroundColor(.secondary)
-                    Text(
-                        (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
-                            NSLocalizedString(" U", comment: "Insulin unit")
-                    )
-                    .font(.footnote).fontWeight(.bold)
-                }.frame(alignment: .top)
-                HStack {
-                    Text("COB").font(.footnote).foregroundColor(.secondary)
+//                    Text("COB").font(.caption2).foregroundColor(.secondary)
+                    Image("premeal")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 12, height: 12)
+                        .foregroundColor(.loopYellow)
                     Text(
                         (numberFormatter.string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0") +
                             NSLocalizedString(" g", comment: "gram of carbs")
                     )
-                    .font(.footnote).fontWeight(.bold)
-                }.frame(alignment: .bottom)
+                    .font(.system(size: 12, weight: .bold))
+                }
+                HStack {
+//                    Text("IOB").font(.caption2).foregroundColor(.secondary)
+                    Image("bolus1")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 12, height: 12)
+                        .foregroundColor(.insulin)
+                    Text(
+                        (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
+                            NSLocalizedString(" U", comment: "Insulin unit")
+                    )
+                    .font(.system(size: 12, weight: .bold))
+                }
             }
         }
 
@@ -119,7 +137,11 @@ extension Home {
                 recentGlucose: $state.recentGlucose,
                 delta: $state.glucoseDelta,
                 units: $state.units,
-                alarm: $state.alarm
+                eventualBG: $state.eventualBG,
+                currentISF: $state.isf,
+                alarm: $state.alarm,
+                lowGlucose: $state.lowGlucose,
+                highGlucose: $state.highGlucose
             )
             .onTapGesture {
                 if state.alarm == nil {
@@ -215,11 +237,31 @@ extension Home {
             guard fetchedPercent.first?.enabled ?? false else {
                 return nil
             }
-            let percentString = "\((fetchedPercent.first?.percentage ?? 100).formatted(.number)) %"
-            let durationString = (fetchedPercent.first?.indefinite ?? false) ?
-                "" : ", " + (tirFormatter.string(from: (fetchedPercent.first?.duration ?? 0) as NSNumber) ?? "") + " min"
+            var percentString = "\((fetchedPercent.first?.percentage ?? 100).formatted(.number)) %"
+            var target = (fetchedPercent.first?.target ?? 100) as Decimal
+            let indefinite = (fetchedPercent.first?.indefinite ?? false)
+            let unit = state.units.rawValue
+            if state.units == .mmolL {
+                target = target.asMmolL
+            }
+            var targetString = (fetchedTargetFormatter.string(from: target as NSNumber) ?? "") + " " + unit
+            if tempTargetString != nil || target == 0 { targetString = "" }
+            percentString = percentString == "100 %" ? "" : percentString
+            var durationString = indefinite ?
+                "" : ((tirFormatter.string(from: (fetchedPercent.first?.duration ?? 0) as NSNumber) ?? "") + " min")
 
-            return percentString + durationString
+            var comma1 = ", "
+            var comma2 = comma1
+            if targetString == "" { comma1 = "" }
+            if percentString == "" { comma1 = "" }
+            if indefinite { comma2 = "" }
+            if percentString == "", targetString == "" {
+                comma1 = ""
+                comma2 = ""
+                durationString = ""
+            }
+
+            return percentString + comma1 + targetString + comma2 + durationString
         }
 
         var infoPanel: some View {
@@ -242,7 +284,7 @@ extension Home {
                 }
 
                 Spacer()
-                
+
                 if let overrideString = overrideString {
                     Text(overrideString)
                         .font(.system(size: 12))
@@ -264,309 +306,45 @@ extension Home {
             .frame(maxWidth: .infinity, maxHeight: 30)
         }
 
-        @ViewBuilder private func statPanel() -> some View {
-            if state.displayStatistics {
-                VStack(spacing: 8) {
-                    durationButton(states: durationState.allCases, selectedState: $selectedState)
-
-                    switch selectedState {
-                    case .day:
-
-                        let hba1c_all = numberFormatter
-                            .string(from: (state.statistics?.Statistics.HbA1c.total ?? 0) as NSNumber) ?? ""
-                        let average_ = targetFormatter
-                            .string(from: (state.statistics?.Statistics.Glucose.Average.day ?? 0) as NSNumber) ?? ""
-                        let median_ = targetFormatter
-                            .string(from: (state.statistics?.Statistics.Glucose.Median.day ?? 0) as NSNumber) ?? ""
-                        let tir_low = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.Hypos.day ?? 0) as NSNumber) ?? ""
-                        let tir_high = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.Hypers.day ?? 0) as NSNumber) ?? ""
-                        let tir_ = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.TIR.day ?? 0) as NSNumber) ?? ""
-                        let hba1c_ = numberFormatter
-                            .string(from: (state.statistics?.Statistics.HbA1c.day ?? 0) as NSNumber) ?? ""
-                        let sd_ = numberFormatter
-                            .string(from: (state.statistics?.Statistics.Variance.SD.day ?? 0) as NSNumber) ?? ""
-                        let cv_ = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Variance.CV.day ?? 0) as NSNumber) ?? ""
-
-                        averageTIRhca1c(hba1c_all, average_, median_, tir_low, tir_high, tir_, hba1c_, sd_, cv_)
-
-                    case .week:
-                        let hba1c_all = numberFormatter
-                            .string(from: (state.statistics?.Statistics.HbA1c.total ?? 0) as NSNumber) ?? ""
-                        let average_ = targetFormatter
-                            .string(from: (state.statistics?.Statistics.Glucose.Average.week ?? 0) as NSNumber) ?? ""
-                        let median_ = targetFormatter
-                            .string(from: (state.statistics?.Statistics.Glucose.Median.week ?? 0) as NSNumber) ?? ""
-                        let tir_low = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.Hypos.week ?? 0) as NSNumber) ?? ""
-                        let tir_high = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.Hypers.week ?? 0) as NSNumber) ?? ""
-                        let tir_ = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.TIR.week ?? 0) as NSNumber) ?? ""
-                        let hba1c_ = numberFormatter
-                            .string(from: (state.statistics?.Statistics.HbA1c.week ?? 0) as NSNumber) ?? ""
-                        let sd_ = numberFormatter
-                            .string(from: (state.statistics?.Statistics.Variance.SD.week ?? 0) as NSNumber) ?? ""
-                        let cv_ = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Variance.CV.week ?? 0) as NSNumber) ?? ""
-
-                        averageTIRhca1c(hba1c_all, average_, median_, tir_low, tir_high, tir_, hba1c_, sd_, cv_)
-
-                    case .month:
-                        let hba1c_all = numberFormatter
-                            .string(from: (state.statistics?.Statistics.HbA1c.total ?? 0) as NSNumber) ?? ""
-                        let average_ = targetFormatter
-                            .string(from: (state.statistics?.Statistics.Glucose.Average.month ?? 0) as NSNumber) ?? ""
-                        let median_ = targetFormatter
-                            .string(from: (state.statistics?.Statistics.Glucose.Median.month ?? 0) as NSNumber) ?? ""
-                        let tir_low = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.Hypos.month ?? 0) as NSNumber) ?? ""
-                        let tir_high = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.Hypers.month ?? 0) as NSNumber) ?? ""
-                        let tir_ = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.TIR.month ?? 0) as NSNumber) ?? ""
-                        let hba1c_ = numberFormatter
-                            .string(from: (state.statistics?.Statistics.HbA1c.month ?? 0) as NSNumber) ?? ""
-                        let sd_ = numberFormatter
-                            .string(from: (state.statistics?.Statistics.Variance.SD.month ?? 0) as NSNumber) ?? ""
-                        let cv_ = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Variance.CV.month ?? 0) as NSNumber) ?? ""
-
-                        averageTIRhca1c(hba1c_all, average_, median_, tir_low, tir_high, tir_, hba1c_, sd_, cv_)
-
-                    case .total:
-                        let hba1c_all = numberFormatter
-                            .string(from: (state.statistics?.Statistics.HbA1c.total ?? 0) as NSNumber) ?? ""
-                        let average_ = targetFormatter
-                            .string(from: (state.statistics?.Statistics.Glucose.Average.total ?? 0) as NSNumber) ?? ""
-                        let median_ = targetFormatter
-                            .string(from: (state.statistics?.Statistics.Glucose.Median.total ?? 0) as NSNumber) ?? ""
-                        let tir_low = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.Hypos.total ?? 0) as NSNumber) ?? ""
-                        let tir_high = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.Hypers.total ?? 0) as NSNumber) ??
-                            ""
-                        let tir_ = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Distribution.TIR.total ?? 0) as NSNumber) ?? ""
-                        let hba1c_ = numberFormatter
-                            .string(from: (state.statistics?.Statistics.HbA1c.total ?? 0) as NSNumber) ?? ""
-                        let sd_ = numberFormatter
-                            .string(from: (state.statistics?.Statistics.Variance.SD.total ?? 0) as NSNumber) ?? ""
-                        let cv_ = tirFormatter
-                            .string(from: (state.statistics?.Statistics.Variance.CV.total ?? 0) as NSNumber) ?? ""
-
-                        averageTIRhca1c(hba1c_all, average_, median_, tir_low, tir_high, tir_, hba1c_, sd_, cv_)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding([.bottom], 20)
-            }
-        }
-
-        @ViewBuilder private func averageTIRhca1c(
-            _ hba1c_all: String,
-            _ average_: String,
-            _ median_: String,
-            _ tir_low: String,
-            _ tir_high: String,
-            _ tir_: String,
-            _ hba1c_: String,
-            _ sd_: String,
-            _ cv_: String
-        ) -> some View {
-            HStack {
-                Group {
-                    if selectedState != .total {
-                        HStack {
-                            Text("HbA1c").font(.footnote).foregroundColor(.secondary)
-                            Text(hba1c_).font(.footnote)
-                        }
-                    } else {
-                        HStack {
-                            Text(
-                                "\(NSLocalizedString("HbA1c", comment: "")) (\(targetFormatter.string(from: (state.statistics?.GlucoseStorage_Days ?? 0) as NSNumber) ?? "") \(NSLocalizedString("days", comment: "")))"
-                            )
-                            .font(.footnote).foregroundColor(.secondary)
-                            Text(hba1c_all).font(.footnote)
-                        }
-                    }
-                    // Average as default. Changes to Median when clicking.
-                    let textAverageTitle = NSLocalizedString("Average", comment: "")
-                    let textMedianTitle = NSLocalizedString("Median", comment: "")
-                    let cgmReadingsTitle = NSLocalizedString("Readings", comment: "CGM readings in statPanel")
-
-                    HStack {
-                        Text(averageOrMedianTitle).font(.footnote).foregroundColor(.secondary)
-                        if averageOrMedianTitle == textAverageTitle {
-                            Text(averageOrmedian == "" ? average_ : average_).font(.footnote)
-                        } else if averageOrMedianTitle == textMedianTitle {
-                            Text(averageOrmedian == "" ? median_ : median_).font(.footnote)
-                        } else if averageOrMedianTitle == cgmReadingsTitle {
-                            Text(
-                                averageOrmedian != "0" ? tirFormatter
-                                    .string(from: (state.statistics?.Statistics.LoopCycles.readings ?? 0) as NSNumber) ?? "" : ""
-                            )
-                            .font(.footnote)
-                        }
-                    }.onTapGesture {
-                        if averageOrMedianTitle == textAverageTitle {
-                            averageOrMedianTitle = textMedianTitle
-                            averageOrmedian = median_
-                        } else if averageOrMedianTitle == textMedianTitle {
-                            averageOrMedianTitle = cgmReadingsTitle
-                            averageOrmedian = tirFormatter
-                                .string(from: (state.statistics?.Statistics.LoopCycles.readings ?? 0) as NSNumber) ?? ""
-                        } else if averageOrMedianTitle == cgmReadingsTitle {
-                            averageOrMedianTitle = textAverageTitle
-                            averageOrmedian = average_
-                        }
-                    }
-                    .frame(minWidth: 110)
-                    // CV as default. Changes to SD when clicking
-                    let text_CV_Title = NSLocalizedString("CV", comment: "")
-                    let text_SD_Title = NSLocalizedString("SD", comment: "")
-
-                    HStack {
-                        Text(CV_or_SD_Title).font(.footnote).foregroundColor(.secondary)
-                        if CV_or_SD_Title == text_CV_Title {
-                            Text(CVorSD == "" ? cv_ : cv_).font(.footnote)
-                        } else {
-                            Text(CVorSD == "" ? sd_ : sd_).font(.footnote)
-                        }
-                    }.onTapGesture {
-                        if CV_or_SD_Title == text_CV_Title {
-                            CV_or_SD_Title = text_SD_Title
-                            CVorSD = sd_
-                        } else {
-                            CV_or_SD_Title = text_CV_Title
-                            CVorSD = cv_
-                        }
-                    }
-                }
-            }
-            HStack {
-                Group {
-                    HStack {
-                        Text(
-                            NSLocalizedString("Low", comment: " ")
-                        )
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-
-                        Text(tir_low + " %").font(.footnote).foregroundColor(.loopRed)
-                    }
-
-                    HStack {
-                        Text("Normal").font(.footnote).foregroundColor(.secondary)
-                        Text(tir_ + " %").font(.footnote).foregroundColor(.loopGreen)
-                    }
-
-                    HStack {
-                        Text(
-                            NSLocalizedString("High", comment: " ")
-                        )
-                        .font(.footnote).foregroundColor(.secondary)
-
-                        Text(tir_high + " %").font(.footnote).foregroundColor(.loopYellow)
-                    }
-                }
-            }
-
-            if state.settingsManager.preferences.displayLoops {
-                HStack {
-                    Group {
-                        let loopTitle = NSLocalizedString("Loops", comment: "Nr of Loops in statPanel")
-                        let errorTitle = NSLocalizedString("Errors", comment: "Loop Errors in statPanel")
-
-                        HStack {
-                            Text(loopStatTitle).font(.footnote).foregroundColor(.secondary)
-                            Text(
-                                loopStatTitle == loopTitle ? tirFormatter
-                                    .string(from: (state.statistics?.Statistics.LoopCycles.loops ?? 0) as NSNumber) ?? "" :
-                                    tirFormatter
-                                    .string(from: (state.statistics?.Statistics.LoopCycles.errors ?? 0) as NSNumber) ?? ""
-                            ).font(.footnote)
-                        }.onTapGesture {
-                            if loopStatTitle == loopTitle {
-                                loopStatTitle = errorTitle
-                            } else if loopStatTitle == errorTitle {
-                                loopStatTitle = loopTitle
-                            }
-                        }
-
-                        HStack {
-                            Text("Interval").font(.footnote)
-                                .foregroundColor(.secondary)
-                            Text(
-                                targetFormatter
-                                    .string(from: (state.statistics?.Statistics.LoopCycles.avg_interval ?? 0) as NSNumber) ??
-                                    ""
-                            ).font(.footnote)
-                        }
-
-                        HStack {
-                            Text("Duration").font(.footnote)
-                                .foregroundColor(.secondary)
-                            Text(
-                                numberFormatter
-                                    .string(
-                                        from: (state.statistics?.Statistics.LoopCycles.median_duration ?? 0) as NSNumber
-                                    ) ?? ""
-                            ).font(.footnote)
-                        }
-                    }
-                }
-            }
-        }
-
         var legendPanel: some View {
-            ZStack {
-                HStack(alignment: .center) {
-                    Group {
-                        Circle().fill(Color.loopGreen).frame(width: 8, height: 8)
-                        Text("BG")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.loopGreen)
-                    }
-                    Group {
-                        Circle().fill(Color.insulin).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("IOB")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
-                    }
-                    Group {
-                        Circle().fill(Color.zt).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("ZT")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.zt)
-                    }
-                    Group {
-                        Circle().fill(Color.loopYellow).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("COB")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.loopYellow)
-                    }
-                    Group {
-                        Circle().fill(Color.uam).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("UAM")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.uam)
-                    }
-
-                    if let eventualBG = state.eventualBG {
-                        Text(
-                            "⇢ " + numberFormatter.string(
-                                from: (state.units == .mmolL ? eventualBG.asMmolL : Decimal(eventualBG)) as NSNumber
-                            )!
-                        )
-                        .font(.system(size: 12, weight: .bold)).foregroundColor(.secondary)
-                    }
+            HStack(alignment: .center) {
+                Group {
+                    Circle().fill(Color.insulin).frame(width: 8, height: 8)
+                        .padding(.leading, 8)
+                    Text("IOB")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
                 }
-                .frame(maxWidth: .infinity)
-                .padding([.bottom], 20)
+                Group {
+                    Circle().fill(Color.zt).frame(width: 8, height: 8)
+                        .padding(.leading, 8)
+                    Text("ZT")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.zt)
+                }
+                Group {
+                    Circle().fill(Color.loopYellow).frame(width: 8, height: 8)
+                        .padding(.leading, 8)
+                    Text("COB")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.loopYellow)
+                }
+                Group {
+                    Circle().fill(Color.uam).frame(width: 8, height: 8)
+                        .padding(.leading, 8)
+                    Text("UAM")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.uam)
+                }
+                Text(" | ").foregroundColor(.secondary)
+                    .font(.system(size: 12, weight: .light))
+                Group {
+                    Text(
+                        "TDD " + (numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0")
+                    ).font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
+                    Text(
+                        "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
+                    ).font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: 30)
+            .padding(.bottom, 4)
         }
 
         var mainChart: some View {
@@ -580,7 +358,6 @@ extension Home {
                 MainChartView(
                     glucose: $state.glucose,
                     suggestion: $state.suggestion,
-                    statistcs: $state.statistics,
                     tempBasals: $state.tempBasals,
                     boluses: $state.boluses,
                     suspensions: $state.suspensions,
@@ -592,25 +369,31 @@ extension Home {
                     carbs: $state.carbs,
                     timerDate: $state.timerDate,
                     units: $state.units,
-                    smooth: $state.smooth
+                    smooth: $state.smooth,
+                    highGlucose: $state.highGlucose,
+                    lowGlucose: $state.lowGlucose,
+                    screenHours: $state.screenHours,
+                    displayXgridLines: $state.displayXgridLines,
+                    displayYgridLines: $state.displayYgridLines,
+                    thresholdLines: $state.thresholdLines
                 )
             }
-            .padding(.bottom)
+            .padding(.bottom, 4)
             .modal(for: .dataTable, from: self)
         }
 
         @ViewBuilder private func bottomPanel(_ geo: GeometryProxy) -> some View {
             ZStack {
-                Rectangle().fill(Color.gray.opacity(0.2)).frame(height: 50 + geo.safeAreaInsets.bottom)
+                Rectangle().fill(Color.gray.opacity(0.2)).frame(height: 50 + geo.safeAreaInsets.bottom - 10)
 
                 HStack {
                     Button { state.showModal(for: .addCarbs) }
                     label: {
                         ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom)) {
-                            Image("carbs")
+                            Image("carbs1")
                                 .renderingMode(.template)
                                 .resizable()
-                                .frame(width: 24, height: 24)
+                                .frame(width: 30, height: 30)
                                 .foregroundColor(.loopYellow)
                                 .padding(8)
                             if let carbsReq = state.carbsRequired {
@@ -623,23 +406,23 @@ extension Home {
                         }
                     }
                     Spacer()
-                    Button { state.showModal(for: .addTempTarget) }
-                    label: {
-                        Image("target")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .padding(8)
-                    }.foregroundColor(.loopGreen)
-                    Spacer()
                     Button { state.showModal(for: .bolus(waitForSuggestion: false)) }
                     label: {
                         Image("bolus")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 24, height: 24)
+                            .frame(width: 30, height: 30)
                             .padding(8)
                     }.foregroundColor(.insulin)
+                    Spacer()
+                    Button { state.showModal(for: .addTempTarget) }
+                    label: {
+                        Image("target1")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .padding(8)
+                    }.foregroundColor(.loopGreen)
                     Spacer()
                     if state.allowManualTemp {
                         Button { state.showModal(for: .manualTempBasal) }
@@ -647,22 +430,32 @@ extension Home {
                             Image("bolus1")
                                 .renderingMode(.template)
                                 .resizable()
-                                .frame(width: 24, height: 24)
+                                .frame(width: 30, height: 30)
                                 .padding(8)
-                        }.foregroundColor(.insulin)
+                        }.foregroundColor(.basal)
                         Spacer()
                     }
-                    Button { state.showModal(for: .settings) }
+                    Button { state.showModal(for: .statistics)
+                    }
                     label: {
-                        Image("settings1")
+                        Image("statistics")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 24, height: 24)
+                            .frame(width: 28, height: 28)
+                            .padding(8)
+                    }.foregroundColor(.uam)
+                    Spacer()
+                    Button { state.showModal(for: .settings) }
+                    label: {
+                        Image("settings")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 30, height: 30)
                             .padding(8)
                     }.foregroundColor(.loopGray)
                 }
                 .padding(.horizontal, 24)
-                .padding(.bottom, geo.safeAreaInsets.bottom)
+                .padding(.bottom, geo.safeAreaInsets.bottom - 10)
             }
         }
 
@@ -670,10 +463,13 @@ extension Home {
             GeometryReader { geo in
                 VStack(spacing: 0) {
                     header(geo)
+                    Divider().background(Color.gray)
                     infoPanel
                     mainChart
+                    Divider().background(Color.gray) // Added 29/4
                     legendPanel
-                    statPanel()
+                        .background(Color.secondary.opacity(0.05))
+                    Divider().background(Color.gray) // Added 29/4
                     bottomPanel(geo)
                 }
                 .edgesIgnoringSafeArea(.vertical)
@@ -683,23 +479,26 @@ extension Home {
             .navigationBarHidden(true)
             .ignoresSafeArea(.keyboard)
             .popup(isPresented: isStatusPopupPresented, alignment: .top, direction: .top) {
-                popup
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(Color(UIColor.darkGray))
-                    )
-                    .onTapGesture {
-                        isStatusPopupPresented = false
-                    }
-                    .gesture(
-                        DragGesture(minimumDistance: 10, coordinateSpace: .local)
-                            .onEnded { value in
-                                if value.translation.height < 0 {
-                                    isStatusPopupPresented = false
+                VStack {
+                    Rectangle().opacity(0).frame(height: 85)
+                    popup
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color(UIColor.darkGray).opacity(0.8))
+                        )
+                        .onTapGesture {
+                            isStatusPopupPresented = false
+                        }
+                        .gesture(
+                            DragGesture(minimumDistance: 10, coordinateSpace: .local)
+                                .onEnded { value in
+                                    if value.translation.height < 0 {
+                                        isStatusPopupPresented = false
+                                    }
                                 }
-                            }
-                    )
+                        )
+                }
             }
         }
 
@@ -709,9 +508,7 @@ extension Home {
                     .padding(.bottom, 4)
                 if let suggestion = state.suggestion {
                     TagCloudView(tags: suggestion.reasonParts).animation(.none, value: false)
-
                     Text(suggestion.reasonConclusion.capitalizingFirstLetter()).font(.caption).foregroundColor(.white)
-
                 } else {
                     Text("No sugestion found").font(.body).foregroundColor(.white)
                 }

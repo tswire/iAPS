@@ -67,14 +67,19 @@ extension DataTable {
         private var glucoseList: some View {
             List {
                 ForEach(state.glucose) { item in
-                    gluciseView(item)
+                    glucoseView(item)
                 }.onDelete(perform: deleteGlucose)
             }
         }
 
         @ViewBuilder private func treatmentView(_ item: Treatment) -> some View {
             HStack {
-                Image(systemName: "circle.fill").foregroundColor(item.color)
+                ZStack {
+                    Image(systemName: "circle.fill").foregroundColor(item.color)
+                    if item
+                        .type == .tempTarget
+                    { Image(systemName: "circle").foregroundColor(Color.basal.opacity(0.8))
+                    }}
                 Text(dateFormatter.string(from: item.date))
                     .moveDisabled(true)
                 Text(item.type.name)
@@ -151,7 +156,7 @@ extension DataTable {
             }
         }
 
-        @ViewBuilder private func gluciseView(_ item: Glucose) -> some View {
+        @ViewBuilder private func glucoseView(_ item: Glucose) -> some View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(dateFormatter.string(from: item.glucose.dateString))

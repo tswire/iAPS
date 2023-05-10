@@ -30,6 +30,14 @@ extension CGM {
             }
 
             switch CGMType {
+            case .dexcomG7:
+                setupViewController =
+                    G7CGMManager.setupViewController(
+                        bluetoothProvider: bluetoothManager,
+                        displayGlucoseUnitObservable: displayGlucoseUnitObservable,
+                        colorPalette: .default,
+                        allowDebugFeatures: false
+                    )
             case .dexcomG6:
                 setupViewController = G6CGMManager.setupViewController(
                     bluetoothProvider: bluetoothManager,
@@ -44,14 +52,6 @@ extension CGM {
                     colorPalette: .default,
                     allowDebugFeatures: false
                 )
-            case .dexcomG7:
-                setupViewController =
-                    G7CGMManager.setupViewController(
-                        bluetoothProvider: bluetoothManager,
-                        displayGlucoseUnitObservable: displayGlucoseUnitObservable,
-                        colorPalette: .default,
-                        allowDebugFeatures: false
-                    )
             default:
                 break
             }

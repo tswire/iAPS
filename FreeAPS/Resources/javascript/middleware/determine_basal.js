@@ -1,5 +1,19 @@
 function middleware(iob, currenttemp, glucose, profile, autosens, meal, reservoir, clock, pumphistory, preferences, basalprofile) {
-    // modify anything
-    // return any reason what has changed.
-    return "Nothing changed";
+    
+    var reason = "nothing done";
+    var reasonAutoISF = "";
+    
+    const d = new Date();
+    let currentHour = d.getHours();
+    // disable autosens if autoISF is running
+    if (profile.use_autoisf) {
+        profile.autosens_max = 1;
+        profile.autosens_min = 1;
+        reasonAutoISF = "autosens disabled as autoISF is turned on. ";
+        reason = "";
+    }
+    
+    reason = reason + reasonAutoISF;
+
+    return reason
 }

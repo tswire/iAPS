@@ -16,6 +16,7 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
     @Injected() private var storage: FileStorage!
     @Injected() private var carbsStorage: CarbsStorage!
     @Injected() private var tempTargetsStorage: TempTargetsStorage!
+    @Injected() private var garmin: GarminManager!
 
     private var lifetime = Lifetime()
 
@@ -40,6 +41,13 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
         broadcaster.register(EnactedSuggestionObserver.self, observer: self)
         broadcaster.register(PumpBatteryObserver.self, observer: self)
         broadcaster.register(PumpReservoirObserver.self, observer: self)
+        garmin.stateRequet = { [weak self] () -> Data in
+            guard let self = self, let data = try? JSONEncoder().encode(self.state) else {
+                warning(.service, "Cannot encode watch state")
+                return Data()
+            }
+            return data
+        }
 
         configureState()
     }
@@ -50,20 +58,29 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             self.state.glucose = glucoseValues.glucose
             self.state.trend = glucoseValues.trend
             self.state.delta = glucoseValues.delta
+            self.state.trendRaw = self.glucoseStorage.recent().last?.direction?.rawValue
             self.state.glucoseDate = self.glucoseStorage.recent().last?.dateString
+            self.state.glucoseDateInterval = self.state.glucoseDate.map { UInt64($0.timeIntervalSince1970) }
             self.state.lastLoopDate = self.enactedSuggestion?.recieved == true ? self.enactedSuggestion?.deliverAt : self
                 .apsManager.lastLoopDate
+            self.state.lastLoopDateInterval = self.state.lastLoopDate.map {
+                guard $0.timeIntervalSince1970 > 0 else { return 0 }
+                return UInt64($0.timeIntervalSince1970)
+            }
             self.state.bolusIncrement = self.settingsManager.preferences.bolusIncrement
             self.state.maxCOB = self.settingsManager.preferences.maxCOB
             self.state.maxBolus = self.settingsManager.pumpSettings.maxBolus
             self.state.carbsRequired = self.suggestion?.carbsReq
+            self.state.lowGlucose = self.settingsManager.settings.lowGlucose
+            self.state.highGlucose = self.settingsManager.settings.highGlucose
 
             let insulinRequired = self.suggestion?.insulinReq ?? 0
             self.state.bolusRecommended = self.apsManager
-                .roundBolus(amount: max(insulinRequired * self.settingsManager.settings.insulinReqFraction, 0))
+                .roundBolus(amount: max(insulinRequired * (self.settingsManager.settings.insulinReqPercentage / 100) * 2, 0))
 
             self.state.iob = self.suggestion?.iob
             self.state.cob = self.suggestion?.cob
+            self.state.tdd = self.suggestion?.tdd
             self.state.tempTargets = self.tempTargetsStorage.presets()
                 .map { target -> TempTargetWatchPreset in
                     let untilDate = self.tempTargetsStorage.current().flatMap { currentTarget -> Date? in
@@ -80,9 +97,13 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
                 }
             self.state.bolusAfterCarbs = !self.settingsManager.settings.skipBolusScreenAfterCarbs
 
-            self.state.displayHR = self.settingsManager.settings.displayHR
+            self.state.displayOnWatch = self.settingsManager.settings.displayOnWatch
 
-            self.state.eventualBG = self.evetualBGStraing()
+            let eBG = self.evetualBGStraing()
+            self.state.eventualBG = eBG.map { "⇢ " + $0 }
+            self.state.eventualBGRaw = eBG
+
+            self.state.isf = self.suggestion?.isf
 
             self.sendState()
         }
@@ -94,6 +115,9 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             warning(.service, "Cannot encode watch state")
             return
         }
+
+        garmin.sendState(data)
+
         guard session.isReachable else { return }
         session.sendMessageData(data, replyHandler: nil) { error in
             warning(.service, "Cannot send message to watch", error: error)
@@ -148,7 +172,7 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             return nil
         }
         let units = settingsManager.settings.units
-        return "⇢ " + eventualFormatter.string(
+        return eventualFormatter.string(
             from: (units == .mmolL ? eventualBG.asMmolL : Decimal(eventualBG)) as NSNumber
         )!
     }

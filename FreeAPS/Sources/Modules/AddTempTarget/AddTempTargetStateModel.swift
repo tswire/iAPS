@@ -35,9 +35,13 @@ extension AddTempTarget {
                 return
             }
             var lowTarget = low
+            if units == .mmolL {
+                lowTarget = Decimal(round(Double(lowTarget.asMgdL)))
+            }
+            let highTarget = lowTarget
 
             if viewPercantage {
-                lowTarget = computeTarget()
+                hbt = computeHBT()
                 coredataContext.performAndWait {
                     let saveToCoreData = TempTargets(context: self.coredataContext)
                     saveToCoreData.id = UUID().uuidString
@@ -56,12 +60,6 @@ extension AddTempTarget {
                     saveToCoreData.date = Date()
                     try? coredataContext.save()
                 }
-            }
-            var highTarget = lowTarget
-
-            if units == .mmolL, !viewPercantage {
-                lowTarget = Decimal(round(Double(lowTarget.asMgdL)))
-                highTarget = lowTarget
             }
 
             let entry = TempTarget(
@@ -90,7 +88,6 @@ extension AddTempTarget {
                 let setHBT = TempTargetsSlider(context: self.coredataContext)
                 setHBT.enabled = false
                 setHBT.date = Date()
-
                 try? self.coredataContext.save()
             }
         }
@@ -100,17 +97,14 @@ extension AddTempTarget {
                 return
             }
             var lowTarget = low
+            if units == .mmolL {
+                lowTarget = Decimal(round(Double(lowTarget.asMgdL)))
+            }
+            let highTarget = lowTarget
 
             if viewPercantage {
-                lowTarget = computeTarget()
+                hbt = computeHBT()
                 saveSettings = true
-            }
-
-            var highTarget = lowTarget
-
-            if units == .mmolL, !viewPercantage {
-                lowTarget = Decimal(round(Double(lowTarget.asMgdL)))
-                highTarget = lowTarget
             }
 
             let entry = TempTarget(
@@ -181,16 +175,17 @@ extension AddTempTarget {
             storage.storePresets(presets)
         }
 
-        func computeTarget() -> Decimal {
-            var ratio = Decimal(percentage / 100)
-            let c = Decimal(hbt - 100)
-            var target = (c / ratio) - c + 100
-
-            if c * (c + target - 100) <= 0 {
-                ratio = maxValue
-                target = (c / ratio) - c + 100
+        func computeHBT() -> Double {
+            let ratio = Decimal(percentage / 100)
+            let normalTarget: Decimal = 100
+            var target: Decimal = low
+            if units == .mmolL {
+                target = target.asMgdL }
+            var hbtcalc = Decimal(hbt)
+            if ratio != 1 {
+                hbtcalc = ((2 * ratio * normalTarget) - normalTarget - (ratio * target)) / (ratio - 1)
             }
-            return target
+            return round(Double(hbtcalc))
         }
     }
 }
