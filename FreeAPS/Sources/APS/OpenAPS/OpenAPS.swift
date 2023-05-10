@@ -131,10 +131,10 @@ final class OpenAPS {
             var uniqueEvents = [TDD]()
             let requestTDD = TDD.fetchRequest() as NSFetchRequest<TDD>
             requestTDD.predicate = NSPredicate(format: "timestamp > %@ AND tdd > 0", tenDaysAgo as NSDate)
-            let sortTDD = NSSortDescriptor(key: "timestamp", ascending: true)
+            let sortTDD = NSSortDescriptor(key: "timestamp", ascending: false)
             requestTDD.sortDescriptors = [sortTDD]
             try? uniqueEvents = coredataContext.fetch(requestTDD)
-            try? previousTDDfetched = coredataContext.fetch(requestTDD)
+            // try? previousTDDfetched = coredataContext.fetch(requestTDD)
 
             let total = uniqueEvents.compactMap({ each in each.tdd as? Decimal ?? 0 }).reduce(0, +)
             var indeces = uniqueEvents.count
@@ -166,16 +166,16 @@ final class OpenAPS {
             var currentDay = calendar.component(.day, from: Date())
             var previousDay = calendar.component(.day, from: Date())
 
-            if previousTDDfetched.count > 1 {
-                current_TDD = previousTDDfetched[0]
-                previous_TDD = previousTDDfetched[1]
+            if uniqueEvents.count > 1 {
+                current_TDD = uniqueEvents[0]
+                previous_TDD = uniqueEvents[1]
                 debug(
                     .apsManager,
-                    "CoreData: current fetched TDD \(previousTDDfetched[0].tdd?.decimalValue ?? 0) from \(previousTDDfetched[0].timestamp!)"
+                    "CoreData: current fetched TDD \(uniqueEvents[0].tdd?.decimalValue ?? 0) from \(uniqueEvents[0].timestamp!)"
                 )
                 debug(
                     .apsManager,
-                    "CoreData: previous fetched TDD \(previousTDDfetched[1].tdd?.decimalValue ?? 0) from \(previousTDDfetched[1].timestamp!)"
+                    "CoreData: previous fetched TDD \(uniqueEvents[1].tdd?.decimalValue ?? 0) from \(uniqueEvents[1].timestamp!)"
                 )
                 currentDay = calendar.component(.day, from: current_TDD.timestamp ?? Date())
                 previousDay = calendar.component(.day, from: previous_TDD.timestamp ?? Date())
@@ -198,9 +198,7 @@ final class OpenAPS {
             var totalDaily: Decimal = 0
 
             let avgOverDays = 7
-            let avgOverDaysAgo = Date().addingTimeInterval(-avgOverDays.days.timeInterval)
             let requestDailyTDD = DailyTDD.fetchRequest() as NSFetchRequest<DailyTDD>
-            requestDailyTDD.predicate = NSPredicate(format: "timestamp > %@ AND tdd > 0", avgOverDaysAgo as NSDate)
             let sortDailyTDD = NSSortDescriptor(key: "timestamp", ascending: false)
             requestDailyTDD.sortDescriptors = [sortDailyTDD]
             requestDailyTDD.fetchLimit = avgOverDays
@@ -220,6 +218,7 @@ final class OpenAPS {
                 TDDytd = dailyTDDfetched[0].tdd?.decimalValue ?? 0
                 totalDaily = dailyTDDfetched.compactMap({ each in each.tdd as? Decimal ?? 0 }).reduce(0, +)
                 indicesDaily = dailyTDDfetched.count
+                averageDaily = totalDaily / Decimal(indicesDaily)
             }
             // finish DailyTDD storage and calculation
 
