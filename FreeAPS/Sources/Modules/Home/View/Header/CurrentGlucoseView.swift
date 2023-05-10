@@ -107,38 +107,39 @@ struct CurrentGlucoseView: View {
                 // Spacer()
             } // .padding(.leading, 0)
             HStack(alignment: .lastTextBaseline, spacing: 2) {
-                Spacer()
+                // Spacer()
                 let minutes = (recentGlucose?.dateString.timeIntervalSinceNow ?? 0) / 60
                 let text = timaAgoFormatter.string(for: Double(minutes)) ?? ""
                 Text(
-                    text == "0" ? "< 1 " + NSLocalizedString("min", comment: "Short form for minutes") : (
+                    text == "0" ? "< 1 " + NSLocalizedString("m", comment: "Short form for minutes") : (
                         text + " " +
-                            NSLocalizedString("min", comment: "Short form for minutes")
+                            NSLocalizedString("m", comment: "Short form for minutes")
                     )
                 )
                 .font(.system(size: 12, weight: .bold)).foregroundColor(colorOfMinutesAgo(minutesAgo))
                 .fixedSize()
-                .padding(.leading, 6)
                 Text(
                     delta
                         .map { deltaFormatter.string(from: Double(units == .mmolL ? $0.asMmolL : Decimal($0)) as NSNumber)!
                         } ??
                         "--"
-                ).font(.system(size: 12, weight: .bold))
-                    .fixedSize()
-                Spacer()
+                )
+                .font(.system(size: 12, weight: .bold))
+                .fixedSize()
+                // Spacer()
                 Text(
                     NSLocalizedString("ISF", comment: "current ISF") + ":"
                 )
                 .foregroundColor(.secondary)
                 .font(.system(size: 12))
+                .padding(.leading, 6)
                 .fixedSize()
                 Text(
                     numberFormatter.string(from: (currentISF ?? 0) as NSNumber) ?? "0"
                 )
                 .font(.system(size: 12, weight: .bold))
                 .fixedSize()
-                Spacer()
+                // Spacer()
             }
         }
     }
