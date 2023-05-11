@@ -249,6 +249,7 @@ final class OpenAPS {
             var useOverride = overrideArray.first?.enabled ?? false
             var overridePercentage = Decimal(overrideArray.first?.percentage ?? 100)
             var unlimited = overrideArray.first?.indefinite ?? true
+            var disableSMBs = overrideArray.first?.smbIsOff ?? false
 
             var duration: Decimal = 0
             var newDuration: Decimal = 0
@@ -278,6 +279,7 @@ final class OpenAPS {
                     saveToCoreData.indefinite = true
                     saveToCoreData.percentage = Double(overridePercentage)
                     saveToCoreData.target = overrideTarget as NSDecimalNumber
+                    saveToCoreData.smbIsOff = disableSMBs
                     try? self.coredataContext.save()
                 } else {
                     newDuration = Decimal(Date().distance(to: date.addingTimeInterval(addedMinutes.minutes.timeInterval)).minutes)
@@ -288,6 +290,7 @@ final class OpenAPS {
                     saveToCoreData.indefinite = false
                     saveToCoreData.percentage = Double(overridePercentage)
                     saveToCoreData.target = overrideTarget as NSDecimalNumber
+                    saveToCoreData.smbIsOff = disableSMBs
                     try? self.coredataContext.save()
                 }
             }
@@ -303,6 +306,7 @@ final class OpenAPS {
                 overridePercentage = 100
                 duration = 0
                 overrideTarget = 0
+                disableSMBs = false
             }
 
             if temptargetActive /* || isPercentageEnabled */ {
@@ -342,7 +346,8 @@ final class OpenAPS {
                     duration: duration,
                     unlimited: unlimited,
                     hbt: hbt_,
-                    overrideTarget: overrideTarget
+                    overrideTarget: overrideTarget,
+                    smbIsOff: disableSMBs
                 )
                 storage.save(averages, as: OpenAPS.Monitor.oref2_variables)
                 print("Test time for oref2_variables: \(-now.timeIntervalSinceNow) seconds")
@@ -363,7 +368,8 @@ final class OpenAPS {
                     duration: duration,
                     unlimited: unlimited,
                     hbt: hbt_,
-                    overrideTarget: overrideTarget
+                    overrideTarget: overrideTarget,
+                    smbIsOff: disableSMBs
                 )
                 storage.save(averages, as: OpenAPS.Monitor.oref2_variables)
                 return self.loadFileFromStorage(name: Monitor.oref2_variables)

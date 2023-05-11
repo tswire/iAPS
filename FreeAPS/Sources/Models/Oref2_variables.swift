@@ -15,6 +15,7 @@ struct Oref2_variables: JSON, Equatable {
     var unlimited: Bool
     var hbt: Decimal
     var overrideTarget: Decimal
+    var smbIsOff: Bool
 
     init(
         tddYtd: Decimal,
@@ -30,7 +31,8 @@ struct Oref2_variables: JSON, Equatable {
         duration: Decimal,
         unlimited: Bool,
         hbt: Decimal,
-        overrideTarget: Decimal
+        overrideTarget: Decimal,
+        smbIsOff: Bool
     ) {
         self.tddYtd = tddYtd
         self.tdd7d = tdd7d
@@ -46,6 +48,7 @@ struct Oref2_variables: JSON, Equatable {
         self.unlimited = unlimited
         self.hbt = hbt
         self.overrideTarget = overrideTarget
+        self.smbIsOff = smbIsOff
     }
 }
 
@@ -65,5 +68,6 @@ extension Oref2_variables {
         case unlimited
         case hbt
         case overrideTarget
+        case smbIsOff
     }
 }
