@@ -249,9 +249,11 @@ extension Home {
             percentString = percentString == "100 %" ? "" : percentString
             var durationString = indefinite ?
                 "" : ((tirFormatter.string(from: (fetchedPercent.first?.duration ?? 0) as NSNumber) ?? "") + " min")
+            var smbToggleString = (fetchedPercent.first?.smbIsOff ?? false) ? " \u{20e0}" : ""
 
             var comma1 = ", "
             var comma2 = comma1
+            var comma3 = comma1
             if targetString == "" { comma1 = "" }
             if percentString == "" { comma1 = "" }
             if indefinite { comma2 = "" }
@@ -259,9 +261,12 @@ extension Home {
                 comma1 = ""
                 comma2 = ""
                 durationString = ""
+                comma3 = ""
             }
-
-            return percentString + comma1 + targetString + comma2 + durationString
+            if smbToggleString == "" {
+                comma3 = ""
+            }
+            return percentString + comma1 + targetString + comma2 + durationString + comma3 + smbToggleString
         }
 
         var infoPanel: some View {
