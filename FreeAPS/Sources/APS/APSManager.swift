@@ -701,6 +701,34 @@ final class BaseAPSManager: APSManager, Injectable {
                     $0.enactedSuggestionDidUpdate(enacted)
                 }
             }
+            if enacted.autoISFratio ?? 0 > 0 {
+                coredataContext.performAndWait {
+                    let saveToAutoISF = AutoISF(context: self.coredataContext)
+
+                    saveToAutoISF.timestamp = enacted.timestamp ?? Date()
+                    saveToAutoISF.acce_ratio = (enacted.acceISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.bg_ratio = (enacted.bgISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.pp_ratio = (enacted.ppISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.delta_ratio = (enacted.deltaISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.dura_ratio = (enacted.duraISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.sensitivity_ratio = (enacted.sensitivityRatio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.autoISF_ratio = (enacted.autoISFratio ?? 1) as NSDecimalNumber?
+                    print("CoreData: catches autoISF Ratio: \(saveToAutoISF.autoISF_ratio ?? 0)")
+                    saveToAutoISF.isf = (enacted.isf ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.smb_ratio = (enacted.SMBratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.insulin_req = (enacted.insulinReq ?? 1) as NSDecimalNumber?
+                    if enacted.units ?? 0 > 0 {
+                        saveToAutoISF.smb = (enacted.units ?? 1) as NSDecimalNumber?
+                        print("CoreData: catches Bolus:  \(saveToAutoISF.smb ?? 0)")
+                    }
+                    if enacted.rate ?? 0 > 0 {
+                        saveToAutoISF.tbr = (enacted.rate ?? 1) as NSDecimalNumber?
+                        print("CoreData: catches TBR:  \(saveToAutoISF.tbr ?? 0)")
+                    }
+
+                    try? self.coredataContext.save()
+                }
+            }
             nightscout.uploadStatus()
             statistics()
         }
@@ -1009,8 +1037,8 @@ final class BaseAPSManager: APSManager, Injectable {
                     var lastIndex = false
                     let endIndex = array.count - 1
 
-                    var hypoLimit = settingsManager.settings.low
-                    var hyperLimit = settingsManager.settings.high
+                    let hypoLimit = settingsManager.settings.low
+                    let hyperLimit = settingsManager.settings.high
 
                     var full_time = 0.0
                     if endIndex > 0 {
