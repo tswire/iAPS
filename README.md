@@ -70,7 +70,7 @@ Watches:
 ## Install
 In Terminal:
 
-git clone --branch=devAutoISF https://github.com/mountrcg/iAPS.git
+git clone --branch=autoISF https://github.com/mountrcg/iAPS.git
 cd iaps
 xed .
 
