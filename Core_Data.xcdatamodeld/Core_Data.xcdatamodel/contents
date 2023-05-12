@@ -3,6 +3,7 @@
     <entity name="AutoISF" representedClassName="AutoISF" syncable="YES" codeGenerationType="class">
         <attribute name="acce_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="autoISF_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="bg" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="bg_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="delta_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="dura_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>

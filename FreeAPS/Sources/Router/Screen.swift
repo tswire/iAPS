@@ -96,7 +96,7 @@ extension Screen {
         case .watch:
             WatchConfig.RootView(resolver: resolver)
         case .statistics:
-            Stat.RootView(resolver: resolver)
+            Stat.autoISFTableView(resolver: resolver)
         case .statisticsConfig:
             StatConfig.RootView(resolver: resolver)
         }

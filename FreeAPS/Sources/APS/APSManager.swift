@@ -702,10 +702,11 @@ final class BaseAPSManager: APSManager, Injectable {
                 }
             }
             if enacted.autoISFratio ?? 0 > 0 {
-                coredataContext.performAndWait {
+                coredataContext.perform {
                     let saveToAutoISF = AutoISF(context: self.coredataContext)
 
                     saveToAutoISF.timestamp = enacted.timestamp ?? Date()
+                    saveToAutoISF.bg = (enacted.bg ?? 1) as NSDecimalNumber?
                     saveToAutoISF.acce_ratio = (enacted.acceISFratio ?? 1) as NSDecimalNumber?
                     saveToAutoISF.bg_ratio = (enacted.bgISFratio ?? 1) as NSDecimalNumber?
                     saveToAutoISF.pp_ratio = (enacted.ppISFratio ?? 1) as NSDecimalNumber?
