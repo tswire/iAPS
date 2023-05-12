@@ -351,7 +351,8 @@ extension Home {
                     Text(
                         "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
                     ).font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
-                }
+                }.onTapGesture {
+                    state.showModal(for: .autoisf) }
             }
             .frame(maxWidth: .infinity, maxHeight: 30)
             .padding(.bottom, 4)
