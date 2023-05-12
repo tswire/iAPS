@@ -351,8 +351,7 @@ extension Home {
                     Text(
                         "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
                     ).font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
-                }.onTapGesture {
-                    state.showModal(for: .autoisf) }
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: 30)
             .padding(.bottom, 4)
@@ -446,15 +445,18 @@ extension Home {
                         }.foregroundColor(.basal)
                         Spacer()
                     }
-                    Button { state.showModal(for: .statistics)
-                    }
-                    label: {
-                        Image("statistics")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 28, height: 28)
-                            .padding(8)
-                    }.foregroundColor(.uam)
+                    Image("statistics")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .padding(8)
+                        .foregroundColor(.uam)
+                        .onTapGesture { state.showModal(for: .statistics) }
+                        .onLongPressGesture {
+                            let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                            impactHeavy.impactOccurred()
+                            state.showModal(for: .autoisf)
+                        }
                     Spacer()
                     Button { state.showModal(for: .settings) }
                     label: {

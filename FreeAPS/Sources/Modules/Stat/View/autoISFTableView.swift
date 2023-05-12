@@ -32,7 +32,7 @@ extension Stat {
                 ZStack {
                     VStack(alignment: .center) {
                         HStack {
-                            Text("autoISF History").bold().padding(10)
+                            Text("Enacted autoISF Calculations & Insulin").font(.headline).bold().padding(10)
                             Spacer()
                         }
                         Spacer()
@@ -79,8 +79,8 @@ extension Stat {
                     .font(.caption)
                 }
                 .onAppear(perform: configureView)
-                // .navigationBarTitle("autoISF")
-                // .navigationBarTitleDisplayMode(.automatic)
+                .navigationBarTitle("History")
+                .navigationBarTitleDisplayMode(.automatic)
                 .navigationBarItems(leading: Button("Close", action: state.hideModal))
             }
         }
