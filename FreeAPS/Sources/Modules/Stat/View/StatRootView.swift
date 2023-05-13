@@ -151,6 +151,9 @@ extension Stat {
                         }.padding(.horizontal, 6)
                     }
                 }
+//                let currentAutoISF = (fetchedAutoISF.first?.autoISF_ratio ?? 0) as Decimal
+//                let currentISF = (fetchedAutoISF.first?.isf ?? 0) as Decimal
+//                Text("Last ISF: \(currentISF.formatted(.number)) due to autoISF ratio: \(currentAutoISF.formatted(.number))")
             }
         }
 
@@ -779,11 +782,11 @@ extension Stat {
 
             switch whichIndex {
             case 0:
-                return .red
+                return .loopRed
             case 1:
-                return .green
+                return .loopGreen
             case 2:
-                return .orange
+                return .loopOrange
             default:
                 return .primary
             }

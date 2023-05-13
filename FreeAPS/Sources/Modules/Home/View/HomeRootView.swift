@@ -249,7 +249,7 @@ extension Home {
             percentString = percentString == "100 %" ? "" : percentString
             var durationString = indefinite ?
                 "" : ((tirFormatter.string(from: (fetchedPercent.first?.duration ?? 0) as NSNumber) ?? "") + " min")
-            let smbToggleString = (fetchedPercent.first?.smbIsOff ?? false) ? " \u{20e0}" : ""
+            var smbToggleString = (fetchedPercent.first?.smbIsOff ?? false) ? " \u{20e0}" : ""
 
             var comma1 = ", "
             var comma2 = comma1
@@ -445,15 +445,18 @@ extension Home {
                         }.foregroundColor(.basal)
                         Spacer()
                     }
-                    Button { state.showModal(for: .statistics)
-                    }
-                    label: {
-                        Image("statistics")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 28, height: 28)
-                            .padding(8)
-                    }.foregroundColor(.uam)
+                    Image("statistics")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .padding(8)
+                        .foregroundColor(.uam)
+                        .onTapGesture { state.showModal(for: .statistics) }
+                        .onLongPressGesture {
+                            let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                            impactHeavy.impactOccurred()
+                            state.showModal(for: .autoisf)
+                        }
                     Spacer()
                     Button { state.showModal(for: .settings) }
                     label: {
