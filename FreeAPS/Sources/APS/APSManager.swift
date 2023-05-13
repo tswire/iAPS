@@ -702,7 +702,7 @@ final class BaseAPSManager: APSManager, Injectable {
                 }
             }
             if enacted.autoISFratio ?? 0 > 0 {
-                coredataContext.perform {
+                coredataContext.performAndWait {
                     let saveToAutoISF = AutoISF(context: self.coredataContext)
 
                     saveToAutoISF.timestamp = enacted.timestamp ?? Date()
