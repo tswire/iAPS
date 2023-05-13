@@ -445,15 +445,18 @@ extension Home {
                         }.foregroundColor(.basal)
                         Spacer()
                     }
-                    Button { state.showModal(for: .statistics)
-                    }
-                    label: {
-                        Image("statistics")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 28, height: 28)
-                            .padding(8)
-                    }.foregroundColor(.uam)
+                    Image("statistics")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .padding(8)
+                        .foregroundColor(.uam)
+                        .onTapGesture { state.showModal(for: .statistics) }
+                        .onLongPressGesture {
+                            let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                            impactHeavy.impactOccurred()
+                            state.showModal(for: .autoisf)
+                        }
                     Spacer()
                     Button { state.showModal(for: .settings) }
                     label: {
