@@ -69,10 +69,10 @@ extension PreferencesEditor {
                     settable: self
                 ),
                 Field(
-                    displayName: "Odd Profile Target disables SMB for autoISF",
+                    displayName: "Profile Targets toggle SMB for autoISF",
                     type: .boolean(keypath: \.enableSMBEvenOnOddOffalways),
                     infoText: NSLocalizedString(
-                        "Defaults to false. If true, autoISF will block SMB's when odd ProfileTargets are used (lower boundary = upper boundary)",
+                        "Defaults to false. If true, autoISF will block SMB's when odd ProfileTargets are used (lower boundary = upper boundary) and will enforce SMB with even ProfileTargets",
                         comment: "Odd Target disable SMB"
                     ),
                     settable: self
