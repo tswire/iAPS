@@ -4,9 +4,8 @@
 
 iAPS - an artificial pancreas system for iOS based on [OpenAPS Reference](https://github.com/openaps/oref0) algorithms (Master 0.7.1) and Ivan Valkous stale Swift repo, freeaps.git.
 
-Thousands of commits later, with many new and unique features added, the iOS app has been renamed to iAPS under a new organisation, Artificial Pancreas.
+Thousands of commits later, with many new and unique features added, the iOS app has been renamed to iAPS under a new organisation, Artificial Pancreas. iAPS uses lot of frameworks published by the Loop community.
 
-iAPS uses lot of frameworks published by the Loop community.
 
 # autoISF
 The autoISF branch is based on dev from the original [iAPS repo](https://github.com/artificial-pancreas/iaps) and includes my implementation of [autoISF by ga-zelle](https://github.com/T-o-b-i-a-s/AndroidAPS) for AAPS and some other extra features. autoISF is off by default.
@@ -67,30 +66,16 @@ Watches:
 	 width=200
 	 />
 
-## Install
-In Terminal:
+# Install
+For multiple alternative installation methods refer to to the parent repository and its [ReadMe File](https://github.com/Artificial-Pancreas/iAPS/tree/dev#readme). This branch does not deviate from it.
 
-git clone --branch=devAutoISF https://github.com/mountrcg/iAPS.git
-cd iaps
-xed .
-
-Or using the GitHub interface:
-Download and open in Xcode directly using the Code button: "Open with Xcode".
-
-## To build directly in GitHub, without using Xcode:
-
-Intructions:
-https://github.com/Artificial-Pancreas/iAPS/blob/main/fastlane/testflight.md
-Instructions in greater detail, but not iAPS-specific:
-https://loopkit.github.io/loopdocs/gh-actions/gh-overview/
-
-## Please understand that iAPS is:
+### Please understand that iAPS and especially autoISF is:
 - highly experimental and evolving rapidly.
 - not CE approved for therapy.
 
 # Changes
 
-Latest version of original iAPS is maintained by Jon and the gang. It brings significant improvements for Omnipod Dash pumps and Dexcom G6 and G7sensors, Statistics, Automations with Shortcuts, Garmin watch on such a lot of cool things that make you go Uuh. Looping should be immediate and robust.
+Latest version of original iAPS is maintained by Jon and the gang. It brings significant improvements for Omnipod Dash pumps and Dexcom G6 and G7sensors, Statistics, Automations with Shortcuts, Garmin watch and such a lot of cool things that make you go Uuh. Looping should be immediate and robust.
 
 [iAPS repo github](https://github.com/artificial-pancreas/iaps.git)
 
@@ -141,52 +126,11 @@ Due to the heavy refactoring and my changes to Jon's CoreData, when moving from 
 
 # Documentation
 
-Most of the changes are made in oref code of OpenAPS, which is minimized in iAPS. So it is not really readable in Xcode, therefore refer to my [oref0-repository](https://github.com/mountrcg/oref0/tree/dev_aisf_TDD).
+For all the relevant notes for iAPS please refer to to the parent repository and its [ReadMe File](https://github.com/Artificial-Pancreas/iAPS/tree/dev#readme).
 
+Most of the changes for autoISF are made in oref code of OpenAPS, which is minimized in iAPS. So it is not really readable in Xcode, therefore refer to my [oref0-repository](https://github.com/mountrcg/oref0/tree/dev_aisf_TDD).
 
-[iAPS documentation (under development)](https://iaps.readthedocs.io/en/latest/)
+[Documentation of autoISF implementation for AAPS](https://github.com/ga-zelle/autoISF) is applicable for iAPS as Algorithm is 100% identical
 
-[OpenAPS documentation](https://openaps.readthedocs.io/en/latest/)
-
-[Documentation of autoISF implementation for AAPS](https://github.com/ga-zelle/autoISF)
-
-[Discord autoISF - FreeAPS-X channel](https://discord.com/channels/953929437894803478/1025731124615458848)
-
-[Discord iAPS - main branch channel](https://discord.com/channels/1020905149037813862/1021041588627062854)
-
-[Crowdin Project for translation of iAPS](https://crowdin.com/project/freeaps-x)
-
-[Middleware code for iAPS](https://github.com/Jon-b-m/middleware)
-
-[iAPS repo github](https://github.com/artificial-pancreas/iaps)
-
-[FreeAPS-X original github](https://github.com/ivalkou/freeaps)
-
-[ADD DASH PUMP and SETTINGS](https://loopkit.github.io/loopdocs/loop-3/omnipod/)
-
-[Overview & Onboarding Tips on Loop&Learn](https://www.loopandlearn.org/freeaps-x/)
-
-# Pumps
-
-- Omnipod EROS
-- Omnipod DASH
-- Medtronic 515 or 715 (any firmware)
-- Medtronic 522 or 722 (any firmware)
-- Medtronic 523 or 723 (firmware 2.4 or lower)
-- Medtronic Worldwide Veo 554 or 754 (firmware 2.6A or lower)
-- Medtronic Canadian/Australian Veo 554 or 754 (firmware 2.7A or lower)
-
-# CGM Sensors
-
-- Dexcom G5
-- Dexcom G6
-- Dexcom G7
-- Libre 1
-- Libre 2 (European)
-- Medtronic Enlite
-- Nightscout as CGM
-
-# iPhone and iPod
-
-iAPS app runs on iPhone or iPod. An iPhone 7 or newer is recommended.
+[AAPS autoISF Branch](https://github.com/T-o-b-i-a-s/AndroidAPS)
 
