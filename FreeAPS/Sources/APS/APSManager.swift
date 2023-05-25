@@ -82,7 +82,6 @@ final class BaseAPSManager: APSManager, Injectable {
     }
 
     let coredataContext = CoreDataStack.shared.persistentContainer.newBackgroundContext()
-    // let coredataContext = CoreDataStack.shared.persistentContainer.viewContext
 
     private var openAPS: OpenAPS!
 
@@ -796,16 +795,19 @@ final class BaseAPSManager: APSManager, Injectable {
 
                 var tdds = [TDD]()
                 var currentTDD: Decimal = 0
+                var tddTotalAverage: Decimal = 0
 
                 let requestTDD = TDD.fetchRequest() as NSFetchRequest<TDD>
                 let sort = NSSortDescriptor(key: "timestamp", ascending: false)
+                let daysOf14Ago = Date().addingTimeInterval(-14.days.timeInterval)
+                requestTDD.predicate = NSPredicate(format: "timestamp > %@", daysOf14Ago as NSDate)
                 requestTDD.sortDescriptors = [sort]
-                requestTDD.fetchLimit = 1
-
                 try? tdds = coredataContext.fetch(requestTDD)
 
                 if !tdds.isEmpty {
                     currentTDD = tdds[0].tdd?.decimalValue ?? 0
+                    let tddArray = tdds.compactMap({ insulin in insulin.tdd as? Decimal ?? 0 })
+                    tddTotalAverage = tddArray.reduce(0, +) / Decimal(tddArray.count)
                 }
 
                 var algo_ = "Oref0"
@@ -838,8 +840,6 @@ final class BaseAPSManager: APSManager, Injectable {
                 } else if preferences.curve.rawValue == "ultra-rapid" {
                     iPa = 50
                 }
-
-                // MARK: Fetch LoopStatRecords from CoreData
 
                 var lsr = [LoopStatRecord]()
                 var successRate: Double?
@@ -946,20 +946,17 @@ final class BaseAPSManager: APSManager, Injectable {
                 var bgArray_1_: [Double] = []
                 var bgArray_7_: [Double] = []
                 var bgArray_30_: [Double] = []
-                var bgArray_90_: [Double] = []
 
                 var bgArrayForTIR: [(bg_: Double, date_: Date)] = []
                 var bgArray_1: [(bg_: Double, date_: Date)] = []
                 var bgArray_7: [(bg_: Double, date_: Date)] = []
                 var bgArray_30: [(bg_: Double, date_: Date)] = []
-                var bgArray_90: [(bg_: Double, date_: Date)] = []
 
                 var medianBG = 0.0
                 var nr_bgs: Decimal = 0
                 var bg_1: Decimal = 0
                 var bg_7: Decimal = 0
                 var bg_30: Decimal = 0
-                var bg_90: Decimal = 0
                 var bg_total: Decimal = 0
                 var j = -1
                 var conversionFactor: Decimal = 1
@@ -987,7 +984,7 @@ final class BaseAPSManager: APSManager, Injectable {
                 numberOfDays = (firstElementTime - lastElementTime).timeInterval / 8.64E4
 
                 // Make arrays for median calculations and calculate averages
-                if endIndex >= 0 {
+                if endIndex >= 0, (glucose.first?.glucose ?? 0) != 0 {
                     repeat {
                         j += 1
                         if glucose[j].glucose > 0 {
@@ -1012,14 +1009,9 @@ final class BaseAPSManager: APSManager, Injectable {
                                 bgArray_30 = bgArrayForTIR
                                 bgArray_30_ = bgArray
                             }
-                            if (firstElementTime - currentIndexTime).timeInterval <= 7.776E7 { // 90 days
-                                bg_90 = bg / nr_bgs
-                                bgArray_90 = bgArrayForTIR
-                                bgArray_90_ = bgArray
-                            }
                         }
                     } while j != glucose.count - 1
-                }
+                } else { return }
 
                 if nr_bgs > 0 {
                     // Up to 91 days
@@ -1095,13 +1087,6 @@ final class BaseAPSManager: APSManager, Injectable {
                     NGSPa1CStatisticValue_30 = ((bg_30 / conversionFactor) + 46.7) / 28.7
                     IFCCa1CStatisticValue_30 = 10.929 * (NGSPa1CStatisticValue_30 - 2.152)
                 }
-                // 90 days
-                var NGSPa1CStatisticValue_90: Decimal = 0.0
-                var IFCCa1CStatisticValue_90: Decimal = 0.0
-                if nr_bgs > 0 {
-                    NGSPa1CStatisticValue_90 = ((bg_90 / conversionFactor) + 46.7) / 28.7
-                    IFCCa1CStatisticValue_90 = 10.929 * (NGSPa1CStatisticValue_90 - 2.152)
-                }
                 // Total days
                 var NGSPa1CStatisticValue_total: Decimal = 0.0
                 var IFCCa1CStatisticValue_total: Decimal = 0.0
@@ -1126,10 +1111,6 @@ final class BaseAPSManager: APSManager, Injectable {
                 saveMedianToCoreData.median_1 = median.day as NSDecimalNumber
                 saveMedianToCoreData.median_7 = median.week as NSDecimalNumber
                 saveMedianToCoreData.median_30 = median.month as NSDecimalNumber
-                saveMedianToCoreData.median_90 = self.roundDecimal(
-                    Decimal(self.medianCalculation(array: bgArray_90_)),
-                    1
-                ) as NSDecimalNumber
 
                 try? self.coredataContext.save()
 
@@ -1146,7 +1127,6 @@ final class BaseAPSManager: APSManager, Injectable {
                 saveHbA1c.hba1c_1 = NGSPa1CStatisticValue as NSDecimalNumber
                 saveHbA1c.hba1c_7 = NGSPa1CStatisticValue_7 as NSDecimalNumber
                 saveHbA1c.hba1c_30 = NGSPa1CStatisticValue_30 as NSDecimalNumber
-                saveHbA1c.hba1c_90 = NGSPa1CStatisticValue_90 as NSDecimalNumber
 
                 try? self.coredataContext.save()
 
@@ -1250,7 +1230,6 @@ final class BaseAPSManager: APSManager, Injectable {
                 saveAverages.average_1 = bg_1 as NSDecimalNumber
                 saveAverages.average_7 = bg_7 as NSDecimalNumber
                 saveAverages.average_30 = bg_30 as NSDecimalNumber
-                saveAverages.average_90 = bg_90 as NSDecimalNumber
                 try? self.coredataContext.save()
 
                 let avg = Averages(Average: avgs, Median: median)
@@ -1260,22 +1239,23 @@ final class BaseAPSManager: APSManager, Injectable {
                     TDD: 0,
                     bolus: 0,
                     temp_basal: 0,
-                    scheduled_basal: 0
+                    scheduled_basal: 0,
+                    total_average: 0
                 )
 
                 let requestInsulinDistribution = InsulinDistribution.fetchRequest() as NSFetchRequest<InsulinDistribution>
                 let sortInsulin = NSSortDescriptor(key: "date", ascending: false)
                 requestInsulinDistribution.sortDescriptors = [sortInsulin]
-                requestInsulinDistribution.fetchLimit = 1
 
                 try? insulinDistribution = coredataContext.fetch(requestInsulinDistribution)
 
                 insulin = Ins(
                     TDD: roundDecimal(currentTDD, 2),
-                    bolus: insulinDistribution.first != nil ? ((insulinDistribution[0].bolus ?? 0) as Decimal) : 0,
-                    temp_basal: insulinDistribution.first != nil ? ((insulinDistribution[0].tempBasal ?? 0) as Decimal) : 0,
+                    bolus: insulinDistribution.first != nil ? ((insulinDistribution.first?.bolus ?? 0) as Decimal) : 0,
+                    temp_basal: insulinDistribution.first != nil ? ((insulinDistribution.first?.tempBasal ?? 0) as Decimal) : 0,
                     scheduled_basal: insulinDistribution
-                        .first != nil ? ((insulinDistribution[0].scheduledBasal ?? 0) as Decimal) : 0
+                        .first != nil ? ((insulinDistribution.first?.scheduledBasal ?? 0) as Decimal) : 0,
+                    total_average: roundDecimal(tddTotalAverage, 1)
                 )
 
                 var sumOfSquares = 0.0

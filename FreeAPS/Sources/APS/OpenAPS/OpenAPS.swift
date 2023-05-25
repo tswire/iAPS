@@ -234,7 +234,7 @@ final class OpenAPS {
             try? tempTargetsArray = coredataContext.fetch(requestTempTargets)
 
             var temptargetActive = tempTargetsArray.first?.active ?? false
-            var isPercentageEnabled = sliderArray.first?.enabled ?? false
+            let isPercentageEnabled = sliderArray.first?.enabled ?? false
 
             var useOverride = overrideArray.first?.enabled ?? false
             var overridePercentage = Decimal(overrideArray.first?.percentage ?? 100)
