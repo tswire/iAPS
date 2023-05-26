@@ -508,14 +508,18 @@ extension Home {
                             .padding(8)
                     }.foregroundColor(.insulin)
                     Spacer()
-                    Button { state.showModal(for: .addTempTarget) }
-                    label: {
-                        Image("target1")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                            .padding(8)
-                    }.foregroundColor(.loopGreen)
+                    Image("target1")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .padding(8)
+                        .foregroundColor(.loopGreen)
+                        .onTapGesture { state.showModal(for: .addTempTarget) }
+//                        .onLongPressGesture {
+//                            let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+//                            impactHeavy.impactOccurred()
+//                            state.showModal(for: .overrideProfilesConfig)
+//                        }
                     Spacer()
                     if state.allowManualTemp {
                         Button { state.showModal(for: .manualTempBasal) }
@@ -564,7 +568,7 @@ extension Home {
                     mainChart
                     Divider().background(Color.gray) // Added 29/4
                     legendPanel
-                    profiles(geo)
+                    // profiles(geo)
                     bottomPanel(geo)
                 }
                 .edgesIgnoringSafeArea(.vertical)
