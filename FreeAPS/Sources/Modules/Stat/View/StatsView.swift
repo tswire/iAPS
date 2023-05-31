@@ -73,7 +73,7 @@ struct StatsView: View {
             let successsNR = loops.compactMap({ each in each.loopStatus }).filter({ each in each!.contains("Success") })
                 .count
             let errorNR = durationArrayCount - successsNR
-            let successRate: Double? = (Double(successsNR) / Double(successsNR + errorNR)) * 100
+            let successRate: Double? = (Double(successsNR) / Double(288)) * 100
 
             let loopNr = totalTime <= 1 ? Double(successsNR + errorNR) : round(Double(successsNR + errorNR) / totalTime)
 

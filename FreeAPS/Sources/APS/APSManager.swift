@@ -877,7 +877,7 @@ final class BaseAPSManager: APSManager, Injectable {
                 let minimumDuration = durationArray.min() ?? 0
                 let maximumDuration = durationArray.max() ?? 0
                 let errorNR = durationArrayCount - successsNR
-                let successRate: Double? = (Double(successsNR) / Double(successsNR + errorNR)) * 100
+                let successRate: Double? = (Double(successsNR) / Double(288)) * 100
                 let loopNr = successsNR + errorNR
 
                 let intervalArray = loops.compactMap({ each in each.interval })
