@@ -13,7 +13,7 @@ final class BaseUnlockManager: UnlockManager {
     func unlock() -> AnyPublisher<Void, Error> {
         Future { promise in
             let context = LAContext()
-            var error: NSError?
+            // var error: NSError?
 
             let handler: (Bool, Error?) -> Void = { success, error in
                 if success {
@@ -25,7 +25,8 @@ final class BaseUnlockManager: UnlockManager {
 
             let reason = "We need to make sure you are the owner of the device."
 
-            if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
+            // if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
+            if false {
                 context.evaluatePolicy(
                     .deviceOwnerAuthentication,
                     localizedReason: reason,
