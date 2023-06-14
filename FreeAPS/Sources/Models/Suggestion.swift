@@ -32,6 +32,8 @@ struct Suggestion: JSON, Equatable {
     var tick: Decimal?
     var SMBratio: Decimal?
     let insulin: Insulin?
+    let insulinForManualBolus: Decimal?
+    let manualBolusErrorString: String?
 }
 
 struct Predictions: JSON, Equatable {
@@ -81,6 +83,8 @@ extension Suggestion {
         case tick
         case SMBratio
         case insulin
+        case insulinForManualBolus
+        case manualBolusErrorString
     }
 }
 
