@@ -60,7 +60,7 @@ extension Bolus {
                     }
                 }
                 header: { Text("Recommendation") }
-                
+
                 if !state.waitForSuggestion {
                     Section {
                         HStack {
