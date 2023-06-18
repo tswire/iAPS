@@ -196,6 +196,10 @@ extension Bolus {
                             Text("%").foregroundColor(.secondary)
                         }
                     }
+                    HStack {
+                        Text("Formula:")
+                        Text("(Eventual Glucose - Target) / ISF")
+                    }.foregroundColor(.secondary).italic().padding(.top, 5)
                 }
                 .font(.footnote)
                 .padding(.top, 10)
