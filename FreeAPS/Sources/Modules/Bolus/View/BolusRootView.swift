@@ -132,7 +132,7 @@ extension Bolus {
             .alert(isPresented: $displayError) {
                 Alert(
                     title: Text("Warning!"),
-                    message: Text("\n" + NSLocalizedString(
+                    message: Text("\n" + alertString() + NSLocalizedString(
                         "\n\nTap 'Add' to continue with selected amount.",
                         comment: "Alert text to confirm bolus amount to add"
                     )),
