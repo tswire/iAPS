@@ -1369,7 +1369,7 @@ Enact a temp Basal or a temp target */
 ". Changing: " = ". Ändras: ";
 
 /* Bolus pop-up / Alert string. Make translations concise! */
-"Eventual Glucose > Target Glucose, but glucose is predicted to drop down to " = "Prognos är > målvärde, men blodsocker väntas ev sjunka till ";
+"Minimum predicted Glucose is " = "Lägsta prognos är ";
 
 /* Add insulin without bolusing alert */
 " without bolusing" = " utan att ge insulin";
