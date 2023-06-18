@@ -5,7 +5,6 @@ extension Bolus {
     struct RootView: BaseView {
         let resolver: Resolver
         let waitForSuggestion: Bool
-        let manualBolus: Bool
         @StateObject var state = StateModel()
 
         @State private var isAddInsulinAlertPresented = false
@@ -96,7 +95,7 @@ extension Bolus {
                         Alert(
                             title: Text("Are you sure?"),
                             message: Text(
-                                "Add " + formatter
+                                NSLocalizedString("Add", comment: "Add insulin without bolusing alert") + " " + formatter
                                     .string(from: state.amount as NSNumber)! + NSLocalizedString(" U", comment: "Insulin unit") +
                                     NSLocalizedString(" without bolusing", comment: "Add insulin without bolusing alert")
                             ),
@@ -129,7 +128,6 @@ extension Bolus {
                 configureView {
                     state.waitForSuggestionInitial = waitForSuggestion
                     state.waitForSuggestion = waitForSuggestion
-                    state.manual = manualBolus
                 }
             }
             .navigationTitle("Enact Bolus")
@@ -189,11 +187,10 @@ extension Bolus {
                         " U",
                         comment: "Unit in number of units delivered (keep the space character!)"
                     )
-                    Text("(Eventual Glucose - Target) / ISF =").font(.callout).italic()
                     let color: Color = (state.percentage != 100 && state.insulin > 0) ? .secondary : .blue
                     let fontWeight: Font.Weight = (state.percentage != 100 && state.insulin > 0) ? .regular : .bold
                     HStack {
-                        Text(" = ").font(.callout)
+                        Text(NSLocalizedString("Insulin recommended", comment: "") + ":").font(.callout)
                         Text(state.insulin.formatted() + unit).font(.callout).foregroundColor(color).fontWeight(fontWeight)
                     }
                     if state.percentage != 100, state.insulin > 0 {
@@ -232,6 +229,7 @@ extension Bolus {
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .fill(Color(colorScheme == .dark ? UIColor.systemGray4 : UIColor.systemGray4))
+                // .fill(Color(.systemGray).gradient)  // A more prominent pop-up, but harder to read
             )
         }
 
