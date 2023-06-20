@@ -93,6 +93,9 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
+* 2.2.1
+	* Bolus Calculator based on EventualBG
+	* and many more refer to [original release notes]( https://github.com/Artificial-Pancreas/iAPS/releases/tag/v2.2.1)
 * 2.0.1
 	* many localizations and crowdin re-ntegration
 	* Overrides/Profile adaptions in iAPS, disabled in autoISF branch as oref Code not published to incorporate with autoISF
