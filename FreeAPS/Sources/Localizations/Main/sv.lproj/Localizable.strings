@@ -348,25 +348,25 @@ Enact a temp Basal or a temp target */
 "U/hr" = "IE/h";
 
 /* Unit in number of units delivered (keep the space character!) */
-" U" = " E";
+" U" = " IE";
 
 /* /Insulin unit */
-"/U" = "/E";
+"/U" = "/IE";
 
 /* Insulin unit */
-"U" = "E";
+"U" = "IE";
 
 /* Unit per hour with space */
-" U/hr" = " E/h";
+" U/hr" = " IE/h";
 
 /* Number of units per hour*/
-"%@ U/hr" = "%@ E/h";
+"%@ U/hr" = "%@ IE/h";
 
 /* Number of units insulin delivered */
-"%@ U" = "%@ E";
+"%@ U" = "%@ IE";
 
 /*Carb ratio unit */
-"g/U" = "g/E";
+"g/U" = "g/IE";
 
 /* grams */
 " g" = " g";
@@ -375,7 +375,7 @@ Enact a temp Basal or a temp target */
 "g" = "g";
 
 /* when 0 U/hr */
-"0 U/hr" = "0 E/h";
+"0 U/hr" = "0 IE/h";
 
 /* abbreviation for days */
 "d" = "d";
@@ -1164,6 +1164,8 @@ Enact a temp Basal or a temp target */
 /* */
 "Normal " = "Normal ";
 
+"Currently no Override active" = "Inget undantag aktivt";
+
 /* */
 "Total Insulin Adjustment" = "Total justering av ditt insulinbehov";
 
@@ -1295,8 +1297,8 @@ Enact a temp Basal or a temp target */
 /* */
 "Insulin Sensitivity" = "Insulinkänslighet";
 
-/* Formula displayed in Bolus info pop-up. Make translation short! */
-"(Eventual Glucose - Target) / ISF" = "(Blodsockerprognos - Målvärde) / ISF";
+/* Formuala displayed in Bolus info pop-up. Make translation short! */
+"(Eventual Glucose - Target) / ISF =" = "(Blodsockerprognos - Målvärde) / ISF =";
 
 /* */
 "Formula:" = "Formel:";
@@ -1314,13 +1316,16 @@ Enact a temp Basal or a temp target */
 "which is below your Threshold (" = "vilket är lägre än ditt tröskelvärde (";
 
 /* Bolus pop-up / Alert string. Make translations concise! */
-"Eventual Glucose > Target Glucose, but glucose is climbing slower than expected. Expected: " = "Prognos > Målvärde, men ditt blodsocker stiger långsammare än väntat. Förväntat: ";
+"is below Threshold of " = "är under tröskelvärde ";
+
+/* Bolus pop-up / Alert string. Make translations concise! */
+"Eventual Glucose > Target Glucose, but glucose is climbing slower than expected. Expected: " = "Prognos > Målvärde, men blodsocker stiger långsammare än väntat. Förväntat: ";
 
 //* Bolus pop-up / Alert string. Make translations concise! */
 ". Climbing: " = ". Stiger: ";
 
 /* Bolus pop-up / Alert string. Make translations concise! */
-"Eventual Glucose > Target Glucose, but glucose is falling faster than expected. Expected: " = "Prognos > målvärde, men blodsocker sjunker snabbare än väntat. Förväntat: ";
+"Eventual Glucose > Target Glucose, but glucose is falling faster than expected. Expected: " = "Prognos > Målvärde, men blodsocker sjunker snabbare än väntat. Förväntat: ";
 
 /* Bolus pop-up / Alert string. Make translations concise! */
 ". Falling: " = ". Sjunker: ";
@@ -1476,6 +1481,8 @@ Enact a temp Basal or a temp target */
 /* ----------------------Statistics strings -------------------------------*/
 /* */
 
+
+"Today" = "Idag";
 
 "Today" = "Idag";
 

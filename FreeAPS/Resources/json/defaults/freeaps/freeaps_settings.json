@@ -37,7 +37,6 @@
       "insulinReqPercentage" : 80,
       "useFPUconversion" : false,
       "displayOnWatch" : "isf",
-      "isNutrientsViewEnabled" : false,
       "animatedBackground" : false
       "maxCarbs": 1000
 }

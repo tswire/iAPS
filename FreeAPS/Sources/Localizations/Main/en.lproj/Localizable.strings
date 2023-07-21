@@ -1304,8 +1304,8 @@ Enact a temp Basal or a temp target */
 /* */
 "Insulin Sensitivity" = "Insulin Sensitivity";
 
-/* Formula displayed in Bolus info pop-up. Make translation short! */
-"(Eventual Glucose - Target) / ISF" = "(Eventual Glucose - Target) / ISF";
+/* Formuala displayed in Bolus info pop-up*/
+"(Eventual Glucose - Target) / ISF =" = "(Eventual Glucose - Target) / ISF =";
 
 /* */
 "Formula:" = "Formula:";
@@ -1339,6 +1339,9 @@ Enact a temp Basal or a temp target */
 
 /* Bolus pop-up / Alert string. Make translations concise! */
 ". Changing: " = ". Changing: ";
+
+/* Add insulin without bolusing alert */
+" without bolusing" = " without bolusing";
 
 /* Add insulin without bolusing alert */
 " without bolusing" = " without bolusing";

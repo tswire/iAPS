@@ -89,7 +89,7 @@
 "Bottom target" = "Нижня ціль";
 
 /* Cancel preset name */
-"Cancel" = "Скасувати";
+"Cancel" = "Відмінити";
 
 /*  */
 "Cancel Temp Target" = "Відмінити тимчасову ціль";
@@ -409,12 +409,6 @@ Enact a temp Basal or a temp target */
 
 /* */
 "Display on Watch" = "Відображати на годиннику";
-
-/* */
-"Display Protein & Fat" = "Відображати білки та жири";
-
-/* */
-"Nutrients" = "Нутрієнти";
 
 /* */
 "Garmin Watch" = "Garmin Watch";
@@ -1169,6 +1163,8 @@ Enact a temp Basal or a temp target */
 
 /* */
 "Normal " = "Нормальний ";
+
+"Currently no Override active" = "Наразі жодне перевизначення не активне";
 
 /* */
 "Total Insulin Adjustment" = "Повне коригування інсуліну";
