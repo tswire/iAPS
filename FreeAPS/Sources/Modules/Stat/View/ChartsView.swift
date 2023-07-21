@@ -161,7 +161,7 @@ struct ChartsView: View {
                 type: NSLocalizedString(
                     "Low",
                     comment: ""
-                ) + " (≤ \(low.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1))))",
+                ) + " (≤ \(low.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1)))))",
                 percent: fetched[0].decimal
             ),
             .init(
@@ -172,7 +172,7 @@ struct ChartsView: View {
                 type: NSLocalizedString(
                     "High",
                     comment: ""
-                ) + " (≥ \(high.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1))))",
+                ) + " (≥ \(high.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1)))))",
                 percent: fetched[2].decimal
             )
         ]
@@ -196,12 +196,12 @@ struct ChartsView: View {
             NSLocalizedString(
                 "Low",
                 comment: ""
-            ) + " (≤ \(low.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1))))": .red,
+            ) + " (≤ \(low.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1)))))": .red,
             "> \(low.formatted(.number.precision(.fractionLength(fraction)))) - < \(high.formatted(.number.precision(.fractionLength(fraction))))": .green,
             NSLocalizedString(
                 "High",
                 comment: ""
-            ) + " (≥ \(high.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1))))": .orange
+            ) + " (≥ \(high.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1)))))": .orange
         ])
     }
 
