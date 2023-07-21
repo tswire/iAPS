@@ -6,11 +6,8 @@ import JavaScriptCore
 final class OpenAPS {
     private let jsWorker = JavaScriptWorker()
     private let processQueue = DispatchQueue(label: "OpenAPS.processQueue", qos: .utility)
-
     private let storage: FileStorage
-
     let coredataContext = CoreDataStack.shared.persistentContainer.viewContext // newBackgroundContext()
-
     init(storage: FileStorage) {
         self.storage = storage
     }
@@ -78,7 +75,6 @@ final class OpenAPS {
                     oref2_variables: oref2_variables
                 )
                 debug(.openAPS, "SUGGESTED: \(suggested)")
-
                 if var suggestion = Suggestion(from: suggested) {
                     suggestion.timestamp = suggestion.deliverAt ?? clock
                     self.storage.save(suggestion, as: Enact.suggested)
@@ -127,7 +123,6 @@ final class OpenAPS {
             let now = Date()
             let tenDaysAgo = Date().addingTimeInterval(-10.days.timeInterval)
             let twoHoursAgo = Date().addingTimeInterval(-2.hours.timeInterval)
-            var previousTDDfetched: [TDD] = []
             var uniqueEvents = [TDD]()
             let requestTDD = TDD.fetchRequest() as NSFetchRequest<TDD>
             requestTDD.predicate = NSPredicate(format: "timestamp > %@ AND tdd > 0", tenDaysAgo as NSDate)
@@ -169,12 +164,10 @@ final class OpenAPS {
             if uniqueEvents.count > 1 {
                 current_TDD = uniqueEvents[0]
                 previous_TDD = uniqueEvents[1]
-                debug(
-                    .apsManager,
+                print(
                     "CoreData: current fetched TDD \(uniqueEvents[0].tdd?.decimalValue ?? 0) from \(uniqueEvents[0].timestamp!)"
                 )
-                debug(
-                    .apsManager,
+                print(
                     "CoreData: previous fetched TDD \(uniqueEvents[1].tdd?.decimalValue ?? 0) from \(uniqueEvents[1].timestamp!)"
                 )
                 currentDay = calendar.component(.day, from: current_TDD.timestamp ?? Date())
@@ -184,8 +177,7 @@ final class OpenAPS {
                     let saveDailyTDD = DailyTDD(context: coredataContext)
                     saveDailyTDD.timestamp = previous_TDD.timestamp
                     saveDailyTDD.tdd = previous_TDD.tdd
-                    debug(
-                        .apsManager,
+                    print(
                         "CoreData: write previous daily TDD \(saveDailyTDD.tdd?.decimalValue ?? 0) at \(saveDailyTDD.timestamp!)"
                     )
                 }
@@ -206,13 +198,11 @@ final class OpenAPS {
             try? dailyTDDfetched = coredataContext.fetch(requestDailyTDD)
             if !dailyTDDfetched.isEmpty {
                 for uniqDailyTDD in dailyTDDfetched {
-                    debug(
-                        .apsManager,
+                    print(
                         "CoreData: daily TDD \(uniqDailyTDD.tdd?.decimalValue ?? 0) from \(uniqDailyTDD.timestamp!)"
                     )
                 }
-                debug(
-                    .apsManager,
+                print(
                     "CoreData: yesterdays daily TDD \(dailyTDDfetched[0].tdd?.decimalValue ?? 0) at \(dailyTDDfetched[0].timestamp!)"
                 )
                 TDDytd = dailyTDDfetched[0].tdd?.decimalValue ?? 0

@@ -724,6 +724,35 @@ final class BaseAPSManager: APSManager, Injectable {
                     $0.enactedSuggestionDidUpdate(enacted)
                 }
             }
+            if enacted.autoISFratio ?? 0 > 0 {
+                coredataContext.performAndWait {
+                    let saveToAutoISF = AutoISF(context: self.coredataContext)
+
+                    saveToAutoISF.timestamp = enacted.timestamp ?? Date()
+                    saveToAutoISF.bg = (enacted.bg ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.acce_ratio = (enacted.acceISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.bg_ratio = (enacted.bgISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.pp_ratio = (enacted.ppISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.delta_ratio = (enacted.deltaISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.dura_ratio = (enacted.duraISFratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.sensitivity_ratio = (enacted.sensitivityRatio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.autoISF_ratio = (enacted.autoISFratio ?? 1) as NSDecimalNumber?
+                    print("CoreData: catches autoISF Ratio: \(saveToAutoISF.autoISF_ratio ?? 0)")
+                    saveToAutoISF.isf = (enacted.isf ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.smb_ratio = (enacted.SMBratio ?? 1) as NSDecimalNumber?
+                    saveToAutoISF.insulin_req = (enacted.insulinReq ?? 1) as NSDecimalNumber?
+                    if enacted.units ?? 0 > 0 {
+                        saveToAutoISF.smb = (enacted.units ?? 1) as NSDecimalNumber?
+                        print("CoreData: catches Bolus:  \(saveToAutoISF.smb ?? 0)")
+                    }
+                    if enacted.rate ?? 0 > 0 {
+                        saveToAutoISF.tbr = (enacted.rate ?? 1) as NSDecimalNumber?
+                        print("CoreData: catches TBR:  \(saveToAutoISF.tbr ?? 0)")
+                    }
+
+                    try? self.coredataContext.save()
+                }
+            }
             nightscout.uploadStatus()
             statistics()
         }
@@ -933,8 +962,9 @@ final class BaseAPSManager: APSManager, Injectable {
                 }
 
                 var algo_ = "Oref0"
-
-                if preferences.sigmoid, preferences.enableDynamicCR {
+                if preferences.autoisf {
+                    algo_ = "autoISF"
+                } else if preferences.sigmoid, preferences.enableDynamicCR {
                     algo_ = "Dynamic ISF + CR: Sigmoid"
                 } else if preferences.sigmoid, !preferences.enableDynamicCR {
                     algo_ = "Dynamic ISF: Sigmoid"

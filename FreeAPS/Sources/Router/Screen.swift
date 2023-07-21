@@ -30,10 +30,12 @@ enum Screen: Identifiable, Hashable {
     case overrideProfilesConfig
     case snooze
     case statistics
+    case autoisf
     case watch
     case statisticsConfig
     case bolusCalculatorConfig
     case dynamicISF
+    case autoISFConf
 
     var id: Int { String(reflecting: self).hashValue }
 }
@@ -99,12 +101,16 @@ extension Screen {
             WatchConfig.RootView(resolver: resolver)
         case .statistics:
             Stat.RootView(resolver: resolver)
+        case .autoisf:
+            Stat.autoISFTableView(resolver: resolver)
         case .statisticsConfig:
             StatConfig.RootView(resolver: resolver)
         case .bolusCalculatorConfig:
             BolusCalculatorConfig.RootView(resolver: resolver)
         case .dynamicISF:
             Dynamic.RootView(resolver: resolver)
+        case .autoISFConf:
+            AutoISFConf.RootView(resolver: resolver)
         }
     }
 

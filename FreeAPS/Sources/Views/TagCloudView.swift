@@ -71,7 +71,8 @@ struct TagCloudView: View {
                 return .zt
             case "Autosens",
                  "Standard",
-                 "TDD":
+                 textTag where textTag.contains("TDD"),
+                 textTag where textTag.contains("Ins.Req"):
                 return .insulin
             case textTag where textTag.contains("Exercise"),
                  textTag where textTag.contains("Ratio TT"):

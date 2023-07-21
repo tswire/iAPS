@@ -609,15 +609,27 @@ extension Home {
                     .foregroundColor(colorIcon)
                     .buttonStyle(.borderless)
                     Spacer()
-                    Button { state.showModal(for: .statistics)
-                    }
-                    label: {
-                        Image(systemName: "chart.xyaxis.line")
+                    Button(
+                        action: {},
+                        label: { Image(systemName: "chart.xyaxis.line")
                             .font(.system(size: 24))
                             .padding(8)
-                    }
+                        }
+                    )
                     .foregroundColor(colorIcon)
                     .buttonStyle(.borderless)
+                    .simultaneousGesture(
+                        LongPressGesture()
+                            .onEnded { _ in
+                                state.showModal(for: .autoisf)
+                            }
+                    )
+                    .highPriorityGesture(
+                        TapGesture()
+                            .onEnded { _ in
+                                state.showModal(for: .statistics)
+                            }
+                    )
 
                     Spacer()
 

@@ -11,6 +11,23 @@
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="sensitivity" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
     </entity>
+    <entity name="AutoISF" representedClassName="AutoISF" syncable="YES" codeGenerationType="class">
+        <attribute name="acce_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="autoISF_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="bg" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="bg_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="delta_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="dura_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="insulin_req" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="isf" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="pp_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="rate" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="sensitivity_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="smb" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="smb_ratio" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="tbr" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
     <entity name="BGaverages" representedClassName="BGaverages" syncable="YES" codeGenerationType="class">
         <attribute name="average" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="average_1" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
