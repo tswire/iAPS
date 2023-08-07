@@ -24,6 +24,7 @@ struct WatchState: Codable {
     var eventualBG: String?
     var eventualBGRaw: String?
     var displayOnWatch: AwConfig?
+    var displayFatAndProteinOnWatch: Bool?
     var isf: Decimal?
 }
 
