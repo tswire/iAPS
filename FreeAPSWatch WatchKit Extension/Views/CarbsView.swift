@@ -34,9 +34,9 @@ struct CarbsView: View {
             carbs
             if state.displayFatAndProteinOnWatch {
                 Spacer()
-                protein
-                Spacer()
                 fat
+                Spacer()
+                protein
             }
             buttonStack
         }
@@ -68,7 +68,7 @@ struct CarbsView: View {
                     .tint(selection == .carbs ? .blue : .none)
             }
             Spacer()
-            Text("🥨")
+            Text("Carbs")
             Spacer()
             Text(numberFormatter.string(from: carbAmount as NSNumber)! + " g")
                 .font(selection == .carbs ? .title : .title3)
@@ -112,7 +112,8 @@ struct CarbsView: View {
                     .tint(selection == .protein ? .blue : .none)
             }
             Spacer()
-            Text("🍗")
+            Text("Protein")
+                .foregroundStyle(.red)
             Spacer()
             Text(numberFormatter.string(from: proteinAmount as NSNumber)! + " g")
                 .font(selection == .protein ? .title : .title3)
@@ -155,11 +156,12 @@ struct CarbsView: View {
                     .tint(selection == .fat ? .blue : .none)
             }
             Spacer()
-            Text("🧀")
+            Text("Fat")
+                .foregroundStyle(.orange)
             Spacer()
             Text(numberFormatter.string(from: fatAmount as NSNumber)! + " g")
                 .font(selection == .fat ? .title : .title3)
-                .foregroundColor(.loopYellow)
+                .foregroundStyle(.orange)
                 .focusable(selection == .fat)
                 .digitalCrownRotation(
                     $fatAmount,

@@ -115,7 +115,12 @@ extension DataTable {
                     if item
                         .type == .tempTarget
                     { Image(systemName: "circle").foregroundColor(Color.basal.opacity(0.8))
-                    }}
+                    }
+                    if item
+                        .type == .fpus
+                    { Image(systemName: "circle").foregroundColor(.orange)
+                    }
+                }
                 Text(dateFormatter.string(from: item.date))
                     .moveDisabled(true)
                 Text(item.type.name)

@@ -412,7 +412,7 @@ struct MainChartView: View {
             fpuPath
                 .fill(Color.red)
             fpuPath
-                .stroke(Color.primary, lineWidth: 0.5)
+                .stroke(Color.orange)
 
             ForEach(fpuDots, id: \.rect.minX) { info -> AnyView in
                 let position = CGPoint(x: info.rect.midX, y: info.rect.minY - 8)
