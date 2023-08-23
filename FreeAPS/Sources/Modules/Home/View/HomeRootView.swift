@@ -501,7 +501,7 @@ extension Home {
                                     .background(Capsule().fill(Color.red))
                             }
                         }
-                    }
+                    }.buttonStyle(.borderless)
                     Spacer()
                     Button { state.showModal(for: .bolus(waitForSuggestion: false)) }
                     label: {
@@ -510,7 +510,9 @@ extension Home {
                             .resizable()
                             .frame(width: 30, height: 30)
                             .padding(8)
-                    }.foregroundColor(.insulin)
+                    }
+                    .foregroundColor(.insulin)
+                    .buttonStyle(.borderless)
                     Spacer()
                     Image("target1")
                         .renderingMode(.template)
@@ -556,7 +558,9 @@ extension Home {
                             .resizable()
                             .frame(width: 30, height: 30)
                             .padding(8)
-                    }.foregroundColor(.loopGray)
+                    }
+                    .foregroundColor(.loopGray)
+                    .buttonStyle(.borderless)
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, geo.safeAreaInsets.bottom - 10)
