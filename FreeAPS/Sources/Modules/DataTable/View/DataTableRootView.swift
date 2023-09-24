@@ -125,6 +125,7 @@ extension DataTable {
                     .moveDisabled(true)
                 Text(item.type.name)
                 Text(item.amountText).foregroundColor(.secondary)
+
                 if let duration = item.durationText {
                     Text(duration).foregroundColor(.secondary)
                 }
