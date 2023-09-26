@@ -38,5 +38,7 @@
       "useFPUconversion" : false,
       "displayOnWatch" : "isf",
       "animatedBackground" : false
+      "displayCalendarEmojis" : false,
+      "displayCalendarIOBandCOB" : false,
       "maxCarbs": 1000
 }
