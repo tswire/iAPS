@@ -91,7 +91,7 @@ enum DataTable {
             duration: Decimal? = nil,
             id: String? = nil,
             idPumpEvent: String? = nil,
-            isFPU: Bool? = false,
+            isFPU: Bool? = nil,
             fpuID: String? = nil,
             note: String? = nil,
             isSMB: Bool? = nil
@@ -137,7 +137,10 @@ enum DataTable {
             case .bolus:
                 return numberFormatter
                     .string(from: amount as NSNumber)! + NSLocalizedString(" U", comment: "Insulin unit") +
-                    "\(isSMB ?? false ? " SMB" : "")"
+                    (
+                        (isSMB ?? false) ? " " + NSLocalizedString("Auto", comment: "Automatic delivered bolus (SMB)") : " " +
+                            NSLocalizedString("Manual", comment: "Manual Bolus")
+                    )
             case .tempBasal:
                 return numberFormatter
                     .string(from: amount as NSNumber)! + NSLocalizedString(" U/hr", comment: "Unit insulin per hour")
@@ -148,7 +151,7 @@ enum DataTable {
                 }
 
                 guard var secondAmount = secondAmount else {
-                    return numberFormatter.string(from: converted as NSNumber)! // + " \(units.rawValue)"
+                    return numberFormatter.string(from: converted as NSNumber)! + " \(units.rawValue)"
                 }
                 if units == .mmolL {
                     secondAmount = Decimal(round(Double(secondAmount.asMmolL) * 10) / 10)
@@ -167,7 +170,7 @@ enum DataTable {
             case .carbs:
                 return .loopYellow
             case .fpus:
-                return .red
+                return .loopRed
             case .bolus:
                 return .insulin
             case .tempBasal:
@@ -184,7 +187,7 @@ enum DataTable {
             guard let duration = duration, duration > 0 else {
                 return nil
             }
-            return numberFormatter.string(from: duration as NSNumber)! + "m"
+            return numberFormatter.string(from: duration as NSNumber)! + " min"
         }
     }
 
