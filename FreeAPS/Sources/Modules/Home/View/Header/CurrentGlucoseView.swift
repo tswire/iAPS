@@ -108,15 +108,15 @@ struct CurrentGlucoseView: View {
             } // .padding(.leading, 0)
             HStack(alignment: .lastTextBaseline, spacing: 2) {
                 // Spacer()
-                let minutes = (recentGlucose?.dateString.timeIntervalSinceNow ?? 0) / 60
-                let text = timaAgoFormatter.string(for: Double(minutes)) ?? ""
+                let minutesAgo = -1 * (recentGlucose?.dateString.timeIntervalSinceNow ?? 0) / 60
+                let text = timaAgoFormatter.string(for: Double(minutesAgo)) ?? ""
                 Text(
-                    text == "0" ? "< 1 " + NSLocalizedString("m", comment: "Short form for minutes") : (
+                    minutesAgo <= 1 ? "< 1 " + NSLocalizedString("m", comment: "Short form for minutes") : (
                         text + " " +
                             NSLocalizedString("m", comment: "Short form for minutes")
                     )
                 )
-                .font(.system(size: 12, weight: .bold)).foregroundColor(colorOfMinutesAgo(minutesAgo))
+                .font(.system(size: 12, weight: .bold)).foregroundColor(colorOfMinutesAgo(Int(minutesAgo)))
                 .fixedSize()
                 Text(
                     delta
