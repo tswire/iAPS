@@ -390,6 +390,7 @@ extension Home {
 
                 MainChartView(
                     glucose: $state.glucose,
+                    isManual: $state.isManual,
                     suggestion: $state.suggestion,
                     tempBasals: $state.tempBasals,
                     boluses: $state.boluses,
