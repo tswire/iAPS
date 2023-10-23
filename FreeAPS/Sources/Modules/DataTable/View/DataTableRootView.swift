@@ -131,7 +131,9 @@ extension DataTable {
         @ViewBuilder private func treatmentView(_ item: Treatment) -> some View {
             HStack {
                 ZStack {
-                    Image(systemName: "circle.fill").foregroundColor(item.color)
+                    if item.isSMB ?? false { Image(systemName: "arrowtriangle.down.fill").foregroundColor(item.color) }
+                    else { Image(systemName: "circle.fill").foregroundColor(item.color)
+                    }
                     if item
                         .type == .tempTarget
                     { Image(systemName: "circle").foregroundColor(Color.basal.opacity(0.8))
