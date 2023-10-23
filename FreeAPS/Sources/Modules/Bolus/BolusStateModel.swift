@@ -87,7 +87,8 @@ extension Bolus {
                         durationMin: nil,
                         rate: nil,
                         temp: nil,
-                        carbInput: nil
+                        carbInput: nil,
+                        isNonPumpInsulin: true
                     )
                 ]
             )
