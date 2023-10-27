@@ -167,8 +167,8 @@ enum DataTable {
                 }
 
                 return numberFormatter.string(from: converted as NSNumber)!
-                    + " - " + numberFormatter.string(from: secondAmount as NSNumber)!
-            // + " \(units.rawValue)"
+                    // + " - " + numberFormatter.string(from: secondAmount as NSNumber)!
+                    + " \(units.rawValue)"
             case .resume,
                  .suspend:
                 return type.name
