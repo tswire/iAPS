@@ -37,13 +37,13 @@ enum DataTable {
             case .carbs:
                 name = "Carbs"
             case .fpus:
-                name = "Protein / Fat"
+                name = "Fat / Protein"
             case .bolus:
                 name = "Bolus"
             case .tempBasal:
                 name = "Temp Basal"
             case .tempTarget:
-                name = "Temp Target"
+                name = "Target"
             case .suspend:
                 name = "Suspend"
             case .resume:
@@ -166,8 +166,9 @@ enum DataTable {
                     secondAmount = Decimal(round(Double(secondAmount.asMmolL) * 10) / 10)
                 }
 
-                return numberFormatter.string(from: converted as NSNumber)! + " - " + numberFormatter
-                    .string(from: secondAmount as NSNumber)! // +  " \(units.rawValue)"
+                return numberFormatter.string(from: converted as NSNumber)!
+                    + " - " + numberFormatter.string(from: secondAmount as NSNumber)!
+            // + " \(units.rawValue)"
             case .resume,
                  .suspend:
                 return type.name

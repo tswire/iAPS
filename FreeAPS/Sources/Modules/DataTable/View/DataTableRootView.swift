@@ -138,16 +138,33 @@ extension DataTable {
         @ViewBuilder private func treatmentView(_ item: Treatment) -> some View {
             HStack {
                 ZStack {
-                    if item.isSMB ?? false { Image(systemName: "arrowtriangle.down.fill").foregroundColor(item.color) }
-                    else { Image(systemName: "circle.fill").foregroundColor(item.color)
+                    if item
+                        .isSMB ??
+                        false
+                    {
+                        Image(systemName: "arrowtriangle.down.fill")
+                            .foregroundColor(item.color)
+                        Image(systemName: "circle.fill")
+                            .opacity(0.0)
+                    } else if item.isNonPump ?? false {
+                        Image(systemName: "rhombus.fill")
+                            .foregroundColor(Color.red)
+                        Image(systemName: "rhombus")
+                            .foregroundColor(Color.primary.opacity(0.8))
+                        Image(systemName: "circle.fill")
+                            .opacity(0.0)
+                    } else { Image(systemName: "circle.fill")
+                        .foregroundColor(item.color)
                     }
                     if item
                         .type == .tempTarget
-                    { Image(systemName: "circle").foregroundColor(Color.basal.opacity(0.8))
+                    { Image(systemName: "circle")
+                        .foregroundColor(Color.basal)
                     }
                     if item
                         .type == .fpus
-                    { Image(systemName: "circle").foregroundColor(.orange)
+                    { Image(systemName: "circle")
+                        .foregroundColor(.orange)
                     }
                 }
                 Text(dateFormatter.string(from: item.date))
