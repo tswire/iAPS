@@ -40,5 +40,9 @@
       "animatedBackground" : false
       "displayCalendarEmojis" : false,
       "displayCalendarIOBandCOB" : false,
+  "overrideFactor": 0.8,
+  "useCalc": false,
+  "fattyMeals": false,
+  "fattyMealFactor": 0.7
       "maxCarbs": 1000
 }
