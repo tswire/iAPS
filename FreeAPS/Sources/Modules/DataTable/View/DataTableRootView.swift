@@ -215,8 +215,8 @@ extension DataTable {
                         .foregroundColor(.orange)
                     }
                 }
-                Text(dateFormatter.string(from: item.date))
-                    .moveDisabled(true)
+//                Text(dateFormatter.string(from: item.date))
+//                    .moveDisabled(true)
                 Text((item.isSMB ?? false) ? "SMB" : item.type.name)
                 Text(item.amountText).foregroundColor(.secondary)
 
@@ -294,7 +294,7 @@ extension DataTable {
                             removeInsulinAlert!
                         }
                 }
-                Spacer()
+                if item.type == .tempTarget || item.type == .tempBasal { Spacer() }
                 Text(dateFormatter.string(from: item.date))
                     .moveDisabled(true)
             }
