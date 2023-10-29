@@ -775,8 +775,8 @@ extension MainChartView {
                 let rect = CGRect(
                     x: center.x - size / 2,
                     y: center.y - size / 2 - 80,
-                    width: size / 2,
-                    height: size / 2
+                    width: size * 2 / 3,
+                    height: size
                 )
 
                 return ManBolusInfo(
