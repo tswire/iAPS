@@ -728,11 +728,10 @@ extension MainChartView {
 
     private func calculateBolusDots(fullSize: CGSize) {
         calculationQueue.async {
-            let regboluses = boluses.filter { $0.isNonPumpInsulin == false }
+            let regboluses = boluses.filter { $0.isExternal == false }
             let dots = regboluses.map { value -> BolusInfo in
                 let center = timeToInterpolatedPoint(value.timestamp.timeIntervalSince1970, fullSize: fullSize)
                 var size = Config.bolusSize + CGFloat(value.amount ?? 0) * 2 * Config.bolusScale
-                if value.isNonPumpInsulin == true { size = 0 }
                 var rect = CGRect(x: center.x - size / 2, y: center.y - size / 2, width: size, height: size)
                 if value.isSMB ?? false {
                     rect = CGRect(
@@ -769,13 +768,13 @@ extension MainChartView {
 
     private func calculateManBolusDots(fullSize: CGSize) {
         calculationQueue.async {
-            let manboluses = boluses.filter { $0.isNonPumpInsulin ?? false }
+            let manboluses = boluses.filter { $0.isExternal ?? false }
             let dots = manboluses.map { value -> ManBolusInfo in
                 let center = timeToInterpolatedPoint(value.timestamp.timeIntervalSince1970, fullSize: fullSize)
                 let size = Config.bolusSize + CGFloat(value.amount ?? 0) * 2 * Config.bolusScale
                 let rect = CGRect(
                     x: center.x - size / 2,
-                    y: center.y - size / 2 - 100,
+                    y: center.y - size / 2 - 80,
                     width: size / 2,
                     height: size / 2
                 )
