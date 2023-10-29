@@ -143,7 +143,7 @@ enum DataTable {
                 if isSMB ?? false {
                     bolusText += NSLocalizedString("Automatic", comment: "Automatic delivered treatments")
                 } else if isNonPump ?? false {
-                    bolusText += NSLocalizedString("Non-Pump", comment: "Non-pump Insulin")
+                    bolusText += NSLocalizedString("External", comment: "External Insulin")
                 } else {
                     bolusText += NSLocalizedString("Manual", comment: "Manual Bolus")
                 }

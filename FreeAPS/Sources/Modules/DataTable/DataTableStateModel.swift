@@ -225,7 +225,7 @@ extension DataTable {
                             )
                         ]
                     )
-                    debug(.default, "Non-pump insulin saved to pumphistory.json")
+                    debug(.default, "External insulin saved to pumphistory.json")
 
                     // Reset amount to 0 for next entry.
                     nonPumpInsulinAmount = 0

@@ -78,10 +78,10 @@ extension DataTable {
                     Button(action: { showNonPumpInsulin = true
                         state.nonPumpInsulinDate = Date() }, label: {
                         HStack {
-                            Image(systemName: "syringe")
                             Text("Add")
                                 .foregroundColor(Color.secondary)
                                 .font(.caption)
+                            Image(systemName: "syringe")
                         }.frame(maxWidth: .infinity, alignment: .leading)
                     }).buttonStyle(.borderless)
 
@@ -119,15 +119,18 @@ extension DataTable {
         private var glucoseList: some View {
             List {
                 HStack {
+                    Text(state.units.rawValue).foregroundStyle(.secondary)
+                        .font(.caption)
+                    Spacer()
                     Button(
                         action: { showManualGlucose = true
                             state.manualGlucose = 0 },
-                        label: { Image(systemName: "plus.circle.fill").foregroundStyle(.secondary)
+                        label: { Image(systemName: "plus.circle.fill") // .foregroundStyle(.secondary)
                         }
                     ).buttonStyle(.borderless)
-                    Text(state.units.rawValue).foregroundStyle(.secondary)
                     Spacer()
                     Text("Time").foregroundStyle(.secondary)
+                        .font(.caption)
                 }
                 if !state.glucose.isEmpty {
                     ForEach(state.glucose) { item in
@@ -159,11 +162,10 @@ extension DataTable {
                                 Text(state.units.rawValue).foregroundStyle(.secondary)
                             }
                         }
-
                         Section {
                             HStack {
                                 let limitLow: Decimal = state.units == .mmolL ? 0.8 : 40
-                                let limitHigh: Decimal = state.units == .mgdL ? 14 : 720
+                                let limitHigh: Decimal = state.units == .mmolL ? 14 : 720
                                 Button {
                                     state.addManualGlucose()
                                     isAmountUnconfirmed = false
@@ -232,7 +234,7 @@ extension DataTable {
                     Spacer()
                     Image(systemName: "xmark.circle").foregroundColor(.secondary)
                         .contentShape(Rectangle())
-                        .padding(.vertical)
+                        // .padding(.vertical)
                         .onTapGesture {
                             removeCarbsAlert = Alert(
                                 title: Text("Delete carbs?"),
@@ -255,7 +257,7 @@ extension DataTable {
                     Spacer()
                     Image(systemName: "xmark.circle").foregroundColor(.secondary)
                         .contentShape(Rectangle())
-                        .padding(.vertical)
+                        // .padding(.vertical)
                         .onTapGesture {
                             removeCarbsAlert = Alert(
                                 title: Text("Delete carb equivalents?"),
@@ -277,7 +279,7 @@ extension DataTable {
                     Spacer()
                     Image(systemName: "xmark.circle").foregroundColor(.secondary)
                         .contentShape(Rectangle())
-                        .padding(.vertical)
+                        // .padding(.vertical)
                         .onTapGesture {
                             removeInsulinAlert = Alert(
                                 title: Text("Delete insulin?"),
@@ -309,7 +311,7 @@ extension DataTable {
                                 Text("Amount")
                                 Spacer()
                                 DecimalTextField(
-                                    "0",
+                                    "... ",
                                     value: $state.nonPumpInsulinAmount,
                                     formatter: insulinFormatter,
                                     autofocus: true,
@@ -333,7 +335,7 @@ extension DataTable {
                                     showNonPumpInsulin = false
                                 }
                                 label: {
-                                    Text("Log non-pump insulin")
+                                    Text("Log external insulin")
                                 }
                                 .foregroundColor(amountWarningCondition ? Color.white : Color.accentColor)
                                 .frame(maxWidth: .infinity, alignment: .center)
@@ -355,7 +357,7 @@ extension DataTable {
                     }
                 }
                 .onAppear(perform: configureView)
-                .navigationTitle("Non-Pump Insulin")
+                .navigationTitle("External Insulin")
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(leading: Button("Close", action: { showNonPumpInsulin = false
                     state.nonPumpInsulinAmount = 0 }))
