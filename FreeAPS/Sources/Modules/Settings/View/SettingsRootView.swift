@@ -25,10 +25,10 @@ extension Settings {
                 } header: { Text("Devices") }
 
                 Section {
-                    Text("OpenAPS").navigationLink(to: .preferencesEditor, from: self)
+                    Text("Oref1").navigationLink(to: .preferencesEditor, from: self)
                     // Text("Dynamic ISF").navigationLink(to: .dynamicISF, from: self)
                     Text("Autotune").navigationLink(to: .autotuneConfig, from: self)
-                } header: { Text("OpenAPS") }
+                } header: { Text("Algorithm") }
 
                 Section {
                     Text("UI/UX Settings").navigationLink(to: .statisticsConfig, from: self)
