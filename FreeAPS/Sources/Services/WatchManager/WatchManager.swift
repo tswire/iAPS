@@ -127,13 +127,13 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
 
             let overrideArray = self.coreDataStorage.fetchLatestOverride()
 
-            if overrideArray.first?.enabled ?? false {
-                let percentString = "\((overrideArray.first?.percentage ?? 100).formatted(.number)) %"
-                self.state.override = percentString
-
-            } else {
-                self.state.override = "100 %"
-            }
+//            if overrideArray.first?.enabled ?? false {
+//                let percentString = "\((overrideArray.first?.percentage ?? 100).formatted(.number)) %"
+//                self.state.override = percentString
+//
+//            } else {
+//                self.state.override = "100 %"
+//            }
 
             self.sendState()
         }
