@@ -1,4 +1,3 @@
-
 import LoopKit
 import SwiftUI
 import Swinject
@@ -10,10 +9,11 @@ extension Bolus {
         @Injected() var broadcaster: Broadcaster!
         @Injected() var pumpHistoryStorage: PumpHistoryStorage!
         // added for bolus calculator
-        @Injected() var glucoseStorage: GlucoseStorage!
         @Injected() var settings: SettingsManager!
+        @Injected() var nsManager: NightscoutManager!
 
         @Published var suggestion: Suggestion?
+        @Published var predictions: Predictions?
         @Published var amount: Decimal = 0
         @Published var insulinRecommended: Decimal = 0
         @Published var insulinRequired: Decimal = 0
@@ -36,7 +36,6 @@ extension Bolus {
         var waitForSuggestionInitial: Bool = false
 
         // added for bolus calculator
-        @Published var glucose: [BloodGlucose] = []
         @Published var recentGlucose: BloodGlucose?
         @Published var target: Decimal = 0
         @Published var cob: Decimal = 0
@@ -58,7 +57,12 @@ extension Bolus {
         @Published var fattyMeals: Bool = false
         @Published var fattyMealFactor: Decimal = 0
         @Published var useFattyMealCorrectionFactor: Bool = false
-        @Published var currentTime: String = ""
+
+        @Published var meal: [CarbsEntry]?
+        @Published var carbs: Decimal = 0
+        @Published var fat: Decimal = 0
+        @Published var protein: Decimal = 0
+        @Published var note: String = ""
 
         override func subscribe() {
             setupInsulinRequired()
@@ -87,23 +91,25 @@ extension Bolus {
                         }
                     }.store(in: &lifetime)
             }
+            if let notNilSugguestion = provider.suggestion {
+                suggestion = notNilSugguestion
+                if let notNilPredictions = suggestion?.predictions {
+                    predictions = notNilPredictions
+                }
+            }
         }
 
         func getDeltaBG() {
-            let glucose = glucoseStorage.recent()
+            let glucose = provider.fetchGlucose()
             guard glucose.count >= 3 else { return }
-
-            let lastGlucose = glucose.last!
-
-            let thirdLastGlucose = glucose[glucose.count - 3]
-            let delta = Decimal(lastGlucose.glucose!) - Decimal(thirdLastGlucose.glucose!)
-
+            let lastGlucose = glucose.first?.glucose ?? 0
+            let thirdLastGlucose = glucose[2]
+            let delta = Decimal(lastGlucose) - Decimal(thirdLastGlucose.glucose)
             deltaBG = delta
         }
 
         // CALCULATIONS FOR THE BOLUS CALCULATOR
         func calculateInsulin() -> Decimal {
-            // for mmol conversion
             var conversion: Decimal = 1.0
             if units == .mmolL {
                 conversion = 0.0555
@@ -152,8 +158,10 @@ extension Bolus {
             insulinCalculated = max(insulinCalculated, 0)
             let insulinCalculatedAsDouble = Double(insulinCalculated)
             roundedInsulinCalculated = Decimal(round(100 * insulinCalculatedAsDouble) / 100)
+            insulinCalculated = min(insulinCalculated, maxBolus)
 
-            return insulinCalculated
+            return apsManager
+                .roundBolus(amount: max(insulinCalculated, 0))
         }
 
         func add() {
@@ -171,32 +179,6 @@ extension Bolus {
                     self.showModal(for: nil)
                 }
                 .store(in: &lifetime)
-        }
-
-        func addWithoutBolus() {
-            guard amount > 0 else {
-                showModal(for: nil)
-                return
-            }
-            amount = min(amount, maxBolus * 3)
-
-            pumpHistoryStorage.storeEvents(
-                [
-                    PumpHistoryEvent(
-                        id: UUID().uuidString,
-                        type: .bolus,
-                        timestamp: Date(),
-                        amount: amount,
-                        duration: nil,
-                        durationMin: nil,
-                        rate: nil,
-                        temp: nil,
-                        carbInput: nil,
-                        isExternal: true
-                    )
-                ]
-            )
-            showModal(for: nil)
         }
 
         func setupInsulinRequired() {
@@ -234,7 +216,32 @@ extension Bolus {
                 self.insulinRecommended = self.apsManager
                     .roundBolus(amount: max(self.insulinRecommended, 0))
 
-                self.getDeltaBG()
+                if self.useCalc {
+                    self.getDeltaBG()
+                    self.insulinCalculated = self.calculateInsulin()
+                }
+            }
+        }
+
+        func backToCarbsView(complexEntry: Bool, _ id: String, override: Bool) {
+            delete(deleteTwice: complexEntry, id: id)
+            showModal(for: .addCarbs(editMode: complexEntry, override: override))
+        }
+
+        func delete(deleteTwice: Bool, id: String) {
+            if deleteTwice {
+                // DispatchQueue.safeMainSync {
+                nsManager.deleteCarbs(
+                    at: id, isFPU: nil, fpuID: nil, syncID: id
+                )
+                nsManager.deleteCarbs(
+                    at: id + ".fpu", isFPU: nil, fpuID: nil, syncID: id
+                )
+                // }
+            } else {
+                nsManager.deleteCarbs(
+                    at: id, isFPU: nil, fpuID: nil, syncID: id
+                )
             }
         }
     }

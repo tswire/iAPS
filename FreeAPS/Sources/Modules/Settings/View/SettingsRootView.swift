@@ -10,45 +10,49 @@ extension Settings {
 
         var body: some View {
             Form {
-                Section(
-                    header: Text(
-                        "iAPS v\(state.versionNumber) - \(state.buildNumber) \nBranch: \(state.branch) \nVariant: \(state.copyrightNotice) "
-                    ).textCase(nil)
-                ) {
+                Section {
                     Toggle("Closed loop", isOn: $state.closedLoop)
+                } header: {
+                    Text(
+                        "iAPS v\(state.versionNumber) (\(state.buildNumber))\nBranch: \(state.branch) \(state.copyrightNotice) "
+                    ).textCase(nil)
                 }
 
-                Section(header: Text("Devices")) {
+                Section {
                     Text("Pump").navigationLink(to: .pumpConfig, from: self)
                     Text("CGM").navigationLink(to: .cgm, from: self)
                     Text("Watch").navigationLink(to: .watch, from: self)
-                }
+                } header: { Text("Devices") }
 
-                Section(header: Text("Services")) {
-                    Text("Preferences").navigationLink(to: .preferencesEditor, from: self)
-                    Text("Statistics and Home View").navigationLink(to: .statisticsConfig, from: self)
-                    Text("Middleware")
-                        .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
+                Section {
+                    Text("Oref1").navigationLink(to: .preferencesEditor, from: self)
+                    // Text("Dynamic ISF").navigationLink(to: .dynamicISF, from: self)
+                    Text("Autotune").navigationLink(to: .autotuneConfig, from: self)
+                } header: { Text("Algorithm") }
+
+                Section {
+                    Text("UI/UX Settings").navigationLink(to: .statisticsConfig, from: self)
+                    Text("Bolus Calculator").navigationLink(to: .bolusCalculatorConfig, from: self)
                     Text("Nightscout").navigationLink(to: .nighscoutConfig, from: self)
                     if HKHealthStore.isHealthDataAvailable() {
                         Text("Apple Health").navigationLink(to: .healthkit, from: self)
                     }
-                    Text("Notifications").navigationLink(to: .notificationsConfig, from: self)
                     Text("Fat And Protein Conversion").navigationLink(to: .fpuConfig, from: self)
+                    Text("Middleware")
+                        .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
+                    Text("Notifications").navigationLink(to: .notificationsConfig, from: self)
                     Text("App Icons").navigationLink(to: .iconConfig, from: self)
-                }
+                } header: { Text("Features") }
 
-                Section(header: Text("Configuration")) {
+                Section {
                     Text("Pump Settings").navigationLink(to: .pumpSettingsEditor, from: self)
                     Text("Basal Profile").navigationLink(to: .basalProfileEditor, from: self)
                     Text("Insulin Sensitivities").navigationLink(to: .isfEditor, from: self)
                     Text("Carb Ratios").navigationLink(to: .crEditor, from: self)
                     Text("Target Glucose").navigationLink(to: .targetsEditor, from: self)
-                    Text("Autotune").navigationLink(to: .autotuneConfig, from: self)
-                    Text("Bolus Calculator").navigationLink(to: .bolusCalculatorConfig, from: self)
-                }
+                } header: { Text("Configuration") }
 
-                Section(header: Text("Developer")) {
+                Section {
                     Toggle("Debug options", isOn: $state.debugOptions)
                     if state.debugOptions {
                         Group {
@@ -108,7 +112,7 @@ extension Settings {
                                 .navigationLink(to: .configEditor(file: OpenAPS.FreeAPS.settings), from: self)
                         }
                     }
-                }
+                } header: { Text("Developer") }
 
                 Section {
                     Toggle("Animated Background", isOn: $state.animatedBackground)
@@ -126,7 +130,7 @@ extension Settings {
             }
             .onAppear(perform: configureView)
             .navigationTitle("Settings")
-            .navigationBarItems(leading: Button("Close", action: state.hideSettingsModal))
+            .navigationBarItems(trailing: Button("Close", action: state.hideSettingsModal))
             .navigationBarTitleDisplayMode(.inline)
             .onDisappear(perform: { state.uploadProfileAndSettings(false) })
         }

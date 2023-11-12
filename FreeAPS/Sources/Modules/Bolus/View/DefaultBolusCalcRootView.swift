@@ -1,3 +1,5 @@
+import Charts
+import CoreData
 import SwiftUI
 import Swinject
 
@@ -5,13 +7,20 @@ extension Bolus {
     struct DefaultBolusCalcRootView: BaseView {
         let resolver: Resolver
         let waitForSuggestion: Bool
+        let fetch: Bool
         @StateObject var state = StateModel()
 
         @State private var isAddInsulinAlertPresented = false
         @State private var presentInfo = false
         @State private var displayError = false
+        @State private var keepForNextWiew: Bool = false
 
         @Environment(\.colorScheme) var colorScheme
+
+        @FetchRequest(
+            entity: Meals.entity(),
+            sortDescriptors: [NSSortDescriptor(key: "createdAt", ascending: false)]
+        ) var meal: FetchedResults<Meals>
 
         private var formatter: NumberFormatter {
             let formatter = NumberFormatter()
@@ -28,6 +37,20 @@ extension Bolus {
 
         var body: some View {
             Form {
+                Section {
+                    if state.waitForSuggestion {
+                        Text("Please wait")
+                    } else {
+                        predictionChart
+                    }
+                } header: { Text("Predictions") }
+
+                if fetch {
+                    Section {
+                        mealEntries
+                    } header: { Text("Meal Summary") }
+                }
+
                 Section {
                     if state.waitForSuggestion {
                         HStack {
@@ -58,38 +81,43 @@ extension Bolus {
                                 }
                         }.contentShape(Rectangle())
                     }
-                }
-                header: { Text("Recommendation") }
-                if !state.waitForSuggestion {
-                    Section {
-                        HStack {
-                            Text("Amount")
-                            Spacer()
-                            DecimalTextField(
-                                "0",
-                                value: $state.amount,
-                                formatter: formatter,
-                                autofocus: true,
-                                cleanInput: true
-                            )
-                            Text(!(state.amount > state.maxBolus) ? "U" : "😵").foregroundColor(.secondary)
-                        }
-                    }
-                    header: { Text("Bolus") }
-                    Section {
-                        Button { state.add() }
-                        label: { Text(!(state.amount > state.maxBolus) ? "Enact bolus" : "Max Bolus exceeded!") }
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .disabled(
-                                state.amount <= 0 || state.amount > state.maxBolus
-                            )
+
+                    HStack {
+                        Text("Amount")
+                        Spacer()
+                        DecimalTextField(
+                            "0",
+                            value: $state.amount,
+                            formatter: formatter,
+                            autofocus: true,
+                            cleanInput: true
+                        )
+                        Text(!(state.amount > state.maxBolus) ? "U" : "😵").foregroundColor(.secondary)
                     }
 
-                    if waitForSuggestion {
-                        Section {
-                            Button { state.showModal(for: nil) }
-                            label: { Text("Continue without bolus") }.frame(maxWidth: .infinity, alignment: .center)
+                } header: { Text("Bolus") }
+
+                if state.amount > 0 {
+                    Section {
+                        Button {
+                            keepForNextWiew = true
+                            state.add()
                         }
+                        label: { Text(!(state.amount > state.maxBolus) ? "Enact bolus" : "Max Bolus exceeded!") }
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .disabled(disabled)
+                            .listRowBackground(!disabled ? Color(.systemBlue) : Color(.systemGray4))
+                            .tint(.white)
+                    }
+                }
+
+                if state.amount <= 0 {
+                    Section {
+                        Button {
+                            keepForNextWiew = true
+                            state.showModal(for: nil)
+                        }
+                        label: { Text("Continue without bolus") }.frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
             }
@@ -112,11 +140,94 @@ extension Bolus {
                     state.waitForSuggestion = waitForSuggestion
                 }
             }
+
+            .onDisappear {
+                if fetch, hasFatOrProtein, !keepForNextWiew, !state.useCalc {
+                    state.delete(deleteTwice: true, id: meal.first?.id ?? "")
+                } else if fetch, !keepForNextWiew, !state.useCalc {
+                    state.delete(deleteTwice: false, id: meal.first?.id ?? "")
+                }
+            }
+
             .navigationTitle("Enact Bolus")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: Button("Close", action: state.hideModal))
+            .navigationBarItems(
+                leading: Button {
+                    carbsView()
+                }
+                label: { Text(fetch ? "Back" : "Meal") },
+
+                trailing: Button { state.hideModal() }
+                label: { Text("Close") }
+            )
             .popup(isPresented: presentInfo, alignment: .center, direction: .bottom) {
                 bolusInfo
+            }
+        }
+
+        var disabled: Bool {
+            state.amount <= 0 || state.amount > state.maxBolus
+        }
+
+        var predictionChart: some View {
+            ZStack {
+                PredictionView(
+                    predictions: $state.predictions, units: $state.units, eventualBG: $state.evBG, target: $state.target
+                )
+            }
+        }
+
+        var changed: Bool {
+            ((meal.first?.carbs ?? 0) > 0) || ((meal.first?.fat ?? 0) > 0) || ((meal.first?.protein ?? 0) > 0)
+        }
+
+        var hasFatOrProtein: Bool {
+            ((meal.first?.fat ?? 0) > 0) || ((meal.first?.protein ?? 0) > 0)
+        }
+
+        func carbsView() {
+            let id_ = meal.first?.id ?? ""
+            if fetch {
+                keepForNextWiew = true
+                state.backToCarbsView(complexEntry: fetch, id_, override: false)
+            } else {
+                state.backToCarbsView(complexEntry: false, id_, override: true)
+            }
+        }
+
+        var mealEntries: some View {
+            VStack {
+                if let carbs = meal.first?.carbs, carbs > 0 {
+                    HStack {
+                        Text("Carbs")
+                        Spacer()
+                        Text(carbs.formatted())
+                        Text("g")
+                    }.foregroundColor(.secondary)
+                }
+                if let fat = meal.first?.fat, fat > 0 {
+                    HStack {
+                        Text("Fat")
+                        Spacer()
+                        Text(fat.formatted())
+                        Text("g")
+                    }.foregroundColor(.secondary)
+                }
+                if let protein = meal.first?.protein, protein > 0 {
+                    HStack {
+                        Text("Protein")
+                        Spacer()
+                        Text(protein.formatted())
+                        Text("g")
+                    }.foregroundColor(.secondary)
+                }
+                if let note = meal.first?.note, note != "" {
+                    HStack {
+                        Text("Note")
+                        Spacer()
+                        Text(note)
+                    }.foregroundColor(.secondary)
+                }
             }
         }
 
@@ -211,7 +322,6 @@ extension Bolus {
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .fill(Color(colorScheme == .dark ? UIColor.systemGray4 : UIColor.systemGray4))
-                // .fill(Color(.systemGray).gradient)  // A more prominent pop-up, but harder to read
             )
         }
 

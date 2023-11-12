@@ -62,7 +62,7 @@ extension DataTable {
             .onAppear(perform: configureView)
             .navigationTitle("History")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: Button("Close", action: state.hideModal))
+            .navigationBarItems(trailing: Button("Close", action: state.hideModal))
             .sheet(isPresented: $showManualGlucose) {
                 addGlucoseView
             }
@@ -164,8 +164,8 @@ extension DataTable {
                         }
                         Section {
                             HStack {
-                                let limitLow: Decimal = state.units == .mmolL ? 0.8 : 40
-                                let limitHigh: Decimal = state.units == .mmolL ? 14 : 720
+                                let limitLow: Decimal = state.units == .mmolL ? 0.8 : 14
+                                let limitHigh: Decimal = state.units == .mmolL ? 40 : 720
                                 Button {
                                     state.addManualGlucose()
                                     isAmountUnconfirmed = false
@@ -181,7 +181,7 @@ extension DataTable {
                 .onAppear(perform: configureView)
                 .navigationTitle("Add Glucose")
                 .navigationBarTitleDisplayMode(.automatic)
-                .navigationBarItems(leading: Button("Close", action: { showManualGlucose = false }))
+                .navigationBarItems(trailing: Button("Close", action: { showManualGlucose = false }))
             }
         }
 
@@ -359,7 +359,7 @@ extension DataTable {
                 .onAppear(perform: configureView)
                 .navigationTitle("External Insulin")
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(leading: Button("Close", action: { showExternalInsulin = false
+                .navigationBarItems(trailing: Button("Close", action: { showExternalInsulin = false
                     state.externalInsulinAmount = 0 }))
             }
         }

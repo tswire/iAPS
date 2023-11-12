@@ -80,8 +80,8 @@ extension Stat {
                 }
                 .onAppear(perform: configureView)
                 .navigationBarTitle("History")
-                .navigationBarTitleDisplayMode(.automatic)
-                .navigationBarItems(leading: Button("Close", action: state.hideModal))
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(trailing: Button("Close", action: state.hideModal))
             }
         }
 
