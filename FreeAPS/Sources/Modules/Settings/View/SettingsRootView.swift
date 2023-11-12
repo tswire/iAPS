@@ -26,6 +26,7 @@ extension Settings {
 
                 Section {
                     Text("OpenAPS").navigationLink(to: .preferencesEditor, from: self)
+                    // Text("Dynamic ISF").navigationLink(to: .dynamicISF, from: self)
                     Text("Autotune").navigationLink(to: .autotuneConfig, from: self)
                 } header: { Text("OpenAPS") }
 

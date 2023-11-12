@@ -12,9 +12,7 @@ extension PreferencesEditor {
 
         override func subscribe() {
             preferences = provider.preferences
-            useAlternativeBolusCalc = settingsManager.settings.useCalc
             units = settingsManager.settings.units
-            subscribeSetting(\.allowAnnouncements, on: $allowAnnouncements) { allowAnnouncements = $0 }
 
             subscribeSetting(\.units, on: $unitsIndex.map { $0 == 0 ? GlucoseUnits.mgdL : .mmolL }) {
                 unitsIndex = $0 == .mgdL ? 0 : 1
