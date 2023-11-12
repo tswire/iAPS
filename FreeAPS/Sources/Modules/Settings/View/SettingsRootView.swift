@@ -26,17 +26,16 @@ extension Settings {
 
                 Section(header: Text("Services")) {
                     Text("Preferences").navigationLink(to: .preferencesEditor, from: self)
-                    Text("Statistics and Home View").navigationLink(to: .statisticsConfig, from: self)
-                    Text("Middleware")
-                        .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
+                    Text("UI/UX Settings").navigationLink(to: .statisticsConfig, from: self)
                     Text("Nightscout").navigationLink(to: .nighscoutConfig, from: self)
                     if HKHealthStore.isHealthDataAvailable() {
                         Text("Apple Health").navigationLink(to: .healthkit, from: self)
                     }
-                    Text("Notifications").navigationLink(to: .notificationsConfig, from: self)
                     Text("Fat And Protein Conversion").navigationLink(to: .fpuConfig, from: self)
+                    Text("Middleware")
+                        .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
+                    Text("Notifications").navigationLink(to: .notificationsConfig, from: self)
                     Text("App Icons").navigationLink(to: .iconConfig, from: self)
-                    Text("UI/UX Settings").navigationLink(to: .statisticsConfig, from: self)
                 }
 
                 Section(header: Text("Configuration")) {
