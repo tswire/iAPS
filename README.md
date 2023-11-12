@@ -93,6 +93,26 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
+* 2.2.9
+	* refer to [original release notes](https://github.com/Artificial-Pancreas/iAPS/releases)
+	* many neat things from Jon & Team, as
+		* History table overhaul
+			* with some changes from my side
+			* also you swipe to delete by [@dnzxy](https://github.com/dnzxy/iAPS)
+		* alternative bolus calculater
+		* new Omnipod Dash kit
+		* re-ordering of Preferences, more to come from my side for autoISF settings
+		* changes to the graph with offset manual Bolus, SMB and external Bolus
+	* many bug fixes
+* 2.2.3
+	* refer to [original release notes v2.2.3](https://github.com/Artificial-Pancreas/iAPS/releases/tag/v2.2.3)
+* 2.2.2
+	* FPU on AppleWatch
+	* Bug fixes
+		* TIR display
+		* Target Glucose on new Profile in mmol/L
+		* sorting added to the announcements array to guarantee that the variable 'last' actually gets the latest announcement
+	* euglycemic range & autoISF algo to optional statistics.json
 * 2.2.1
 	* Bolus Calculator based on EventualBG
 	* and many more refer to [original release notes]( https://github.com/Artificial-Pancreas/iAPS/releases/tag/v2.2.1)
