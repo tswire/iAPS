@@ -435,7 +435,7 @@ extension Home {
                 .background(Color.clear)
                 .disabled(state.bolusProgress != nil)
             }
-            .padding(.vertical, 1)
+            // .padding(.vertical, 1)
         }
 
         @ViewBuilder private func profiles(_: GeometryProxy) -> some View {
