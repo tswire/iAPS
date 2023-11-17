@@ -617,7 +617,7 @@ extension Home {
             .ignoresSafeArea(.keyboard)
             .popup(isPresented: isStatusPopupPresented, alignment: .top, direction: .top) {
                 VStack {
-                    Rectangle().opacity(0).frame(height: 85)
+                    Rectangle().opacity(0).frame(height: 77)
                     popup
                         .padding()
                         .background(
