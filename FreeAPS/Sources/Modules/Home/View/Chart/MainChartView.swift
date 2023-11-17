@@ -112,6 +112,8 @@ struct MainChartView: View {
     @State private var offset: CGFloat = 0
     @State private var cachedMaxBasalRate: Decimal?
 
+    @State var state: Home.StateModel
+
     private let calculationQueue = DispatchQueue(label: "MainChartView.calculationQueue")
 
     private var dateFormatter: DateFormatter {
@@ -208,6 +210,9 @@ struct MainChartView: View {
                         .onChange(of: tempBasals) { _ in
                             scroll.scrollTo(Config.endID, anchor: .trailing)
                         }
+                        .onChange(of: state.scale) { _ in
+                            scroll.scrollTo(Config.endID, anchor: .trailing)
+                        }
                         .onAppear {
                             // add trigger to the end of main queue
                             DispatchQueue.main.async {
@@ -282,7 +287,7 @@ struct MainChartView: View {
         .scaleEffect(x: 1, y: -1)
         .frame(width: fullGlucoseWidth(viewWidth: fullSize.width) + additionalWidth(viewWidth: fullSize.width))
         .frame(maxHeight: Config.basalHeight)
-        .background(Color.secondary.opacity(0.1))
+        .background(Color.clear)
         .onChange(of: tempBasals) { _ in
             calculateBasalPoints(fullSize: fullSize)
         }
@@ -329,11 +334,14 @@ struct MainChartView: View {
         return ZStack {
             Path { path in
                 for hour in 0 ..< hours + hours {
-                    let x = firstHourPosition(viewWidth: fullSize.width) +
-                        oneSecondStep(viewWidth: fullSize.width) *
-                        CGFloat(hour) * CGFloat(1.hours.timeInterval)
-                    path.move(to: CGPoint(x: x, y: 0))
-                    path.addLine(to: CGPoint(x: x, y: fullSize.height - 20))
+                    if screenHours < 12 || hour % 2 == 0 {
+                        // only show every second line if screenHours is too big
+                        let x = firstHourPosition(viewWidth: fullSize.width) +
+                            oneSecondStep(viewWidth: fullSize.width) *
+                            CGFloat(hour) * CGFloat(1.hours.timeInterval)
+                        path.move(to: CGPoint(x: x, y: 0))
+                        path.addLine(to: CGPoint(x: x, y: fullSize.height - 20))
+                    }
                 }
             }
             .stroke(useColour, lineWidth: 0.15)
@@ -350,20 +358,45 @@ struct MainChartView: View {
         }
     }
 
+    // MARK: TO DO: CHANGE TIME LABELS TO ONLY DISPLAY EVERY SECOND LABEL WHEN SCREENHOURS IS TOO BIG
+
+//    private func timeLabelsView(fullSize: CGSize) -> some View {
+//        let format = screenHours > 6 ? date24Formatter : dateFormatter
+//        return ZStack {
+//            // X time labels
+//            ForEach(0 ..< hours + hours) { hour in
+//                Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
+//                    .font(.caption)
+//                    .position(
+//                        x: firstHourPosition(viewWidth: fullSize.width) +
+//                            oneSecondStep(viewWidth: fullSize.width) *
+//                            CGFloat(hour) * CGFloat(1.hours.timeInterval),
+//                        y: 10.0
+//                    )
+//                    .foregroundColor(.secondary)
+//            }
+//        }.frame(maxHeight: 20)
+//    }
+
     private func timeLabelsView(fullSize: CGSize) -> some View {
         let format = screenHours > 6 ? date24Formatter : dateFormatter
         return ZStack {
             // X time labels
             ForEach(0 ..< hours + hours) { hour in
-                Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
-                    .font(.caption)
-                    .position(
-                        x: firstHourPosition(viewWidth: fullSize.width) +
-                            oneSecondStep(viewWidth: fullSize.width) *
-                            CGFloat(hour) * CGFloat(1.hours.timeInterval),
-                        y: 10.0
-                    )
-                    .foregroundColor(.secondary)
+                if screenHours >= 12 && hour % 2 == 1 {
+                    // only show every second time label if screenHours is too big
+                    EmptyView()
+                } else {
+                    Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
+                        .font(.caption)
+                        .position(
+                            x: firstHourPosition(viewWidth: fullSize.width) +
+                                oneSecondStep(viewWidth: fullSize.width) *
+                                CGFloat(hour) * CGFloat(1.hours.timeInterval),
+                            y: 10.0
+                        )
+                        .foregroundColor(.secondary)
+                }
             }
         }.frame(maxHeight: 20)
     }
