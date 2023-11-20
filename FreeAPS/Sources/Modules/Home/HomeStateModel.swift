@@ -63,21 +63,6 @@ extension Home {
         @Published var thresholdLines: Bool = false
         @Published var timeZone: TimeZone?
 
-        enum Scale: Int, CaseIterable, Identifiable {
-//            case one = 1
-            case three = 3
-            case six = 6
-            case twelve = 12
-            case twentyfour = 24
-            var id: Self { self }
-        }
-
-        @Published var scale: Scale = .six {
-            didSet {
-                screenHours = calculateScreenHours(scale: scale)
-            }
-        }
-
         let coredataContext = CoreDataStack.shared.persistentContainer.viewContext
 
         override func subscribe() {
@@ -211,21 +196,6 @@ extension Home {
                     }
                 }
                 .store(in: &lifetime)
-        }
-
-        func calculateScreenHours(scale: Scale) -> Int {
-            switch scale {
-//            case .one:
-//                return 1
-            case .three:
-                return 3
-            case .six:
-                return 6
-            case .twelve:
-                return 12
-            case .twentyfour:
-                return 24
-            }
         }
 
         func addCarbs() {

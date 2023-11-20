@@ -416,28 +416,11 @@ extension Home {
                     screenHours: $state.screenHours,
                     displayXgridLines: $state.displayXgridLines,
                     displayYgridLines: $state.displayYgridLines,
-                    thresholdLines: $state.thresholdLines,
-                    state: state
+                    thresholdLines: $state.thresholdLines
                 )
             }
             .padding(.bottom, 4)
             .modal(for: .dataTable, from: self)
-        }
-
-        // MARK: PICKER IN SEGEMENTED STYLE TO CHOOSE THE X AXIS SCALE OF THE GRAPH
-
-        @ViewBuilder private func pickerPanel(_: GeometryProxy) -> some View {
-            HStack {
-                Picker("Scale", selection: $state.scale) {
-                    ForEach(Home.StateModel.Scale.allCases) { scale in
-                        Text("\(scale.rawValue)h").tag(Optional(scale))
-                    }
-                }
-                .pickerStyle(.segmented)
-                .background(Color.clear)
-                .disabled(state.bolusProgress != nil)
-            }
-            // .padding(.vertical, 1)
         }
 
         @ViewBuilder private func profiles(_: GeometryProxy) -> some View {
@@ -604,7 +587,6 @@ extension Home {
                     header(geo)
                     Divider().background(Color.gray)
                     infoPanel
-                    pickerPanel(geo)
                     mainChart
                     Divider().background(Color.gray) // Added 29/4
                     legendPanel
