@@ -83,7 +83,7 @@ struct MainChartView: View {
     @Binding var smooth: Bool
     @Binding var highGlucose: Decimal
     @Binding var lowGlucose: Decimal
-    @Binding var screenHours: Int
+    @Binding var screenHours: Int16
     @Binding var displayXgridLines: Bool
     @Binding var displayYgridLines: Bool
     @Binding var thresholdLines: Bool
@@ -208,6 +208,10 @@ struct MainChartView: View {
                         .onChange(of: tempBasals) { _ in
                             scroll.scrollTo(Config.endID, anchor: .trailing)
                         }
+                        .onChange(of: screenHours) { _ in
+                            scroll.scrollTo(Config.endID, anchor: .trailing)
+                        }
+
                         .onAppear {
                             // add trigger to the end of main queue
                             DispatchQueue.main.async {
@@ -918,8 +922,8 @@ extension MainChartView {
                 path.addLine(to: CGPoint(x: 0, y: Config.basalHeight))
             }
             let adjustForOptionalExtraHours = screenHours > 12 ? screenHours - 12 : 0
-            let endDateTime = dayAgoTime + min(max(screenHours - adjustForOptionalExtraHours, 12), 24).hours
-                .timeInterval + min(max(screenHours - adjustForOptionalExtraHours, 12), 24).hours
+            let endDateTime = dayAgoTime + min(max(Int(screenHours - adjustForOptionalExtraHours), 12), 24).hours
+                .timeInterval + min(max(Int(screenHours - adjustForOptionalExtraHours), 12), 24).hours
                 .timeInterval
             let autotunedBasalPoints = findRegularBasalPoints(
                 timeBegin: dayAgoTime,
