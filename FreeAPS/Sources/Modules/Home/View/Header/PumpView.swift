@@ -48,7 +48,7 @@ struct PumpView: View {
                             .frame(maxHeight: 13)
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.red, Color(.warning))
-                            .padding(.bottom, 10)
+                        // .padding(.bottom, 10)
                     }
                 }.frame(alignment: .top)
             }
