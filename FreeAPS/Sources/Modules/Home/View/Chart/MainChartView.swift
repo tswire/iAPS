@@ -333,11 +333,13 @@ struct MainChartView: View {
         return ZStack {
             Path { path in
                 for hour in 0 ..< hours + hours {
-                    let x = firstHourPosition(viewWidth: fullSize.width) +
-                        oneSecondStep(viewWidth: fullSize.width) *
-                        CGFloat(hour) * CGFloat(1.hours.timeInterval)
-                    path.move(to: CGPoint(x: x, y: 0))
-                    path.addLine(to: CGPoint(x: x, y: fullSize.height - 20))
+                    if screenHours < 12 || hour % 2 == 0 { // only show every second line if screenHours is too big
+                        let x = firstHourPosition(viewWidth: fullSize.width) +
+                            oneSecondStep(viewWidth: fullSize.width) *
+                            CGFloat(hour) * CGFloat(1.hours.timeInterval)
+                        path.move(to: CGPoint(x: x, y: 0))
+                        path.addLine(to: CGPoint(x: x, y: fullSize.height - 20))
+                    }
                 }
             }
             .stroke(useColour, lineWidth: 0.15)
@@ -359,15 +361,20 @@ struct MainChartView: View {
         return ZStack {
             // X time labels
             ForEach(0 ..< hours + hours) { hour in
-                Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
-                    .font(.caption)
-                    .position(
-                        x: firstHourPosition(viewWidth: fullSize.width) +
-                            oneSecondStep(viewWidth: fullSize.width) *
-                            CGFloat(hour) * CGFloat(1.hours.timeInterval),
-                        y: 10.0
-                    )
-                    .foregroundColor(.secondary)
+                if screenHours > 12 && hour % 2 == 1 {
+                    // only show every second time label if screenHours is too big
+                    EmptyView()
+                } else {
+                    Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
+                        .font(.caption)
+                        .position(
+                            x: firstHourPosition(viewWidth: fullSize.width) +
+                                oneSecondStep(viewWidth: fullSize.width) *
+                                CGFloat(hour) * CGFloat(1.hours.timeInterval),
+                            y: 10.0
+                        )
+                        .foregroundColor(.secondary)
+                }
             }
         }.frame(maxHeight: 20)
     }
