@@ -260,16 +260,13 @@ extension DataTable {
             }
             .disabled(item.type == .tempBasal || item.type == .tempTarget || item.type == .resume || item.type == .suspend)
             .alert(
-                Text(alertTitle),
+                Text(NSLocalizedString(alertTitle, comment: "")),
                 isPresented: $isRemoveHistoryItemAlertPresented
             ) {
                 Button("Cancel", role: .cancel) {}
                 Button("Delete", role: .destructive) {
-                    // gracefully unwrap value here.
-                    // value cannot ever really be nil because it is an existing(!) table entry
-                    // but just to be sure.
                     guard let treatmentToDelete = alertTreatmentToDelete else {
-                        print("Cannot gracefully unwrap alertTreatmentToDelete!")
+                        debug(.default, "Cannot gracefully unwrap alertTreatmentToDelete!")
                         return
                     }
 
@@ -280,7 +277,7 @@ extension DataTable {
                     }
                 }
             } message: {
-                Text("\n" + alertMessage)
+                Text("\n" + NSLocalizedString(alertMessage, comment: ""))
             }
         }
 
@@ -382,7 +379,7 @@ extension DataTable {
                 ).tint(.red)
             }
             .alert(
-                Text(alertTitle),
+                Text(NSLocalizedString(alertTitle, comment: "")),
                 isPresented: $isRemoveHistoryItemAlertPresented
             ) {
                 Button("Cancel", role: .cancel) {}
@@ -398,7 +395,7 @@ extension DataTable {
                     state.deleteGlucose(glucoseToDelete)
                 }
             } message: {
-                Text("\n" + alertMessage)
+                Text("\n" + NSLocalizedString(alertMessage, comment: ""))
             }
         }
     }
