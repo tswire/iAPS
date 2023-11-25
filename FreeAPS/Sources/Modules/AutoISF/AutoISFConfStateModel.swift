@@ -8,32 +8,16 @@ extension AutoISFConf {
 
         @Published var unit: GlucoseUnits = .mmolL
         @Published var sections: [FieldSection] = []
+        @Published var autoisf: Bool = false
 
         override func subscribe() {
             unit = settingsManager.settings.units
             preferences = provider.preferences
+            autoisf = settings.preferences.autoisf
 
             // MARK: - autoISF fields
 
             let autoisfConfig = [
-                Field(
-                    displayName: "Enable autoISF",
-                    type: .boolean(keypath: \.autoisf),
-                    infoText: NSLocalizedString(
-                        "Defaults to false. Adapt ISF when glucose is stuck at high levels, only works without COB.\n\nRead up on:\nhttps://github.com/ga-zelle/autoISF/tree/2.8.2",
-                        comment: "Enable autoISF"
-                    ),
-                    settable: self
-                ),
-                Field(
-                    displayName: "autoISF IOB Threshold",
-                    type: .decimal(keypath: \.iobThreshold),
-                    infoText: NSLocalizedString(
-                        "Safety setting: Amount of IOB that if surpassed will prevent any further SMB's being administered. Default is 0, which disables the IOB threshold for SMB's. Advisable to set to 70% of maxIOB, can be meal dependant.",
-                        comment: "autoISF IOB threshold"
-                    ),
-                    settable: self
-                ),
                 Field(
                     displayName: "Temp Targets toggle SMB for autoISF",
                     type: .boolean(keypath: \.enableSMBEvenOnOddOff),
@@ -70,6 +54,15 @@ extension AutoISFConf {
                     infoText: NSLocalizedString(
                         "Enables the BG acceleration adaptiions for autoISF\n\nRead up on:\nhttps://github.com/ga-zelle/autoISF/tree/2.8.2dev_ai2.2",
                         comment: "Enable BG accel in autoISF"
+                    ),
+                    settable: self
+                ),
+                Field(
+                    displayName: "autoISF IOB Threshold",
+                    type: .decimal(keypath: \.iobThreshold),
+                    infoText: NSLocalizedString(
+                        "Safety setting: Amount of IOB that if surpassed will prevent any further SMB's being administered. Default is 0, which disables the IOB threshold for SMB's. Advisable to set to 70% of maxIOB, can be meal dependant.",
+                        comment: "autoISF IOB threshold"
                     ),
                     settable: self
                 ),
@@ -321,49 +314,15 @@ extension AutoISFConf {
 
             sections = [
                 FieldSection(
-                    displayName: NSLocalizedString("AutoISF main config", comment: "AutoISF main config"), fields: autoisfConfig
+                    displayName: NSLocalizedString("Target Control", comment: "AutoISF control via Targets"),
+                    fields: autoisfConfig
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
-                        "autoISF toggles & general Settings",
+                        "Toggles & general Settings",
                         comment: "Switch on/off experimental stuff"
                     ),
                     fields: xpmToogles
-                ),
-                FieldSection(
-                    displayName: NSLocalizedString(
-                        "dura_ISF settings",
-                        comment: "Experimental settings for high BG plateau based autoISF2.0"
-                    ),
-                    fields: xpmDuraISF
-                ),
-                FieldSection(
-                    displayName: NSLocalizedString(
-                        "bg_ISF settings",
-                        comment: "Experimental settings for BG level based autoISF2.1"
-                    ),
-                    fields: xpmBGISF
-                ),
-                FieldSection(
-                    displayName: NSLocalizedString(
-                        "delta_ISF settings",
-                        comment: "Experimental settings for BG delta based autoISF2.1"
-                    ),
-                    fields: xpmDeltaISF
-                ),
-                FieldSection(
-                    displayName: NSLocalizedString(
-                        "acce_ISF settings",
-                        comment: "Experimental settings for acceleration based autoISF 2.2"
-                    ),
-                    fields: xpmAcceISF
-                ),
-                FieldSection(
-                    displayName: NSLocalizedString(
-                        "pp_ISF settings",
-                        comment: "Experimental settings for postprandial based autoISF 2.2"
-                    ),
-                    fields: xpmPostPrandial
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
@@ -378,6 +337,41 @@ extension AutoISFConf {
                         comment: "AIMI B30  settings"
                     ),
                     fields: xpmB30
+                ),
+                FieldSection(
+                    displayName: NSLocalizedString(
+                        "Acce-ISF settings",
+                        comment: "Experimental settings for acceleration based autoISF 2.2"
+                    ),
+                    fields: xpmAcceISF
+                ),
+                FieldSection(
+                    displayName: NSLocalizedString(
+                        "BG-ISF settings",
+                        comment: "Experimental settings for BG level based autoISF2.1"
+                    ),
+                    fields: xpmBGISF
+                ),
+                FieldSection(
+                    displayName: NSLocalizedString(
+                        "Dura-ISF settings",
+                        comment: "Experimental settings for high BG plateau based autoISF2.0"
+                    ),
+                    fields: xpmDuraISF
+                ),
+                FieldSection(
+                    displayName: NSLocalizedString(
+                        "PP-ISF settings",
+                        comment: "Experimental settings for postprandial based autoISF 2.2"
+                    ),
+                    fields: xpmPostPrandial
+                ),
+                FieldSection(
+                    displayName: NSLocalizedString(
+                        "Delta-ISF settings",
+                        comment: "Experimental settings for BG delta based autoISF2.1"
+                    ),
+                    fields: xpmDeltaISF
                 )
             ]
         }
