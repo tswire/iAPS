@@ -101,9 +101,9 @@ Also note that you can achieve almost everything that Profiles do with the Advan
 			* also you swipe to delete by [@dnzxy](https://github.com/dnzxy/iAPS)
 		* alternative bolus calculater
 		* new Omnipod Dash kit
-		* re-ordering of Preferences, more to come from my side for autoISF settings
 		* changes to the graph with offset manual Bolus, SMB and external Bolus
 	* many bug fixes
+	* re-ordering of Preferences, splitting out oref1 & autoISF settings
 * 2.2.3
 	* refer to [original release notes v2.2.3](https://github.com/Artificial-Pancreas/iAPS/releases/tag/v2.2.3)
 * 2.2.2
