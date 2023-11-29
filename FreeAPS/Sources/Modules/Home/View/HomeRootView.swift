@@ -370,18 +370,35 @@ extension Home {
                         state.hours = button.hours
                         highlightButtons()
                     }
-                    .foregroundStyle(button.active ? .primary : .secondary)
-                    .frame(maxHeight: 20).padding(.horizontal)
-                    .background(button.active ? Color(.systemGray5) : .clear, in: .capsule(style: .circular))
+                    .foregroundStyle(button.active ? (colorScheme == .dark ? Color.white : Color.black).opacity(0.9) : .secondary)
+                    .frame(maxHeight: 20).padding(.horizontal, 8)
+                    .background(
+                        button
+                            .active ?
+                            (
+                                colorScheme == .dark ? Color(red: 0.1176470588, green: 0.2352941176, blue: 0.3725490196) : Color
+                                    .white
+                            ) :
+                            Color
+                            .clear
+                    )
+                    .cornerRadius(20)
                 }
                 Image(systemName: "ellipsis.circle.fill")
-                    .foregroundStyle(.secondary)
-                    .padding(.leading)
+                    .foregroundStyle(
+                        (colorScheme == .dark ? Color.white : Color.black).opacity(0.9),
+                        colorScheme == .dark ? Color(red: 0.1176470588, green: 0.2352941176, blue: 0.3725490196) : Color.white
+                    )
+                    // .padding(.leading)
                     .onTapGesture {
                         state.showModal(for: .statisticsConfig)
                     }
             }
-            .font(buttonFont)
+            .shadow(
+                color: Color.black.opacity(colorScheme == .dark ? 0.75 : 0.33),
+                radius: colorScheme == .dark ? 5 : 3
+            )
+            .font(.callout)
             .padding(.top, 4)
             .padding(.bottom, 8)
         }
