@@ -144,7 +144,7 @@ struct MainChartView: View {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.minimumIntegerDigits = 0
-        formatter.maximumFractionDigits = 1
+        formatter.maximumFractionDigits = 2
         formatter.decimalSeparator = "."
         return formatter
     }

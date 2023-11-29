@@ -93,6 +93,10 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
+* 2.2.9.1
+	* fix missing Oref1 preferences for SMB's
+	* smaller time scale panel
+	* again 2 decimal digits for bolus in chart (dash relevant)
 * 2.2.9
 	* refer to [original release notes](https://github.com/Artificial-Pancreas/iAPS/releases)
 	* many neat things from Jon & Team, as
