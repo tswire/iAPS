@@ -152,6 +152,9 @@ Also note that you can achieve almost everything that Profiles do with the Advan
 	* Dash & G7 frameworks from Loop3
 	* CoreData refactoring
 
+## Build Automation with Fastlane
+The autoISF branch in your fork can be synched to my Repo. Automated sync of your fork before building (fastlane) requires setting a SCHEDULED_SYNC repository variable to 'true' in your Repo. I have switched on the cron task in `build.yml` on every Wednesday at 8:00 UTC to check for updates and build if any found. It also builds if you yourself push a commit to github.
+
 ## Remarks
 Due to the heavy refactoring and my changes to Jon's CoreData, when moving from a version (below 1.07) to (1.07 or above) it is advised to delete FAX and install with a new clone. All current stats will be gone and build up again. All settings will be at default values, like `maxIOB = 0`. Due to deleting FAX you should do it in between pods, as you loose this information. Now with iAPS starting v1.6 and autoISF 2.2.8.3 also all settings will revert to standard.
 
