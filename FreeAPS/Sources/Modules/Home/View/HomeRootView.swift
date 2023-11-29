@@ -637,7 +637,7 @@ extension Home {
                             .frame(width: 30, height: 30)
                             .padding(8)
                     }
-                    .foregroundColor(.loopGray)
+                    .foregroundColor(colorScheme == .dark ? .loopGray : Color.primary)
                     .buttonStyle(.borderless)
                 }
                 .padding(.horizontal, 24)
