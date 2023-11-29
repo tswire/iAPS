@@ -51,6 +51,23 @@ extension PreferencesEditor {
                     settable: self
                 ),
                 Field(
+                    displayName: NSLocalizedString("Use Custom Peak Time", comment: "Use Custom Peak Time"),
+                    type: .boolean(keypath: \.useCustomPeakTime),
+                    infoText: NSLocalizedString(
+                        "Defaults to false. Setting to true allows changing insulinPeakTime", comment: "Use Custom Peak Time"
+                    ),
+                    settable: self
+                ),
+                Field(
+                    displayName: NSLocalizedString("Insulin Peak Time", comment: "Insulin Peak Time"),
+                    type: .decimal(keypath: \.insulinPeakTime),
+                    infoText: NSLocalizedString(
+                        "Time of maximum blood glucose lowering effect of insulin, in minutes. Beware: Oref assumes for ultra-rapid (Lyumjev) & rapid-acting (Fiasp) curves minimal (35 & 50 min) and maximal (100 & 120 min) applicable insulinPeakTimes. Using a custom insulinPeakTime outside these bounds will result in issues with iAPS, longer loop calculations and possible red loops.",
+                        comment: "Insulin Peak Time"
+                    ),
+                    settable: self
+                ),
+                Field(
                     displayName: NSLocalizedString("Max IOB", comment: "Max IOB"),
                     type: .decimal(keypath: \.maxIOB),
                     infoText: NSLocalizedString(
@@ -211,6 +228,15 @@ extension PreferencesEditor {
                     settable: self
                 ),
                 Field(
+                    displayName: NSLocalizedString("SMB Interval", comment: "SMB Interval"),
+                    type: .decimal(keypath: \.smbInterval),
+                    infoText: NSLocalizedString(
+                        "Minimum duration in minutes for new SMB since last SMB or manual bolus",
+                        comment: "SMB Interval"
+                    ),
+                    settable: self
+                ),
+                Field(
                     displayName: NSLocalizedString("Bolus Increment", comment: "Bolus Increment"),
                     type: .decimal(keypath: \.bolusIncrement),
                     infoText: NSLocalizedString(
@@ -277,23 +303,6 @@ extension PreferencesEditor {
                     infoText: NSLocalizedString(
                         "This feature, enabled by default, resets the autosens ratio to neutral when you rewind your pump, on the assumption that this corresponds to a probable site change. Autosens will begin learning sensitivity anew from the time of the rewind, which may take up to 6 hours. If you usually rewind your pump independently of site changes, you may want to consider disabling this feature.",
                         comment: "Rewind Resets Autosens"
-                    ),
-                    settable: self
-                ),
-                Field(
-                    displayName: NSLocalizedString("Use Custom Peak Time", comment: "Use Custom Peak Time"),
-                    type: .boolean(keypath: \.useCustomPeakTime),
-                    infoText: NSLocalizedString(
-                        "Defaults to false. Setting to true allows changing insulinPeakTime", comment: "Use Custom Peak Time"
-                    ),
-                    settable: self
-                ),
-                Field(
-                    displayName: NSLocalizedString("Insulin Peak Time", comment: "Insulin Peak Time"),
-                    type: .decimal(keypath: \.insulinPeakTime),
-                    infoText: NSLocalizedString(
-                        "Time of maximum blood glucose lowering effect of insulin, in minutes. Beware: Oref assumes for ultra-rapid (Lyumjev) & rapid-acting (Fiasp) curves minimal (35 & 50 min) and maximal (100 & 120 min) applicable insulinPeakTimes. Using a custom insulinPeakTime outside these bounds will result in issues with iAPS, longer loop calculations and possible red loops.",
-                        comment: "Insulin Peak Time"
                     ),
                     settable: self
                 ),
@@ -376,16 +385,22 @@ extension PreferencesEditor {
 
             sections = [
                 FieldSection(
-                    displayName: NSLocalizedString("Temp Target Settings", comment: "Target Control Sports"),
+                    displayName: NSLocalizedString("Target Control Sports", comment: "Target Control Sports"),
                     fields: quickPrefs
                 ),
                 FieldSection(
-                    displayName: NSLocalizedString("OpenAPS main settings", comment: "OpenAPS main settings"), fields: mainFields
+                    displayName: NSLocalizedString("OpenAPS main settings", comment: "OpenAPS main settings"),
+                    fields: mainFields
+                ),
+                FieldSection(
+                    displayName: NSLocalizedString("OpenAPS SMB settings", comment: "OpenAPS main settings"),
+                    fields: smbFields
                 ),
                 FieldSection(
                     displayName: NSLocalizedString("OpenAPS targets settings", comment: "OpenAPS targets settings"),
                     fields: targetSettings
                 ),
+
                 FieldSection(
                     displayName: NSLocalizedString("OpenAPS other settings", comment: "OpenAPS other settings"),
                     fields: otherSettings

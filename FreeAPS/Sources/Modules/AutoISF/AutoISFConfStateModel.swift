@@ -44,6 +44,25 @@ extension AutoISFConf {
                         comment: "Switch off autoISF with exercise"
                     ),
                     settable: self
+                ),
+                Field(
+                    displayName: "Exercise Mode",
+                    type: .boolean(keypath: \.exerciseMode),
+                    infoText: NSLocalizedString(
+                        "Defaults to false. When true, > 100 mg/dL high temp target adjusts sensitivityRatio for exercise mode. Synonym for high_temptarget_raises_sensitivity",
+                        comment: "Exercise Mode"
+                    ),
+                    settable: self
+                ),
+                Field(
+                    displayName: NSLocalizedString("Half Basal Exercise Target", comment: "Half Basal Exercise Target") +
+                        " (mg/dL)",
+                    type: .decimal(keypath: \.halfBasalExerciseTarget),
+                    infoText: NSLocalizedString(
+                        "Set to a number in mg/dl, e.g. 160, which means when TempTarget (TT) is 160 mg/dL and exercise mode = true, it will run 50% basal at this TT level (if high TT at 120 = 75%; 140 = 60%). This can be adjusted, to give you more control over your exercise modes.",
+                        comment: "Half Basal Exercise Target"
+                    ),
+                    settable: self
                 )
             ]
 
@@ -314,7 +333,7 @@ extension AutoISFConf {
 
             sections = [
                 FieldSection(
-                    displayName: NSLocalizedString("Target Control", comment: "AutoISF control via Targets"),
+                    displayName: NSLocalizedString("Target & Exercise Control", comment: "AutoISF control via Targets"),
                     fields: autoisfConfig
                 ),
                 FieldSection(
