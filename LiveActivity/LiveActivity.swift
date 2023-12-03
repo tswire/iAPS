@@ -98,8 +98,8 @@ struct LiveActivity: Widget {
 
             HStack(spacing: 2) {
                 VStack {
-                    chart(context: context).frame(width: UIScreen.main.bounds.width / 1.7)
-                }.padding(.vertical, 5).padding(.horizontal, 15)
+                    chart(context: context).frame(width: UIScreen.main.bounds.width / 1.85)
+                }.padding(.vertical, 5).padding(.leading, 15)
                 Divider()
                 VStack {
                     ZStack {
