@@ -77,7 +77,7 @@ struct LiveActivity: Widget {
                 ForEach(context.state.chart.indices, id: \.self) { index in
                     LineMark(
                         x: .value("Time", context.state.chartDate[index] ?? Date()),
-                        y: .value("Value", context.state.chart[index] ?? 0)
+                        y: .value("Value", context.state.chart[index])
                     ).foregroundStyle(Color.green.gradient).symbolSize(12)
                 }
             }.chartPlotStyle { plotContent in
@@ -85,9 +85,6 @@ struct LiveActivity: Widget {
             }
             .chartYAxis {
                 AxisMarks(position: .leading)
-            }
-            .chartXAxis {
-                AxisMarks(position: .automatic)
             }
         }
     }
@@ -100,7 +97,7 @@ struct LiveActivity: Widget {
                 VStack {
                     chart(context: context).frame(width: UIScreen.main.bounds.width / 1.85)
                 }.padding(.vertical, 5).padding(.leading, 15)
-                Divider()
+                Divider().foregroundStyle(Color.white)
                 VStack {
                     ZStack {
                         bobble(context: context)
@@ -111,8 +108,8 @@ struct LiveActivity: Widget {
                             bgLabel(context: context).font(.title2).imageScale(.small)
                             changeLabel(context: context).font(.callout)
                         }
-                    }.padding(.trailing, 5).padding(.top, 5)
-                    updatedLabel(context: context).font(.caption).padding(.bottom)
+                    }.padding(.trailing, 10).padding(.top, 5)
+                    updatedLabel(context: context).font(.caption).padding(.bottom).padding(.trailing, 5)
                 }
             }
             .privacySensitive()
@@ -136,9 +133,10 @@ struct LiveActivity: Widget {
                     changeLabel(context: context).font(.title).padding(.trailing, 5)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    updatedLabel(context: context).font(.caption).foregroundStyle(Color.secondary)
-                        .padding(.bottom, 5)
                     chart(context: context)
+                }
+                DynamicIslandExpandedRegion(.center) {
+                    updatedLabel(context: context).font(.caption).foregroundStyle(Color.secondary)
                 }
             } compactLeading: {
                 HStack(spacing: 1) {
