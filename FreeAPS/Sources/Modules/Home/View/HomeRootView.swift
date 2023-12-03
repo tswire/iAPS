@@ -371,7 +371,7 @@ extension Home {
                         highlightButtons()
                     }
                     .foregroundStyle(button.active ? (colorScheme == .dark ? Color.white : Color.black).opacity(0.9) : .secondary)
-                    .frame(maxHeight: 20).padding(.horizontal, 8)
+                    .frame(maxHeight: 20).padding(.horizontal, 4)
                     .background(
                         button
                             .active ?
