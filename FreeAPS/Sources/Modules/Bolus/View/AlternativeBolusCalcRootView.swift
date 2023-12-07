@@ -308,7 +308,8 @@ extension Bolus {
             GridRow(alignment: .top) {
                 Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
 
-                Text("(Current - Target) / ISF").foregroundColor(.secondary.opacity(colorScheme == .dark ? 0.65 : 0.8)).gridColumnAlignment(.leading)
+                Text("(Current - Target) / ISF").foregroundColor(.secondary.opacity(colorScheme == .dark ? 0.65 : 0.8))
+                    .gridColumnAlignment(.leading)
                     .gridCellColumns(2)
             }
             .font(.caption)
@@ -371,7 +372,8 @@ extension Bolus {
             GridRow(alignment: .center) {
                 Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
 
-                Text("COB / Carb Ratio").foregroundColor(.secondary.opacity(colorScheme == .dark ? 0.65 : 0.8)).gridColumnAlignment(.leading)
+                Text("COB / Carb Ratio").foregroundColor(.secondary.opacity(colorScheme == .dark ? 0.65 : 0.8))
+                    .gridColumnAlignment(.leading)
                     .gridCellColumns(2)
             }
             .font(.caption)
@@ -418,7 +420,8 @@ extension Bolus {
                         state.units.rawValue
                 )
 
-                Text("15min Delta / ISF").font(.caption).foregroundColor(.secondary.opacity(colorScheme == .dark ? 0.65 : 0.8)).gridColumnAlignment(.leading)
+                Text("15min Delta / ISF").font(.caption).foregroundColor(.secondary.opacity(colorScheme == .dark ? 0.65 : 0.8))
+                    .gridColumnAlignment(.leading)
                     .gridCellColumns(2).padding(.top, 5)
             }
         }

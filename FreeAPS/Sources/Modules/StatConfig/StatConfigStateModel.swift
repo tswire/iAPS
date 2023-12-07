@@ -13,7 +13,7 @@ extension StatConfig {
         @Published var useFPUconversion: Bool = true
         @Published var tins: Bool = false
         @Published var historyLayout: HistoryLayout = .twoTabs
-        
+
         var units: GlucoseUnits = .mmolL
 
         override func subscribe() {
