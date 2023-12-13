@@ -77,11 +77,11 @@ extension AutoISFConf {
                     settable: self
                 ),
                 Field(
-                    displayName: "autoISF IOB Threshold",
-                    type: .decimal(keypath: \.iobThreshold),
+                    displayName: "autoISF IOB Threshold Percent",
+                    type: .decimal(keypath: \.iobThresholdPercent),
                     infoText: NSLocalizedString(
-                        "Safety setting: Amount of IOB that if surpassed will prevent any further SMB's being administered. Default is 0, which disables the IOB threshold for SMB's. Advisable to set to 70% of maxIOB, can be meal dependant.",
-                        comment: "autoISF IOB threshold"
+                        "Default value: 100%. This is the share of maxIOB above which autoISF will disable SMB. Relative level of maxIOB above which SMBs are disabled. With 100% this feature is effectively disabled.",
+                        comment: "autoISF IOB threshold percent"
                     ),
                     settable: self
                 ),

@@ -152,11 +152,20 @@ extension PreferencesEditor {
                     ),
                     settable: self
                 ),
+//                Field(
+//                    displayName: NSLocalizedString("Max Delta-BG Threshold SMB", comment: "Max Delta-BG Threshold"),
+//                    type: .decimal(keypath: \.maxDeltaBGthreshold),
+//                    infoText: NSLocalizedString(
+//                        "Defaults to 0.2 (20%). Maximum positive percentual change of BG level to use SMB, above that will disable SMB. Hardcoded cap of 40%. For UAM fully-closed-loop 30% is advisable. Observe in log and popup (maxDelta 27 > 20% of BG 100 - disabling SMB!).",
+//                        comment: "Max Delta-BG Threshold"
+//                    ),
+//                    settable: self
+//                ),
                 Field(
-                    displayName: NSLocalizedString("Max Delta-BG Threshold SMB", comment: "Max Delta-BG Threshold"),
-                    type: .decimal(keypath: \.maxDeltaBGthreshold),
+                    displayName: NSLocalizedString("SMB Threshold Ratio", comment: "SMB Threshold Ratio"),
+                    type: .decimal(keypath: \.smbThresholdRatio),
                     infoText: NSLocalizedString(
-                        "Defaults to 0.2 (20%). Maximum positive percentual change of BG level to use SMB, above that will disable SMB. Hardcoded cap of 40%. For UAM fully-closed-loop 30% is advisable. Observe in log and popup (maxDelta 27 > 20% of BG 100 - disabling SMB!).",
+                        "Defaults to 0.5! Used to determine when SMB's are disabled due to BG being low. Used in formula threshold = min_bg - (1-threshold_ratio) * (min_bg - 40). The higher the ratio the higher the threshold (BG) below which SMB's are NOT applied. With 0.5 thresholds depending on target are: min_bg of 90 -> threshold of 65, 100 -> 70 110 -> 75, and 130 -> 85.  Minimum value is 0.5, max value is 1, at which the Threshold will be equal to Target BG.",
                         comment: "Max Delta-BG Threshold"
                     ),
                     settable: self
