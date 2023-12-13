@@ -96,7 +96,7 @@ extension AutoISFConf {
                             // .padding(10)
                             Text("It can also adapt SMB delivery settings.")
                             Text(
-                                "Read up on it at:\nhttps://github.com/ga-zelle/autoISF\nHit View Code to access all help documents!"
+                                "Read up on it at:\nhttps://github.com/ga-zelle/autoISF\nHit View Code to access all help documents!\niAPS version of autoISF does not include ActivityTracking."
                             )
                         }
                     }
