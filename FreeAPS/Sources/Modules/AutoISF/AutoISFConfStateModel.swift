@@ -71,7 +71,7 @@ extension AutoISFConf {
                     displayName: "Enable BG acceleration",
                     type: .boolean(keypath: \.enableBGacceleration),
                     infoText: NSLocalizedString(
-                        "Enables the BG acceleration adaptiions for autoISF\n\nRead up on:\nhttps://github.com/ga-zelle/autoISF/tree/2.8.2dev_ai2.2",
+                        "Enables the BG acceleration adaptions, adjusting ISF for accelerating/decelerating blood glucose.",
                         comment: "Enable BG accel in autoISF"
                     ),
                     settable: self

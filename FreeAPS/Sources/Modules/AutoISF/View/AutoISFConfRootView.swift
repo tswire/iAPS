@@ -95,7 +95,9 @@ extension AutoISFConf {
                             }
                             // .padding(10)
                             Text("It can also adapt SMB delivery settings.")
-                            Text("Read up on it at:\nhttps://github.com/ga-zelle/autoISF")
+                            Text(
+                                "Read up on it at:\nhttps://github.com/ga-zelle/autoISF\nHit View Code to access all help documents!"
+                            )
                         }
                     }
                 } header: { Text("Enable") }
