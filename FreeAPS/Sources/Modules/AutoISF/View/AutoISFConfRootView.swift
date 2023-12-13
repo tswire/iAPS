@@ -149,6 +149,9 @@ extension AutoISFConf {
                     dismissButton: .default(Text("OK"))
                 )
             }
+            .onDisappear {
+                state.saveIfChanged()
+            }
         }
 
         func createParagraphAttribute(

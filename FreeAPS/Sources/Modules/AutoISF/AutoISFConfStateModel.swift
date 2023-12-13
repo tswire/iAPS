@@ -395,6 +395,10 @@ extension AutoISFConf {
             ]
         }
 
+        var unChanged: Bool {
+            preferences.autoisf == autoisf
+        }
+
         func convertBack(_ glucose: Decimal) -> Decimal {
             if unit == .mmolL {
                 return glucose.asMgdL
@@ -413,6 +417,15 @@ extension AutoISFConf {
 
         func get<T>(_ keypath: WritableKeyPath<Preferences, T>) -> T {
             preferences[keyPath: keypath]
+        }
+
+        func saveIfChanged() {
+            if !unChanged {
+                var newSettings = storage.retrieve(OpenAPS.Settings.preferences, as: Preferences.self) ?? Preferences()
+                newSettings.autoisf = autoisf
+                newSettings.timestamp = Date()
+                storage.save(newSettings, as: OpenAPS.Settings.preferences)
+            }
         }
     }
 }
