@@ -81,8 +81,15 @@ Latest version of original iAPS is maintained by Jon and the gang. It brings sig
 
 
 ## autoISF Version
-Refers to the changes done to the original oref0 used in FAX, the source can be found at my [oref0-repository](https://github.com/mountrcg/oref0/tree/dev_aisf_TDD)
+Refers to the changes done to the original oref0 used in FAX, the source can be found at my [oref0-repository](https://github.com/mountrcg/oref0). Also testing autoISF 3.0 adaption
 
+* 3.0
+	* IOB threshold changed to percent of maxIOB
+ 	* adaptable SMB  threshold for low BG's
+ 	* remove setting for maxDelta BG Threshold and automate it for fullLoop
+  	* align log and pop-up panel messages  with AAPS version
+  	* some 1min Libre values precautions for acce predictions
+  	* NO Activity Tracking as with AAPS
 * 2.2.8.3
 	* AIMI B30 feature
 	* dev release with current mods as of Mar 23, 2023
@@ -93,6 +100,13 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
+* 2.3.1
+	* fix missing Oref1 preferences for SMB's
+	* again 2 decimal digits for bolus in chart (dash relevant)
+ 	* many experimental UI/UX changes and features from the active team around Jon, [nas10](https://github.com/10nas/iAPS.git), [@marvout](https://github.com/polscm32/iAPS.git), [@dnzxy](https://github.com/dnzxy/iAPS), [@Andreas](https://github.com/AndreasStokholm/iAPS.git)
+  		* smaller time scale panel
+ 		* Live Activity with Charts 
+  		* advanced calculator overhaul 
 * 2.2.9
 	* refer to [original release notes](https://github.com/Artificial-Pancreas/iAPS/releases)
 	* many neat things from Jon & Team, as
@@ -155,7 +169,7 @@ Due to the heavy refactoring and my changes to Jon's CoreData, when moving from 
 
 For all the relevant notes for iAPS please refer to to the parent repository and its [ReadMe File](https://github.com/Artificial-Pancreas/iAPS/tree/dev#readme).
 
-Most of the changes for autoISF are made in oref code of OpenAPS, which is minimized in iAPS. So it is not really readable in Xcode, therefore refer to my [oref0-repository](https://github.com/mountrcg/oref0/tree/dev_aisf_TDD).
+Most of the changes for autoISF are made in oref code of OpenAPS, which is minimized in iAPS. So it is not really readable in Xcode, therefore refer to my [oref0-repository](https://github.com/mountrcg/oref0/tree).
 
 [Documentation of autoISF implementation for AAPS](https://github.com/ga-zelle/autoISF) is applicable for iAPS as Algorithm is 100% identical
 
