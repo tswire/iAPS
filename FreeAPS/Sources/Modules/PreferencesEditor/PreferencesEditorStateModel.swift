@@ -86,6 +86,15 @@ extension PreferencesEditor {
                     settable: self
                 ),
                 Field(
+                    displayName: "Enable Floating Carbs",
+                    type: .boolean(keypath: \.floatingcarbs),
+                    infoText: NSLocalizedString(
+                        "Defaults to false. If true, then dose slightly more aggressively by using all entered carbs for calculating COBpredBGs. This avoids backing off too quickly as COB decays. Even with this option, oref0 still switches gradually from using COBpredBGs to UAMpredBGs proportionally to how many carbs are left as COB. Summary: use all entered carbs in the future for predBGs & don't decay them as COB, only once they are actual.",
+                        comment: "Floating Carbs"
+                    ),
+                    settable: self
+                ),
+                Field(
                     displayName: NSLocalizedString("Max Daily Safety Multiplier", comment: "Max Daily Safety Multiplier"),
                     type: .decimal(keypath: \.maxDailySafetyMultiplier),
                     infoText: NSLocalizedString(
