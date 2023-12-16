@@ -223,9 +223,7 @@ extension LiveActivityBridge: GlucoseObserver {
             new: bg,
             prev: latestGlucose,
             mmol: settings.units == .mmolL,
-            chart: fetchGlucose,
-            settings: settings
-
+            chart: fetchGlucose, settings: settings
         ) else {
             // no bg or value stale. Don't update the activity if there already is one, just let it turn stale so that it can still be used once current bg is available again
             return

@@ -46,7 +46,7 @@ struct TriangleShape: View {
             .fill(color)
             .frame(width: 35, height: 35)
             .rotationEffect(.degrees(90))
-            .offset(x: 78)
+            .offset(x: 88)
     }
 }
 
@@ -54,11 +54,9 @@ struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
-        let cornerRadius: CGFloat = 2
-
-        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - cornerRadius))
-        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius), control: CGPoint(x: rect.midX, y: rect.maxY))
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY + 15))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY), control: CGPoint(x: rect.midX, y: rect.midY + 10))
         path.closeSubpath()
 
         return path
