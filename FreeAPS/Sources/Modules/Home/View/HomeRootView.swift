@@ -448,14 +448,6 @@ extension Home {
                             .font(.system(size: 12, weight: .bold)).foregroundColor(.uam)
                     }
 
-                    if let eventualBG = state.eventualBG {
-                        Text(
-                            "⇢ " + numberFormatter.string(
-                                from: (state.units == .mmolL ? eventualBG.asMmolL : Decimal(eventualBG)) as NSNumber
-                            )!
-                        )
-                        .font(.system(size: 12, weight: .bold)).foregroundColor(.secondary)
-                    }
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)
@@ -549,14 +541,12 @@ extension Home {
                     )
                     .padding([.leading, .trailing], 10)
 
-                HStack {
+                HStack(alignment: .bottom) {
                     Button { state.showModal(for: .addCarbs(editMode: false, override: false)) }
                     label: {
                         ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom)) {
-                            Image("carbs")
-                                .renderingMode(.template)
-                                .resizable()
-                                .frame(width: 24, height: 24)
+                            Image(systemName: "fork.knife")
+                                .font(.system(size: 24))
                                 .foregroundColor(colorIcon)
                                 .padding(8)
                             if let carbsReq = state.carbsRequired {
@@ -571,10 +561,8 @@ extension Home {
                     Spacer()
                     Button { state.showModal(for: .addTempTarget) }
                     label: {
-                        Image("target")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        Image(systemName: "target")
+                            .font(.system(size: 24))
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
@@ -587,28 +575,26 @@ extension Home {
                         ))
                     }
                     label: {
-                        Image("bolus")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        Image(systemName: "syringe.fill")
+                            .font(.system(size: 24))
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
                     .buttonStyle(.borderless)
                     Spacer()
-                    if state.allowManualTemp {
-                        Button { state.showModal(for: .manualTempBasal) }
-                        label: {
-                            Image("bolus1")
-                                .renderingMode(.template)
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .padding(8)
-                        }
-                        .foregroundColor(colorIcon)
-                        .buttonStyle(.borderless)
-                        Spacer()
-                    }
+//                    if state.allowManualTemp {
+//                        Button { state.showModal(for: .manualTempBasal) }
+//                        label: {
+//                            Image("bolus1")
+//                                .renderingMode(.template)
+//                                .resizable()
+//                                .frame(width: 24, height: 24)
+//                                .padding(8)
+//                        }
+//                        .foregroundColor(colorIcon)
+//                        .buttonStyle(.borderless)
+//                        Spacer()
+//                    }
 
                     // MARK: CANCEL OF PROFILE HAS TO BE IMPLEMENTED
 
@@ -616,10 +602,8 @@ extension Home {
                     Button {
                         state.showModal(for: .overrideProfilesConfig)
                     } label: {
-                        Image(systemName: "person")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 26))
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
@@ -629,20 +613,18 @@ extension Home {
                     }
                     label: {
                         Image(systemName: "chart.xyaxis.line")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                            .font(.system(size: 24))
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
                     .buttonStyle(.borderless)
+
                     Spacer()
+
                     Button { state.showModal(for: .settings) }
                     label: {
-                        Image("settings1")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        Image(systemName: "gear")
+                            .font(.system(size: 24))
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
@@ -656,13 +638,15 @@ extension Home {
         var body: some View {
             let colorBackground = colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
+                    // RGB(10, 34, 55)
+                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745),
                     // RGB(3, 15, 28)
                     Color(red: 0.011, green: 0.058, blue: 0.109),
                     // RGB(10, 34, 55)
                     Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745)
                 ]),
-                startPoint: .bottom,
-                endPoint: .top
+                startPoint: .top,
+                endPoint: .bottom
             )
                 :
                 LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
@@ -678,7 +662,21 @@ extension Home {
 
                     Spacer()
 
-                    glucoseView.padding(.top, 10)
+                    ZStack(alignment: .bottomTrailing) {
+                        glucoseView
+                        if let eventualBG = state.eventualBG {
+                            Text(
+                                "⇢ " + numberFormatter.string(
+                                    from: (
+                                        state.units == .mmolL ? eventualBG
+                                            .asMmolL : Decimal(eventualBG)
+                                    ) as NSNumber
+                                )!
+                            )
+                            .font(.system(size: 12, weight: .bold)).foregroundColor(.secondary)
+                            .offset(x: 36, y: 4)
+                        }
+                    }.padding(.top, 10)
 
                     Spacer()
 
