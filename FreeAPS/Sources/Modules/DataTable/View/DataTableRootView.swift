@@ -27,29 +27,29 @@ extension DataTable {
         }
 
         private var glucoseFormatter: NumberFormatter {
-                    let formatter = NumberFormatter()
-                    formatter.numberStyle = .decimal
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
 
-                    if state.units == .mmolL {
-                        formatter.maximumFractionDigits = 1
-                        formatter.roundingMode = .halfUp
-                    } else {
-                        formatter.maximumFractionDigits = 0
-                    }
-                    return formatter
-                }
+            if state.units == .mmolL {
+                formatter.maximumFractionDigits = 1
+                formatter.roundingMode = .halfUp
+            } else {
+                formatter.maximumFractionDigits = 0
+            }
+            return formatter
+        }
 
-                private var manualGlucoseFormatter: NumberFormatter {
-                    let formatter = NumberFormatter()
-                    formatter.numberStyle = .decimal
-                    if state.units == .mmolL {
-                        formatter.maximumFractionDigits = 1
-                        formatter.roundingMode = .ceiling
-                    } else {
-                        formatter.maximumFractionDigits = 0
-                    }
-                    return formatter
-                }
+        private var manualGlucoseFormatter: NumberFormatter {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            if state.units == .mmolL {
+                formatter.maximumFractionDigits = 1
+                formatter.roundingMode = .ceiling
+            } else {
+                formatter.maximumFractionDigits = 0
+            }
+            return formatter
+        }
 
         private var dateFormatter: DateFormatter {
             let formatter = DateFormatter()
