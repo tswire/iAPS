@@ -14,7 +14,7 @@ extension Settings {
                     Toggle("Closed loop", isOn: $state.closedLoop)
                 } header: {
                     Text(
-                        "iAPS v\(state.versionNumber) (\(state.buildNumber))\nBranch: \(state.branch) \(state.copyrightNotice) "
+                        "iAPS v\(state.versionNumber) (\(state.buildNumber))\nBranch: \(state.branch)\n\(state.copyrightNotice) "
                     ).textCase(nil)
                 }
 
@@ -25,12 +25,25 @@ extension Settings {
                 } header: { Text("Devices") }
 
                 Section {
+                    Text("Oref1").navigationLink(to: .preferencesEditor, from: self)
+                    // Text("autoISF").navigationLink(to: .autoISFConf, from: self)
+                    Text("Dynamic ISF").navigationLink(to: .dynamicISF, from: self)
+                    Text("Autotune").navigationLink(to: .autotuneConfig, from: self)
+                } header: { Text("Algorithm") }
+
+                Section {
+                    Text("UI/UX Settings").navigationLink(to: .statisticsConfig, from: self)
+                    Text("Bolus Calculator").navigationLink(to: .bolusCalculatorConfig, from: self)
                     Text("Nightscout").navigationLink(to: .nighscoutConfig, from: self)
                     if HKHealthStore.isHealthDataAvailable() {
                         Text("Apple Health").navigationLink(to: .healthkit, from: self)
                     }
+                    Text("Fat And Protein Conversion").navigationLink(to: .fpuConfig, from: self)
+                    Text("Middleware")
+                        .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
                     Text("Notifications").navigationLink(to: .notificationsConfig, from: self)
-                } header: { Text("Services") }
+                    Text("App Icons").navigationLink(to: .iconConfig, from: self)
+                } header: { Text("Features") }
 
                 Section {
                     Text("Pump Settings").navigationLink(to: .pumpSettingsEditor, from: self)
@@ -39,19 +52,6 @@ extension Settings {
                     Text("Carb Ratios").navigationLink(to: .crEditor, from: self)
                     Text("Target Glucose").navigationLink(to: .targetsEditor, from: self)
                 } header: { Text("Configuration") }
-
-                Section {
-                    Text("OpenAPS").navigationLink(to: .preferencesEditor, from: self)
-                    Text("Autotune").navigationLink(to: .autotuneConfig, from: self)
-                } header: { Text("OpenAPS") }
-
-                Section {
-                    Text("UI/UX").navigationLink(to: .statisticsConfig, from: self)
-                    Text("App Icons").navigationLink(to: .iconConfig, from: self)
-                    Text("Bolus Calculator").navigationLink(to: .bolusCalculatorConfig, from: self)
-                    Text("Fat And Protein Conversion").navigationLink(to: .fpuConfig, from: self)
-                    Text("Dynamic ISF").navigationLink(to: .dynamicISF, from: self)
-                } header: { Text("Extra Features") }
 
                 Section {
                     Toggle("Debug options", isOn: $state.debugOptions)
@@ -107,8 +107,6 @@ extension Settings {
                                 .navigationLink(to: .configEditor(file: OpenAPS.FreeAPS.tempTargetsPresets), from: self)
                             Text("Calibrations")
                                 .navigationLink(to: .configEditor(file: OpenAPS.FreeAPS.calibrations), from: self)
-                            Text("Middleware")
-                                .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
                             Text("Statistics")
                                 .navigationLink(to: .configEditor(file: OpenAPS.Monitor.statistics), from: self)
                             Text("Edit settings json")
