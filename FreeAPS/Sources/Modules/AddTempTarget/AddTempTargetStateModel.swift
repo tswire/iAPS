@@ -98,16 +98,14 @@ extension AddTempTarget {
                 return
             }
             var lowTarget = low
+            if units == .mmolL {
+                lowTarget = Decimal(round(Double(lowTarget.asMgdL)))
+            }
+            let highTarget = lowTarget
 
             if viewPercantage {
-                lowTarget = Decimal(round(Double(computeTarget())))
+                hbt = computeHBT()
                 saveSettings = true
-            }
-            var highTarget = lowTarget
-
-            if units == .mmolL, !viewPercantage {
-                lowTarget = Decimal(round(Double(lowTarget.asMgdL)))
-                highTarget = lowTarget
             }
 
             let entry = TempTarget(
@@ -188,6 +186,19 @@ extension AddTempTarget {
                 target = (c / ratio) - c + 100
             }
             return Decimal(Double(target))
+        }
+
+        func computeHBT() -> Double {
+            let ratio = Decimal(percentage / 100)
+            let normalTarget: Decimal = 100
+            var target: Decimal = low
+            if units == .mmolL {
+                target = target.asMgdL }
+            var hbtcalc = Decimal(hbt)
+            if ratio != 1 {
+                hbtcalc = ((2 * ratio * normalTarget) - normalTarget - (ratio * target)) / (ratio - 1)
+            }
+            return round(Double(hbtcalc))
         }
     }
 }

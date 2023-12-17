@@ -34,49 +34,59 @@ extension AddTempTarget {
                 }
 
                 HStack {
-                    Text("Experimental")
+                    Text("Advanced TT")
                     Toggle(isOn: $state.viewPercantage) {}.controlSize(.mini)
                     Image(systemName: "figure.highintensity.intervaltraining")
                     Image(systemName: "fork.knife")
                 }
 
                 if state.viewPercantage {
-                    Section {
+                    Section(
+                        header: Text("TT Effect on Insulin")
+                    ) {
                         VStack {
-                            Text("\(state.percentage.formatted(.number)) % Insulin")
-                                .foregroundColor(isEditing ? .orange : .blue)
-                                .font(.largeTitle)
-                                .padding(.vertical)
-                            Slider(
-                                value: $state.percentage,
-                                in: 15 ...
-                                    min(Double(state.maxValue * 100), 200),
-                                step: 1,
-                                onEditingChanged: { editing in
-                                    isEditing = editing
-                                }
-                            )
-                            // Only display target slider when not 100 %
-                            if state.percentage != 100 {
+                            HStack {
+                                Text(NSLocalizedString("Target", comment: ""))
                                 Spacer()
+                                DecimalTextField(
+                                    "0",
+                                    value: $state.low,
+                                    formatter: formatter,
+                                    cleanInput: true
+                                )
+                                Text(state.units.rawValue).foregroundColor(.secondary)
+                            }
+
+                            if computeSliderLow() != computeSliderHigh() {
+                                Text("\(state.percentage.formatted(.number)) % Insulin")
+                                    .foregroundColor(isEditing ? .orange : .blue)
+                                    .font(.largeTitle)
+                                Slider(
+                                    value: $state.percentage,
+                                    in: computeSliderLow() ... computeSliderHigh(),
+                                    step: 5
+                                ) {}
+                                minimumValueLabel: { Text("\(computeSliderLow(), specifier: "%.0f")%") }
+                                maximumValueLabel: { Text("\(computeSliderHigh(), specifier: "%.0f")%") }
+                                onEditingChanged: { editing in
+                                    isEditing = editing }
                                 Divider()
                                 Text(
-                                    (
-                                        state
-                                            .units == .mmolL ?
-                                            "\(state.computeTarget().asMmolL.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1)))) mmol/L" :
-                                            "\(state.computeTarget().formatted(.number.grouping(.never).rounded().precision(.fractionLength(0)))) mg/dl"
-                                    )
-                                        + NSLocalizedString(" Target Glucose", comment: "")
+                                    state
+                                        .units == .mgdL ?
+                                        "Half Basal Exercise Target at: \(state.computeHBT().formatted(.number)) mg/dl" :
+                                        "Half Basal Exercise Target at: \(state.computeHBT().asMmolL.formatted(.number.grouping(.never).rounded().precision(.fractionLength(1)))) mmol/L"
                                 )
-                                .foregroundColor(.green)
-                                .padding(.vertical)
-
-                                Slider(
-                                    value: $state.hbt,
-                                    in: 101 ... 295,
-                                    step: 1
-                                ).accentColor(.green)
+                                .foregroundColor(.secondary)
+                                .font(.caption).italic()
+                            } else {
+                                Text(
+                                    "You have not enabled the proper Preferences to change sensitivity with chosen TempTarget. Verify Autosens Max > 1 & lowTT lowers Sens is on for lowTT's. For high TTs check highTT raises Sens is on (or Exercise Mode)!"
+                                )
+                                // .foregroundColor(.loopRed)
+                                .font(.caption).italic()
+                                .fixedSize(horizontal: false, vertical: true)
+                                .multilineTextAlignment(.leading)
                             }
                         }
                     }
@@ -201,6 +211,30 @@ extension AddTempTarget {
                         removeAlert!
                     }
             }
+        }
+
+        func computeSliderLow() -> Double {
+            var minSens: Double = 15
+            var target = state.low
+            if state.units == .mmolL {
+                target = Decimal(round(Double(state.low.asMgdL))) }
+            if target == 0 { return minSens }
+            if target < 100 ||
+                (
+                    !state.settingsManager.preferences.highTemptargetRaisesSensitivity && !state.settingsManager.preferences
+                        .exerciseMode
+                ) { minSens = 100 }
+            return minSens
+        }
+
+        func computeSliderHigh() -> Double {
+            var maxSens = Double(state.maxValue * 100)
+            var target = state.low
+            if target == 0 { return maxSens }
+            if state.units == .mmolL {
+                target = Decimal(round(Double(state.low.asMgdL))) }
+            if target > 100 || !state.settingsManager.preferences.lowTemptargetLowersSensitivity { maxSens = 100 }
+            return maxSens
         }
     }
 }
