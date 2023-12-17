@@ -25,12 +25,12 @@ typealias GlucoseYRange = (minValue: Int, minY: CGFloat, maxValue: Int, maxY: CG
 struct MainChartView: View {
     private enum Config {
         static let endID = "End"
-        static let basalHeight: CGFloat = 80
+        static let basalHeight: CGFloat = 70
         static let topYPadding: CGFloat = 20
-        static let bottomYPadding: CGFloat = 80
+        static let bottomYPadding: CGFloat = 40
         static let minAdditionalWidth: CGFloat = 150
-        static let maxGlucose = 270
-        static let minGlucose = 45
+        static let maxGlucose = 240
+        static let minGlucose = 40
         static let yLinesCount = 5
         static let glucoseScale: CGFloat = 2 // default 2
         static let bolusSize: CGFloat = 8
@@ -46,12 +46,12 @@ struct MainChartView: View {
     }
 
     private enum Command {
-        static let open = "🔴"
-        static let closed = "🟢"
-        static let suspend = "❌"
-        static let resume = "✅"
+        static let open = "closed"
+        static let closed = "opened"
+        static let suspend = "suspend"
+        static let resume = "resume"
         static let tempbasal = "basal"
-        static let bolus = "💧"
+        static let bolus = " " // "💧"
     }
 
     @Binding var glucose: [BloodGlucose]
@@ -345,13 +345,15 @@ struct MainChartView: View {
         return ZStack {
             Path { path in
                 for hour in 0 ..< hours + hours {
-                    let x = (
-                        firstHourPosition(viewWidth: fullSize.width) +
-                            oneSecondStep(viewWidth: fullSize.width) *
-                            CGFloat(hour) * CGFloat(1.hours.timeInterval)
-                    ) * zoomScale
-                    path.move(to: CGPoint(x: x, y: 0))
-                    path.addLine(to: CGPoint(x: x, y: fullSize.height - 20))
+                    if screenHours <= 12 || hour % 2 == 0 { // only show every second line if screenHours is too big
+                        let x = (
+                            firstHourPosition(viewWidth: fullSize.width) +
+                                oneSecondStep(viewWidth: fullSize.width) *
+                                CGFloat(hour) * CGFloat(1.hours.timeInterval)
+                        ) * zoomScale
+                        path.move(to: CGPoint(x: x, y: 0))
+                        path.addLine(to: CGPoint(x: x, y: fullSize.height - 20))
+                    }
                 }
             }
             .stroke(useColour, lineWidth: 0.15)
@@ -373,17 +375,22 @@ struct MainChartView: View {
         return ZStack {
             // X time labels
             ForEach(0 ..< hours + hours, id: \.self) { hour in
-                Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
-                    .font(.caption)
-                    .position(
-                        x: (
-                            firstHourPosition(viewWidth: fullSize.width) +
-                                oneSecondStep(viewWidth: fullSize.width) *
-                                CGFloat(hour) * CGFloat(1.hours.timeInterval)
-                        ) * zoomScale,
-                        y: 10.0
-                    )
-                    .foregroundColor(.secondary)
+                if screenHours > 12 && hour % 2 == 1 {
+                    // only show every second time label if screenHours is too big
+                    EmptyView()
+                } else {
+                    Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
+                        .font(.caption)
+                        .position(
+                            x: (
+                                firstHourPosition(viewWidth: fullSize.width) +
+                                    oneSecondStep(viewWidth: fullSize.width) *
+                                    CGFloat(hour) * CGFloat(1.hours.timeInterval)
+                            ) * zoomScale,
+                            y: 10.0
+                        )
+                        .foregroundColor(.secondary)
+                }
             }
         }.frame(maxHeight: 20)
     }
