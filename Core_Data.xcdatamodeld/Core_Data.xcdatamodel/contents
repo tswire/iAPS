@@ -35,6 +35,10 @@
         <attribute name="enteredBy" optional="YES" attributeType="String"/>
         <attribute name="fat" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
     </entity>
+    <entity name="DailyTDD" representedClassName="DailyTDD" syncable="YES" codeGenerationType="class">
+        <attribute name="tdd" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
     <entity name="HbA1c" representedClassName="HbA1c" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="hba1c" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>

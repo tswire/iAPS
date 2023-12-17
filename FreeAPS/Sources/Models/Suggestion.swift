@@ -20,8 +20,18 @@ struct Suggestion: JSON, Equatable {
     var timestamp: Date?
     var recieved: Bool?
     let tdd: Decimal?
-    let insulin: Insulin?
+    let tddytd: Decimal?
+    let tdd7d: Decimal?
+    var duraISFratio: Decimal?
+    var bgISFratio: Decimal?
+    var deltaISFratio: Decimal?
+    var ppISFratio: Decimal?
+    var acceISFratio: Decimal?
+    var autoISFratio: Decimal?
     let current_target: Decimal?
+    var tick: Decimal?
+    var SMBratio: Decimal?
+    let insulin: Insulin?
     let insulinForManualBolus: Decimal?
     let manualBolusErrorString: Decimal?
     let minDelta: Decimal?
@@ -67,8 +77,18 @@ extension Suggestion {
         case recieved
         case isf = "ISF"
         case tdd = "TDD"
+        case tddytd = "TDDytd"
+        case tdd7d = "TDD7d"
+        case duraISFratio = "dura_ISFratio"
+        case bgISFratio = "bg_ISFratio"
+        case deltaISFratio = "delta_ISFratio"
+        case ppISFratio = "pp_ISFratio"
+        case acceISFratio = "acce_ISFratio"
+        case autoISFratio = "auto_ISFratio"
+        case current_target = "target_bg"
+        case tick
+        case SMBratio
         case insulin
-        case current_target
         case insulinForManualBolus
         case manualBolusErrorString
         case minDelta
