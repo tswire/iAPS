@@ -106,49 +106,6 @@ extension Home {
             }
         }
 
-        var cobIobView: some View {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Text("IOB").font(.footnote).foregroundColor(.secondary)
-                    Text(
-                        (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
-                            NSLocalizedString(" U", comment: "Insulin unit")
-                    )
-                    .font(.footnote).fontWeight(.bold)
-                }.frame(alignment: .top)
-                HStack {
-                    Text("COB").font(.footnote).foregroundColor(.secondary)
-                    Text(
-                        (numberFormatter.string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0") +
-                            NSLocalizedString(" g", comment: "gram of carbs")
-                    )
-                    .font(.footnote).fontWeight(.bold)
-                }.frame(alignment: .bottom)
-            }
-        }
-
-        var cobIobView2: some View {
-            HStack {
-                Text("IOB").font(.callout).foregroundColor(.secondary)
-                Text(
-                    (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
-                        NSLocalizedString(" U", comment: "Insulin unit")
-                )
-                .font(.callout).fontWeight(.bold)
-
-                Spacer()
-
-                Text("COB").font(.callout).foregroundColor(.secondary)
-                Text(
-                    (numberFormatter.string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0") +
-                        NSLocalizedString(" g", comment: "gram of carbs")
-                )
-                .font(.callout).fontWeight(.bold)
-
-                Spacer()
-            }
-        }
-
         var glucoseView: some View {
             CurrentGlucoseView(
                 recentGlucose: $state.recentGlucose,
@@ -204,7 +161,7 @@ extension Home {
                 manualTempBasal: $state.manualTempBasal
             )
             .onTapGesture {
-                state.isStatusPopupPresented = true
+                state.isStatusPopupPresented.toggle()
             }.onLongPressGesture {
                 let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
                 impactHeavy.impactOccurred()
@@ -387,12 +344,22 @@ extension Home {
 
         var timeInterval: some View {
             HStack(alignment: .center) {
+                Group {
+                    Text(
+                        "TDD " + (numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0")
+                    ).font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
+                    Text(
+                        "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
+                    ).font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
+                }
+                Text(" | ").foregroundColor(.secondary)
+                    .font(.system(size: 12, weight: .light))
                 ForEach(timeButtons) { button in
                     Text(button.active ? NSLocalizedString(button.label, comment: "") : button.number).onTapGesture {
                         state.hours = button.hours
                     }
                     .foregroundStyle(button.active ? (colorScheme == .dark ? Color.white : Color.black).opacity(0.9) : .secondary)
-                    .frame(maxHeight: 30).padding(.horizontal, 8)
+                    .frame(maxHeight: 25).padding(.horizontal, 4)
                     .background(
                         button.active ?
                             // RGB(30, 60, 95)
@@ -403,7 +370,7 @@ extension Home {
                             Color
                             .clear
                     )
-                    .cornerRadius(20)
+                    .cornerRadius(10)
                 }
             }
             .shadow(
@@ -414,43 +381,42 @@ extension Home {
         }
 
         var legendPanel: some View {
-            ZStack {
-                HStack(alignment: .center) {
-                    Spacer()
+            HStack(spacing: 0) {
+                LeftLegend
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                loopView
+                    .frame(alignment: .center)
+                    .padding(.horizontal, 30)
+                RightLegend
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
 
-                    Group {
-                        Circle().fill(Color.loopGreen).frame(width: 8, height: 8)
-                        Text("BG")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.loopGreen)
-                    }
-                    Group {
-                        Circle().fill(Color.insulin).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("IOB")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
-                    }
-                    Group {
-                        Circle().fill(Color.zt).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("ZT")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.zt)
-                    }
-                    Group {
-                        Circle().fill(Color.loopYellow).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("COB")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.loopYellow)
-                    }
-                    Group {
-                        Circle().fill(Color.uam).frame(width: 8, height: 8)
-                            .padding(.leading, 8)
-                        Text("UAM")
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.uam)
-                    }
-
-                    Spacer()
+        var LeftLegend: some View {
+            HStack {
+                Spacer()
+                Group {
+                    Circle().fill(Color.loopYellow).frame(width: 8, height: 8)
+                    Text("COB")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.loopYellow)
+                    Circle().fill(Color.insulin).frame(width: 8, height: 8)
+                        .padding(.leading, 12)
+                    Text("IOB")
+                        .font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
                 }
-                .frame(maxWidth: .infinity)
+            }
+        }
+
+        var RightLegend: some View {
+            HStack {
+                Circle().fill(Color.uam).frame(width: 8, height: 8)
+                Text("UAM")
+                    .font(.system(size: 12, weight: .bold)).foregroundColor(.uam)
+                Circle().fill(Color.zt).frame(width: 8, height: 8)
+                    .padding(.leading, 12)
+                Text("ZT")
+                    .font(.system(size: 12, weight: .bold)).foregroundColor(.zt)
+                Spacer()
             }
         }
 
@@ -545,9 +511,11 @@ extension Home {
                     Button { state.showModal(for: .addCarbs(editMode: false, override: false)) }
                     label: {
                         ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom)) {
-                            Image(systemName: "fork.knife")
-                                .font(.system(size: 24))
-                                .foregroundColor(colorIcon)
+                            Image("carbs1")
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.loopYellow)
                                 .padding(8)
                             if let carbsReq = state.carbsRequired {
                                 Text(numberFormatter.string(from: carbsReq as NSNumber)!)
@@ -559,15 +527,6 @@ extension Home {
                         }
                     }.buttonStyle(.borderless)
                     Spacer()
-                    Button { state.showModal(for: .addTempTarget) }
-                    label: {
-                        Image(systemName: "target")
-                            .font(.system(size: 24))
-                            .padding(8)
-                    }
-                    .foregroundColor(colorIcon)
-                    .buttonStyle(.borderless)
-                    Spacer()
                     Button {
                         state.showModal(for: .bolus(
                             waitForSuggestion: true,
@@ -575,71 +534,78 @@ extension Home {
                         ))
                     }
                     label: {
-                        Image(systemName: "syringe.fill")
-                            .font(.system(size: 24))
+                        Image("bolus")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.insulin)
+                            .padding(8)
+                    }
+                    .foregroundColor(.insulin)
+                    .buttonStyle(.borderless)
+                    Spacer()
+                    Button { state.showModal(for: .addTempTarget) }
+                    label: {
+                        Image("target1")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.loopGreen)
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
                     .buttonStyle(.borderless)
                     Spacer()
-//                    if state.allowManualTemp {
-//                        Button { state.showModal(for: .manualTempBasal) }
-//                        label: {
-//                            Image("bolus1")
-//                                .renderingMode(.template)
-//                                .resizable()
-//                                .frame(width: 24, height: 24)
-//                                .padding(8)
-//                        }
-//                        .foregroundColor(colorIcon)
-//                        .buttonStyle(.borderless)
-//                        Spacer()
-//                    }
+                    if state.allowManualTemp {
+                        Button { state.showModal(for: .manualTempBasal) }
+                        label: {
+                            Image("bolus1")
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .padding(8)
+                        }.foregroundColor(.basal)
+                        Spacer()
+                    }
 
                     // MARK: CANCEL OF PROFILE HAS TO BE IMPLEMENTED
 
                     // MAYBE WITH A SMALL INDICATOR AT THE SYMBOL
-                    Button {
-                        state.showModal(for: .overrideProfilesConfig)
-                    } label: {
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 26))
-                            .padding(8)
-                    }
-                    .foregroundColor(colorIcon)
-                    .buttonStyle(.borderless)
-                    Spacer()
-                    Button(
-                        action: {},
-                        label: { Image(systemName: "chart.xyaxis.line")
-                            .font(.system(size: 24))
-                            .padding(8)
+//                    Button {
+//                        state.showModal(for: .overrideProfilesConfig)
+//                    } label: {
+//                        Image(systemName: "person.fill")
+//                            .font(.system(size: 30))
+//                            .padding(8)
+//                    }
+//                    .foregroundColor(colorIcon)
+//                    .buttonStyle(.borderless)
+//                    Spacer()
+
+                    Image("statistics")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .padding(8)
+                        .foregroundColor(.uam)
+                        .onTapGesture { state.showModal(for: .statistics) }
+                        .onLongPressGesture {
+                            let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                            impactHeavy.impactOccurred()
+                            state.showModal(for: .autoisf)
                         }
-                    )
-                    .foregroundColor(colorIcon)
-                    .buttonStyle(.borderless)
-                    .simultaneousGesture(
-                        LongPressGesture()
-                            .onEnded { _ in
-                                state.showModal(for: .autoisf)
-                            }
-                    )
-                    .highPriorityGesture(
-                        TapGesture()
-                            .onEnded { _ in
-                                state.showModal(for: .statistics)
-                            }
-                    )
 
                     Spacer()
 
                     Button { state.showModal(for: .settings) }
                     label: {
-                        Image(systemName: "gear")
-                            .font(.system(size: 24))
+                        Image("settings")
+                            .renderingMode(.template)
+                            .resizable()
+                            .frame(width: 30, height: 30)
                             .padding(8)
                     }
-                    .foregroundColor(colorIcon)
+                    .foregroundColor(colorScheme == .dark ? .loopGray : Color.primary)
                     .buttonStyle(.borderless)
                 }
                 .padding(.horizontal, 24)
@@ -670,10 +636,6 @@ extension Home {
 
             GeometryReader { geo in
                 VStack(spacing: 0) {
-                    loopView.padding(.horizontal, 10)
-
-                    Spacer()
-
                     ZStack(alignment: .bottomTrailing) {
                         glucoseView
                         if let eventualBG = state.eventualBG {
@@ -685,7 +647,7 @@ extension Home {
                                     ) as NSNumber
                                 )!
                             )
-                            .font(.system(size: 12, weight: .bold)).foregroundColor(.secondary)
+                            .font(.system(size: 18, weight: .bold)).foregroundColor(.secondary)
                             .offset(x: 36, y: 4)
                         }
                     }.padding(.top, 10)
@@ -738,9 +700,9 @@ extension Home {
             .navigationTitle("Home")
             .navigationBarHidden(true)
             .ignoresSafeArea(.keyboard)
-            .popup(isPresented: state.isStatusPopupPresented, alignment: .top, direction: .top) {
+            .popup(isPresented: state.isStatusPopupPresented, alignment: .top, direction: .bottom) {
                 VStack {
-                    Rectangle().opacity(0).frame(height: 25)
+                    Rectangle().opacity(0).frame(height: 220)
                     popup
                         .padding()
                         .background(
@@ -751,14 +713,14 @@ extension Home {
                                     blue: 0.05490196078
                                 ) : Color(UIColor.darkGray))
                         )
-                        // .opacity(0.8)
+                        .opacity(0.8)
                         .onTapGesture {
                             state.isStatusPopupPresented = false
                         }
                         .gesture(
                             DragGesture(minimumDistance: 10, coordinateSpace: .local)
                                 .onEnded { value in
-                                    if value.translation.height < 0 {
+                                    if value.translation.height > 0 {
                                         state.isStatusPopupPresented = false
                                     }
                                 }

@@ -38,20 +38,40 @@ struct PumpView: View {
     }
 
     var body: some View {
-        HStack {
-            Text("IOB").font(.callout).foregroundColor(.secondary)
+        HStack(alignment: .lastTextBaseline) {
+//            Text("COB").font(.caption2).foregroundColor(.secondary)
+            Image("premeal")
+                .renderingMode(.template)
+                .resizable()
+                .frame(width: 12, height: 12)
+                .foregroundColor(.loopYellow)
             Text(
-                (numberFormatter.string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0") +
+                numberFormatter
+                    .string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0" +
+                    NSLocalizedString(" g", comment: "gram of carbs")
+            )
+            .font(.callout).fontWeight(.bold)
+
+            Spacer()
+
+//            Text("IOB").font(.caption2).foregroundColor(.secondary)
+            Image("bolus1")
+                .renderingMode(.template)
+                .resizable()
+                .frame(width: 12, height: 12)
+                .foregroundColor(.insulin)
+            Text(
+                numberFormatter
+                    .string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0" +
                     NSLocalizedString(" U", comment: "Insulin unit")
             )
             .font(.callout).fontWeight(.bold)
 
             Spacer()
 
-            Text("COB").font(.callout).foregroundColor(.secondary)
+            Text("ISF").font(.caption2).foregroundColor(.secondary)
             Text(
-                (numberFormatter.string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0") +
-                    NSLocalizedString(" g", comment: "gram of carbs")
+                numberFormatter.string(from: (state.suggestion?.isf ?? 0) as NSNumber) ?? "0"
             )
             .font(.callout).fontWeight(.bold)
 
@@ -62,7 +82,7 @@ struct PumpView: View {
                     Image(systemName: "drop.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: 15)
+                        .frame(maxHeight: 12)
                         .foregroundColor(reservoirColor)
                     if reservoir == 0xDEAD_BEEF {
                         Text("50+ " + NSLocalizedString("U", comment: "Insulin unit")).font(.callout).fontWeight(.bold)
@@ -83,7 +103,7 @@ struct PumpView: View {
                     Image(systemName: "battery.100")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: 15)
+                        .frame(maxHeight: 12)
                         .foregroundColor(batteryColor)
                     Text("\(Int(battery.percent ?? 100)) %").font(.callout)
                         .fontWeight(.bold)
@@ -95,7 +115,7 @@ struct PumpView: View {
                     Image(systemName: "stopwatch.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: 15)
+                        .frame(maxHeight: 12)
                         .foregroundColor(timerColor)
 
                     Text(remainingTimeString(time: date.timeIntervalSince(timerDate))).font(.callout).fontWeight(.bold)
