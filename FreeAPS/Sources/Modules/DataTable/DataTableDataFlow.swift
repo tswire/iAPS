@@ -41,7 +41,7 @@ enum DataTable {
             case .carbs:
                 name = "Carbs"
             case .fpus:
-                name = "Protein / Fat"
+                name = "Fat / Protein"
             case .bolus:
                 name = "Bolus"
             case .tempBasal:
@@ -181,7 +181,7 @@ enum DataTable {
             case .carbs:
                 return .loopYellow
             case .fpus:
-                return .orange.opacity(0.5)
+                return Color.loopRed
             case .bolus:
                 return Color.insulin
             case .tempBasal:
