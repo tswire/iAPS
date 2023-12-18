@@ -103,10 +103,10 @@ extension DataTable {
                     Button(action: { showExternalInsulin = true
                         state.externalInsulinDate = Date() }, label: {
                         HStack {
-                            Image(systemName: "syringe")
                             Text("Add")
                                 .foregroundColor(Color.secondary)
                                 .font(.caption)
+                            Image(systemName: "syringe")
                         }.frame(maxWidth: .infinity, alignment: .leading)
                     }).buttonStyle(.borderless)
 
@@ -149,15 +149,18 @@ extension DataTable {
         private var glucoseList: some View {
             List {
                 HStack {
+                    Text(state.units.rawValue).foregroundStyle(.secondary)
+                        .font(.caption)
+                    Spacer()
                     Button(
                         action: { showManualGlucose = true
                             state.manualGlucose = 0 },
-                        label: { Image(systemName: "plus.circle.fill").foregroundStyle(.secondary)
+                        label: { Image(systemName: "plus.circle.fill") // .foregroundStyle(.secondary)
                         }
                     ).buttonStyle(.borderless)
-                    Text(state.units.rawValue).foregroundStyle(.secondary)
                     Spacer()
                     Text("Time").foregroundStyle(.secondary)
+                        .font(.caption)
                 }
                 if !state.glucose.isEmpty {
                     ForEach(state.glucose) { item in
@@ -225,7 +228,11 @@ extension DataTable {
 
         @ViewBuilder private func treatmentView(_ item: Treatment) -> some View {
             HStack {
-                Image(systemName: "circle.fill").foregroundColor(item.color)
+                ZStack {
+                    Image(systemName: "circle.fill").foregroundColor(item.color)
+                    if item.type == .tempTarget {
+                        Image(systemName: "circle").foregroundColor(Color.basal.opacity(0.8))
+                    }}
                 Text((item.isSMB ?? false) ? "SMB" : item.type.name)
                 Text(item.amountText).foregroundColor(.secondary)
 

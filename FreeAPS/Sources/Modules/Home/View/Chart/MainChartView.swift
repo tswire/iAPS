@@ -591,10 +591,10 @@ struct MainChartView: View {
         ZStack {
             tempTargetsPath
                 .scale(x: zoomScale, anchor: .zero)
-                .fill(Color.tempBasal.opacity(0.5))
+                .fill(Color.loopGreen.opacity(0.5))
             tempTargetsPath
                 .scale(x: zoomScale, anchor: .zero)
-                .stroke(Color.basal.opacity(0.5), lineWidth: 1)
+                .stroke(Color.basal.opacity(0.8), lineWidth: 1)
         }
         .onChange(of: glucose) { _ in
             calculateTempTargetsRects(fullSize: fullSize)
