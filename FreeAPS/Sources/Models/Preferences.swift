@@ -43,7 +43,8 @@ struct Preferences: JSON {
     var noisyCGMTargetMultiplier: Decimal = 1.3
     var suspendZerosIOB: Bool = true
     var timestamp: Date?
-    var maxDeltaBGthreshold: Decimal = 0.2
+    var smbThresholdRatio: Decimal = 0.5
+    // var maxDeltaBGthreshold: Decimal = 0.3
     // start dynISF config for oref variables
     var adjustmentFactor: Decimal = 0.5
     var sigmoid: Bool = false
@@ -129,7 +130,8 @@ extension Preferences {
         case carbsReqThreshold
         case noisyCGMTargetMultiplier
         case suspendZerosIOB = "suspend_zeros_iob"
-        case maxDeltaBGthreshold = "maxDelta_bg_threshold"
+        case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
+        // case maxDeltaBGthreshold = "maxDelta_bg_threshold"
         // start dynISF config for oref variables
         case adjustmentFactor
         case sigmoid
@@ -149,12 +151,12 @@ extension Preferences {
         case autoISFmin = "autoISF_min"
         case smbMaxRangeExtension = "smb_max_range_extension"
         case floatingcarbs = "floating_carbs"
-        case iobThreshold = "iob_threshold"
+        case iobThresholdPercent = "iob_threshold_percent"
         case enableSMBEvenOnOddOff = "enableSMB_EvenOn_OddOff"
         case enableSMBEvenOnOddOffalways = "enableSMB_EvenOn_OddOff_always"
-        case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
         case smbDeliveryRatioMin = "smb_delivery_ratio_min"
         case smbDeliveryRatioMax = "smb_delivery_ratio_max"
+        case smbThresholdRatio = "smb_threshold_ratio"
         case enableautoISFwithCOB = "enableautoisf_with_COB"
         case higherISFrangeWeight = "higher_ISFrange_weight"
         case lowerISFrangeWeight = "lower_ISFrange_weight"
