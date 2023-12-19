@@ -53,9 +53,9 @@ struct MainChartView: View {
         static let announcementSize: CGFloat = 8
         static let announcementScale: CGFloat = 2.5
         static let owlSeize: CGFloat = 25
-        static let owlOffset: CGFloat = 80
-        static let bolusOffSet: CGFloat = 0
-        static let ManbolusOffSet: CGFloat = -80
+        static let owlOffset: CGFloat = 70
+        static let bolusOffSet: CGFloat = -1.5
+        static let ManbolusOffSet: CGFloat = -55
         static let carbsOffSet: CGFloat = 20
         static let carbMaxSize: CGFloat = 80
         static let bolusMaxSize: CGFloat = 16
@@ -841,7 +841,7 @@ extension MainChartView {
                 if value.isSMB ?? false {
                     rect = CGRect(
                         x: center.x - size / 2,
-                        y: center.y - size / 2 - Config.bolusSize / 4 - size * 2 * Config.bolusScale,
+                        y: center.y - size / 2 + Config.bolusOffSet - size * Config.bolusScale,
                         width: size,
                         height: size
                     )

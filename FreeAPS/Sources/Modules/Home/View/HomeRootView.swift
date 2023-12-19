@@ -495,7 +495,7 @@ extension Home {
                 green: 0.05490196078,
                 blue: 0.05490196078
             ) : Color.white
-            let colorIcon: Color = (colorScheme == .dark ? Color.white : Color.black).opacity(0.9)
+            let colorIcon: Color = (colorScheme == .dark ? Color.loopGray : Color.black).opacity(0.9)
             ZStack {
                 Rectangle()
                     .fill(colorRectangle)
@@ -515,7 +515,7 @@ extension Home {
                                 .renderingMode(.template)
                                 .resizable()
                                 .frame(width: 30, height: 30)
-                                .foregroundColor(.loopYellow)
+//                                .foregroundColor(.loopYellow)
                                 .padding(8)
                             if let carbsReq = state.carbsRequired {
                                 Text(numberFormatter.string(from: carbsReq as NSNumber)!)
@@ -525,7 +525,9 @@ extension Home {
                                     .background(Capsule().fill(Color.red))
                             }
                         }
-                    }.buttonStyle(.borderless)
+                    }
+                    .foregroundColor(colorIcon)
+                    .buttonStyle(.borderless)
                     Spacer()
                     Button {
                         state.showModal(for: .bolus(
@@ -538,10 +540,10 @@ extension Home {
                             .renderingMode(.template)
                             .resizable()
                             .frame(width: 30, height: 30)
-                            .foregroundColor(.insulin)
+//                            .foregroundColor(.insulin)
                             .padding(8)
                     }
-                    .foregroundColor(.insulin)
+                    .foregroundColor(colorIcon)
                     .buttonStyle(.borderless)
                     Spacer()
                     Button { state.showModal(for: .addTempTarget) }
@@ -550,7 +552,7 @@ extension Home {
                             .renderingMode(.template)
                             .resizable()
                             .frame(width: 30, height: 30)
-                            .foregroundColor(.loopGreen)
+//                            .foregroundColor(.loopGreen)
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
@@ -562,13 +564,14 @@ extension Home {
                             Image("bolus1")
                                 .renderingMode(.template)
                                 .resizable()
+//                                .foregroundColor(.basal)
                                 .frame(width: 30, height: 30)
                                 .padding(8)
-                        }.foregroundColor(.basal)
+                        }
+                        .foregroundColor(colorIcon)
+                        .buttonStyle(.borderless)
                         Spacer()
                     }
-
-                    // MARK: CANCEL OF PROFILE HAS TO BE IMPLEMENTED
 
                     // MAYBE WITH A SMALL INDICATOR AT THE SYMBOL
 //                    Button {
@@ -587,7 +590,7 @@ extension Home {
                         .resizable()
                         .frame(width: 28, height: 28)
                         .padding(8)
-                        .foregroundColor(.uam)
+//                        .foregroundColor(.uam)
                         .onTapGesture { state.showModal(for: .statistics) }
                         .onLongPressGesture {
                             let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
@@ -596,16 +599,13 @@ extension Home {
                         }
 
                     Spacer()
-
                     Button { state.showModal(for: .settings) }
                     label: {
-                        Image("settings")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 30, height: 30)
+                        Image(systemName: "slider.vertical.3")
+                            .font(.system(size: 30))
                             .padding(8)
                     }
-                    .foregroundColor(colorScheme == .dark ? .loopGray : Color.primary)
+                    .foregroundColor(colorIcon)
                     .buttonStyle(.borderless)
                 }
                 .padding(.horizontal, 24)
