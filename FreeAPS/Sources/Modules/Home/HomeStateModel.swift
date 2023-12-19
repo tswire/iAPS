@@ -285,7 +285,7 @@ extension Home {
 
             let startTime = calendar.date(byAdding: offsetComponents, to: date)!
             print("******************")
-            print("die voll krasse start time ist: \(startTime)")
+            print("TINS calc start time: \(startTime)")
 
             let bolusesForCurrentDay = boluses.filter { $0.timestamp >= startTime && $0.type == .bolus }
 

@@ -197,14 +197,10 @@ final class OpenAPS {
 
             try? dailyTDDfetched = coredataContext.fetch(requestDailyTDD)
             if !dailyTDDfetched.isEmpty {
-                for uniqDailyTDD in dailyTDDfetched {
-                    print(
-                        "CoreData: daily TDD \(uniqDailyTDD.tdd?.decimalValue ?? 0) from \(uniqDailyTDD.timestamp!)"
-                    )
-                }
-                print(
-                    "CoreData: yesterdays daily TDD \(dailyTDDfetched[0].tdd?.decimalValue ?? 0) at \(dailyTDDfetched[0].timestamp!)"
-                )
+//                for uniqDailyTDD in dailyTDDfetched {
+//                    print("CoreData: daily TDD \(uniqDailyTDD.tdd?.decimalValue ?? 0) from \(uniqDailyTDD.timestamp!)")
+//                }
+//                print( "CoreData: yesterdays daily TDD \(dailyTDDfetched[0].tdd?.decimalValue ?? 0) at \(dailyTDDfetched[0].timestamp!)")
                 TDDytd = dailyTDDfetched[0].tdd?.decimalValue ?? 0
                 totalDaily = dailyTDDfetched.compactMap({ each in each.tdd as? Decimal ?? 0 }).reduce(0, +)
                 indicesDaily = dailyTDDfetched.count
