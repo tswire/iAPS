@@ -17,6 +17,7 @@ extension AddTempTarget {
         @Published var presets: [TempTarget] = []
         @Published var percentage = 100.0
         @Published var maxValue: Decimal = 1.2
+        @Published var maxValueAS: Decimal = 1.2
         @Published var viewPercantage = false
         @Published var hbt: Double = 160
         @Published var saveSettings: Bool = false
@@ -27,6 +28,7 @@ extension AddTempTarget {
             units = settingsManager.settings.units
             presets = storage.presets()
             maxValue = settingsManager.preferences.autosensMax
+            maxValueAS = settingsManager.preferences.autoISFmax
         }
 
         func enact() {

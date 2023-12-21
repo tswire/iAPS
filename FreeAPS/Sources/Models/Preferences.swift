@@ -1,19 +1,20 @@
 import Foundation
 
 struct Preferences: JSON {
-    var maxIOB: Decimal = 9
-    var maxDailySafetyMultiplier: Decimal = 7
-    var currentBasalSafetyMultiplier: Decimal = 8
-    var autosensMax: Decimal = 1
-    var autosensMin: Decimal = 1
-    var smbDeliveryRatio: Decimal = 0.85
+    var maxIOB: Decimal = 0
+    var maxDailySafetyMultiplier: Decimal = 3
+    var currentBasalSafetyMultiplier: Decimal = 4
+    var enableAutosens = true
+    var autosensMax: Decimal = 1.2
+    var autosensMin: Decimal = 0.7
+    var smbDeliveryRatio: Decimal = 0.5
     var rewindResetsAutosens: Bool = true
-    var highTemptargetRaisesSensitivity: Bool = true
-    var lowTemptargetLowersSensitivity: Bool = true
-    var sensitivityRaisesTarget: Bool = true
+    var highTemptargetRaisesSensitivity: Bool = false
+    var lowTemptargetLowersSensitivity: Bool = false
+    var sensitivityRaisesTarget: Bool = false
     var resistanceLowersTarget: Bool = false
     var advTargetAdjustments: Bool = false
-    var exerciseMode: Bool = true
+    var exerciseMode: Bool = false
     var halfBasalExerciseTarget: Decimal = 160
     var maxCOB: Decimal = 120
     var wideBGTargetRange: Bool = false
@@ -23,27 +24,28 @@ struct Preferences: JSON {
     var autotuneISFAdjustmentFraction: Decimal = 1.0
     var remainingCarbsFraction: Decimal = 1.0
     var remainingCarbsCap: Decimal = 90
-    var enableUAM: Bool = true
+    var enableUAM: Bool = false
     var a52RiskEnable: Bool = false
-    var enableSMBWithCOB: Bool = true
-    var enableSMBWithTemptarget: Bool = true
-    var enableSMBAlways: Bool = true
+    var enableSMBWithCOB: Bool = false
+    var enableSMBWithTemptarget: Bool = false
+    var enableSMBAlways: Bool = false
     var enableSMB_high_bg: Bool = false
     var enableSMB_high_bg_target: Decimal = 110
-    var enableSMBAfterCarbs: Bool = true
+    var enableSMBAfterCarbs: Bool = false
     var allowSMBWithHighTemptarget: Bool = false
-    var maxSMBBasalMinutes: Decimal = 120
-    var maxUAMSMBBasalMinutes: Decimal = 120
-    var smbInterval: Decimal = 2
-    var bolusIncrement: Decimal = 0.05
-    var curve: InsulinCurve = .ultraRapid
-    var useCustomPeakTime: Bool = true
-    var insulinPeakTime: Decimal = 49
+    var maxSMBBasalMinutes: Decimal = 30
+    var maxUAMSMBBasalMinutes: Decimal = 30
+    var smbInterval: Decimal = 3
+    var bolusIncrement: Decimal = 0.1
+    var curve: InsulinCurve = .rapidActing
+    var useCustomPeakTime: Bool = false
+    var insulinPeakTime: Decimal = 75
     var carbsReqThreshold: Decimal = 1.0
     var noisyCGMTargetMultiplier: Decimal = 1.3
     var suspendZerosIOB: Bool = true
     var timestamp: Date?
-    var maxDeltaBGthreshold: Decimal = 0.3
+    var smbThresholdRatio: Decimal = 0.5
+    // var maxDeltaBGthreshold: Decimal = 0.3
     // start dynISF config for oref variables
     var adjustmentFactor: Decimal = 0.5
     var sigmoid: Bool = false
@@ -56,30 +58,30 @@ struct Preferences: JSON {
     var updateInterval: Decimal = 20
     // start autoISF config
     var floatingcarbs: Bool = false
-    var autoisf: Bool = true
-    var autoISFmax: Decimal = 2
-    var autoISFmin: Decimal = 0.5
-    var smbMaxRangeExtension: Decimal = 2
-    var smbDeliveryRatioBGrange: Decimal = 90
-    var smbDeliveryRatioMin: Decimal = 0.65
-    var smbDeliveryRatioMax: Decimal = 0.80
-    var enableautoISFwithCOB: Bool = true
-    var autoISFhourlyChange: Decimal = 0.6
-    var higherISFrangeWeight: Decimal = 0.3
-    var lowerISFrangeWeight: Decimal = 0.7
-    var deltaISFrangeWeight: Decimal = 0.6
-    var postMealISFalways: Bool = true
-    var postMealISFweight: Decimal = 0.02
+    var autoisf: Bool = false
+    var autoISFmax: Decimal = 1.2
+    var autoISFmin: Decimal = 0.7
+    var smbMaxRangeExtension: Decimal = 1
+    var smbDeliveryRatioBGrange: Decimal = 0
+    var smbDeliveryRatioMin: Decimal = 0.5
+    var smbDeliveryRatioMax: Decimal = 0.6
+    var enableautoISFwithCOB: Bool = false
+    var autoISFhourlyChange: Decimal = 0
+    var higherISFrangeWeight: Decimal = 0
+    var lowerISFrangeWeight: Decimal = 0
+    var deltaISFrangeWeight: Decimal = 0
+    var postMealISFalways: Bool = false
+    var postMealISFweight: Decimal = 0
     var postMealISFduration: Decimal = 3
-    var enableBGacceleration: Bool = true
-    var bgAccelISFweight: Decimal = 0.1
-    var bgBrakeISFweight: Decimal = 0.15
-    var iobThreshold: Decimal = 0
-    var enableSMBEvenOnOddOff: Bool = true
-    var enableSMBEvenOnOddOffalways: Bool = true
+    var enableBGacceleration: Bool = false
+    var bgAccelISFweight: Decimal = 0
+    var bgBrakeISFweight: Decimal = 0
+    var iobThresholdPercent: Decimal = 100
+    var enableSMBEvenOnOddOff: Bool = false
+    var enableSMBEvenOnOddOffalways: Bool = false
     var autoISFoffSport: Bool = true
     // start B30 config
-    var enableB30: Bool = true
+    var enableB30: Bool = false
     var B30iTimeStartBolus: Decimal = 1.5
     var B30iTime: Decimal = 30
     var B30iTimeTarget: Decimal = 90
@@ -93,6 +95,7 @@ extension Preferences {
         case maxIOB = "max_iob"
         case maxDailySafetyMultiplier = "max_daily_safety_multiplier"
         case currentBasalSafetyMultiplier = "current_basal_safety_multiplier"
+        case enableAutosens = "enable_autosens"
         case autosensMax = "autosens_max"
         case autosensMin = "autosens_min"
         case smbDeliveryRatio = "smb_delivery_ratio"
@@ -129,7 +132,7 @@ extension Preferences {
         case carbsReqThreshold
         case noisyCGMTargetMultiplier
         case suspendZerosIOB = "suspend_zeros_iob"
-        case maxDeltaBGthreshold = "maxDelta_bg_threshold"
+        // case maxDeltaBGthreshold = "maxDelta_bg_threshold"
         // start dynISF config for oref variables
         case adjustmentFactor
         case sigmoid
@@ -149,12 +152,13 @@ extension Preferences {
         case autoISFmin = "autoISF_min"
         case smbMaxRangeExtension = "smb_max_range_extension"
         case floatingcarbs = "floating_carbs"
-        case iobThreshold = "iob_threshold"
+        case iobThresholdPercent = "iob_threshold_percent"
         case enableSMBEvenOnOddOff = "enableSMB_EvenOn_OddOff"
         case enableSMBEvenOnOddOffalways = "enableSMB_EvenOn_OddOff_always"
-        case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
         case smbDeliveryRatioMin = "smb_delivery_ratio_min"
         case smbDeliveryRatioMax = "smb_delivery_ratio_max"
+        case smbThresholdRatio = "smb_threshold_ratio"
+        case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
         case enableautoISFwithCOB = "enableautoisf_with_COB"
         case higherISFrangeWeight = "higher_ISFrange_weight"
         case lowerISFrangeWeight = "lower_ISFrange_weight"
