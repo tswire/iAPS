@@ -44,8 +44,7 @@ struct Preferences: JSON {
     var noisyCGMTargetMultiplier: Decimal = 1.3
     var suspendZerosIOB: Bool = true
     var timestamp: Date?
-    var smbThresholdRatio: Decimal = 0.5
-    // var maxDeltaBGthreshold: Decimal = 0.3
+    // var maxDeltaBGthreshold: Decimal = 0.2
     // start dynISF config for oref variables
     var adjustmentFactor: Decimal = 0.5
     var sigmoid: Bool = false
@@ -59,13 +58,14 @@ struct Preferences: JSON {
     // start autoISF config
     var floatingcarbs: Bool = false
     var autoisf: Bool = false
-    var autoISFmax: Decimal = 1.2
+    var autoISFmax: Decimal = 1.3
     var autoISFmin: Decimal = 0.7
     var smbMaxRangeExtension: Decimal = 1
+    var smbThresholdRatio: Decimal = 0.5
     var smbDeliveryRatioBGrange: Decimal = 0
     var smbDeliveryRatioMin: Decimal = 0.5
-    var smbDeliveryRatioMax: Decimal = 0.6
-    var enableautoISFwithCOB: Bool = false
+    var smbDeliveryRatioMax: Decimal = 0.8
+    var enableautoISFwithCOB: Bool = true
     var autoISFhourlyChange: Decimal = 0
     var higherISFrangeWeight: Decimal = 0
     var lowerISFrangeWeight: Decimal = 0
