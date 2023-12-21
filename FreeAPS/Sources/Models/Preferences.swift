@@ -7,7 +7,7 @@ struct Preferences: JSON {
     var enableAutosens = false
     var autosensMax: Decimal = 1.3
     var autosensMin: Decimal = 0.7
-    var smbDeliveryRatio: Decimal = 0.85
+    var smbDeliveryRatio: Decimal = 0.9
     var rewindResetsAutosens: Bool = true
     var highTemptargetRaisesSensitivity: Bool = false
     var lowTemptargetLowersSensitivity: Bool = false
@@ -37,15 +37,14 @@ struct Preferences: JSON {
     var maxUAMSMBBasalMinutes: Decimal = 120
     var smbInterval: Decimal = 2
     var bolusIncrement: Decimal = 0.05
-    var curve: InsulinCurve = .rapidActing
-    var useCustomPeakTime: Bool = false
-    var insulinPeakTime: Decimal = 75
+    var curve: InsulinCurve = .ultraRapid
+    var useCustomPeakTime: Bool = true
+    var insulinPeakTime: Decimal = 49
     var carbsReqThreshold: Decimal = 1.0
     var noisyCGMTargetMultiplier: Decimal = 1.3
     var suspendZerosIOB: Bool = true
     var timestamp: Date?
-    var smbThresholdRatio: Decimal = 0.5
-    // var maxDeltaBGthreshold: Decimal = 0.3
+    // var maxDeltaBGthreshold: Decimal = 0.2
     // start dynISF config for oref variables
     var adjustmentFactor: Decimal = 0.5
     var sigmoid: Bool = false
@@ -62,6 +61,7 @@ struct Preferences: JSON {
     var autoISFmax: Decimal = 2
     var autoISFmin: Decimal = 0.5
     var smbMaxRangeExtension: Decimal = 2
+    var smbThresholdRatio: Decimal = 0.5
     var smbDeliveryRatioBGrange: Decimal = 90
     var smbDeliveryRatioMin: Decimal = 0.65
     var smbDeliveryRatioMax: Decimal = 0.80
