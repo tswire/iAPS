@@ -363,9 +363,10 @@ final class OpenAPS {
         Future { promise in
             self.processQueue.async {
                 let preferences = self.storage.retrieve(OpenAPS.Settings.preferences, as: Preferences.self)
-                let asmax = preferences?.autosensMax ?? 1
-                let asmin = preferences?.autosensMin ?? 1
-                if asmax != 1 || asmin != 1 {
+                let asmax = preferences?.autosensMax ?? 1.2
+                let asmin = preferences?.autosensMin ?? 0.7
+                let asenable = preferences?.enableAutosens ?? true
+                if asmax != 1 || asmin != 1, asenable == true {
                     debug(.openAPS, "Start autosens")
                     let pumpHistory = self.loadFileFromStorage(name: OpenAPS.Monitor.pumpHistory)
                     let carbs = self.loadFileFromStorage(name: Monitor.carbHistory)

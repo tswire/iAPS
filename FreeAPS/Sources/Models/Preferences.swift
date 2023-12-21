@@ -4,6 +4,7 @@ struct Preferences: JSON {
     var maxIOB: Decimal = 0
     var maxDailySafetyMultiplier: Decimal = 3
     var currentBasalSafetyMultiplier: Decimal = 4
+    var enableAutosens = true
     var autosensMax: Decimal = 1.2
     var autosensMin: Decimal = 0.7
     var smbDeliveryRatio: Decimal = 0.5
@@ -75,7 +76,7 @@ struct Preferences: JSON {
     var enableBGacceleration: Bool = false
     var bgAccelISFweight: Decimal = 0
     var bgBrakeISFweight: Decimal = 0
-    var iobThreshold: Decimal = 0
+    var iobThresholdPercent: Decimal = 100
     var enableSMBEvenOnOddOff: Bool = false
     var enableSMBEvenOnOddOffalways: Bool = false
     var autoISFoffSport: Bool = true
@@ -94,6 +95,7 @@ extension Preferences {
         case maxIOB = "max_iob"
         case maxDailySafetyMultiplier = "max_daily_safety_multiplier"
         case currentBasalSafetyMultiplier = "current_basal_safety_multiplier"
+        case enableAutosens = "enable_autosens"
         case autosensMax = "autosens_max"
         case autosensMin = "autosens_min"
         case smbDeliveryRatio = "smb_delivery_ratio"
@@ -130,7 +132,6 @@ extension Preferences {
         case carbsReqThreshold
         case noisyCGMTargetMultiplier
         case suspendZerosIOB = "suspend_zeros_iob"
-        case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
         // case maxDeltaBGthreshold = "maxDelta_bg_threshold"
         // start dynISF config for oref variables
         case adjustmentFactor
@@ -157,6 +158,7 @@ extension Preferences {
         case smbDeliveryRatioMin = "smb_delivery_ratio_min"
         case smbDeliveryRatioMax = "smb_delivery_ratio_max"
         case smbThresholdRatio = "smb_threshold_ratio"
+        case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
         case enableautoISFwithCOB = "enableautoisf_with_COB"
         case higherISFrangeWeight = "higher_ISFrange_weight"
         case lowerISFrangeWeight = "lower_ISFrange_weight"

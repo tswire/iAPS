@@ -100,6 +100,9 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
+* 2.3.2
+	* introduce autosens toggle in oref1 and autoISF prefs. It allows to switch autosens off when not logging any carbs. autosensMax/Min can still be set to !=1, to allow TT setting low sensitivity (uses autosensMax as limiter)
+ 	*  bug fixes
 * 2.3.1
 	* fix missing Oref1 preferences for SMB's
 	* again 2 decimal digits for bolus in chart (dash relevant)
