@@ -19,6 +19,15 @@ extension AutoISFConf {
 
             let autoisfConfig = [
                 Field(
+                    displayName: NSLocalizedString("Enable Autosens", comment: "Enable Autosens"),
+                    type: .boolean(keypath: \.enableAutosens),
+                    infoText: NSLocalizedString(
+                        "Switch Autosens on/off",
+                        comment: "Autosens"
+                    ),
+                    settable: self
+                ),
+                Field(
                     displayName: "Temp Targets toggle SMB for autoISF",
                     type: .boolean(keypath: \.enableSMBEvenOnOddOff),
                     infoText: NSLocalizedString(

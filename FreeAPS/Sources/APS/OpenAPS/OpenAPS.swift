@@ -361,28 +361,37 @@ final class OpenAPS {
     func autosense() -> Future<Autosens?, Never> {
         Future { promise in
             self.processQueue.async {
-                debug(.openAPS, "Start autosens")
-                let pumpHistory = self.loadFileFromStorage(name: OpenAPS.Monitor.pumpHistory)
-                let carbs = self.loadFileFromStorage(name: Monitor.carbHistory)
-                let glucose = self.loadFileFromStorage(name: Monitor.glucose)
-                let profile = self.loadFileFromStorage(name: Settings.profile)
-                let basalProfile = self.loadFileFromStorage(name: Settings.basalProfile)
-                let tempTargets = self.loadFileFromStorage(name: Settings.tempTargets)
-                let autosensResult = self.autosense(
-                    glucose: glucose,
-                    pumpHistory: pumpHistory,
-                    basalprofile: basalProfile,
-                    profile: profile,
-                    carbs: carbs,
-                    temptargets: tempTargets
-                )
+                let preferences = self.storage.retrieve(OpenAPS.Settings.preferences, as: Preferences.self)
+                let asmax = preferences?.autosensMax ?? 1.2
+                let asmin = preferences?.autosensMin ?? 0.7
+                let asenable = preferences?.enableAutosens ?? true
+                if asmax != 1 || asmin != 1, asenable == true {
+                    debug(.openAPS, "Start autosens")
+                    let pumpHistory = self.loadFileFromStorage(name: OpenAPS.Monitor.pumpHistory)
+                    let carbs = self.loadFileFromStorage(name: Monitor.carbHistory)
+                    let glucose = self.loadFileFromStorage(name: Monitor.glucose)
+                    let profile = self.loadFileFromStorage(name: Settings.profile)
+                    let basalProfile = self.loadFileFromStorage(name: Settings.basalProfile)
+                    let tempTargets = self.loadFileFromStorage(name: Settings.tempTargets)
+                    let autosensResult = self.autosense(
+                        glucose: glucose,
+                        pumpHistory: pumpHistory,
+                        basalprofile: basalProfile,
+                        profile: profile,
+                        carbs: carbs,
+                        temptargets: tempTargets
+                    )
 
-                debug(.openAPS, "AUTOSENS: \(autosensResult)")
-                if var autosens = Autosens(from: autosensResult) {
-                    autosens.timestamp = Date()
-                    self.storage.save(autosens, as: Settings.autosense)
-                    promise(.success(autosens))
+                    debug(.openAPS, "AUTOSENS: \(autosensResult)")
+                    if var autosens = Autosens(from: autosensResult) {
+                        autosens.timestamp = Date()
+                        self.storage.save(autosens, as: Settings.autosense)
+                        promise(.success(autosens))
+                    } else {
+                        promise(.success(nil))
+                    }
                 } else {
+                    debug(.openAPS, "Autosens skipped, due to autosensMax=autosensMin=\(asmax)")
                     promise(.success(nil))
                 }
             }

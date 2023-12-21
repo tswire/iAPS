@@ -4,9 +4,10 @@ struct Preferences: JSON {
     var maxIOB: Decimal = 9
     var maxDailySafetyMultiplier: Decimal = 7
     var currentBasalSafetyMultiplier: Decimal = 8
-    var autosensMax: Decimal = 1
-    var autosensMin: Decimal = 1
-    var smbDeliveryRatio: Decimal = 0.85
+    var enableAutosens = false
+    var autosensMax: Decimal = 1.3
+    var autosensMin: Decimal = 0.7
+    var smbDeliveryRatio: Decimal = 0.9
     var rewindResetsAutosens: Bool = true
     var highTemptargetRaisesSensitivity: Bool = false
     var lowTemptargetLowersSensitivity: Bool = false
@@ -43,8 +44,7 @@ struct Preferences: JSON {
     var noisyCGMTargetMultiplier: Decimal = 1.3
     var suspendZerosIOB: Bool = false
     var timestamp: Date?
-    var smbThresholdRatio: Decimal = 0.5
-    // var maxDeltaBGthreshold: Decimal = 0.3
+    // var maxDeltaBGthreshold: Decimal = 0.2
     // start dynISF config for oref variables
     var adjustmentFactor: Decimal = 0.5
     var sigmoid: Bool = false
@@ -61,6 +61,7 @@ struct Preferences: JSON {
     var autoISFmax: Decimal = 2
     var autoISFmin: Decimal = 0.5
     var smbMaxRangeExtension: Decimal = 2
+    var smbThresholdRatio: Decimal = 0.5
     var smbDeliveryRatioBGrange: Decimal = 90
     var smbDeliveryRatioMin: Decimal = 0.65
     var smbDeliveryRatioMax: Decimal = 0.80
@@ -94,6 +95,7 @@ extension Preferences {
         case maxIOB = "max_iob"
         case maxDailySafetyMultiplier = "max_daily_safety_multiplier"
         case currentBasalSafetyMultiplier = "current_basal_safety_multiplier"
+        case enableAutosens = "enable_autosens"
         case autosensMax = "autosens_max"
         case autosensMin = "autosens_min"
         case smbDeliveryRatio = "smb_delivery_ratio"
