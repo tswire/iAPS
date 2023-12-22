@@ -55,11 +55,16 @@ struct PumpView: View {
             Spacer()
 
 //            Text("IOB").font(.caption2).foregroundColor(.secondary)
-            Image("bolus1")
-                .renderingMode(.template)
+//            Image("bolus1")
+//                .renderingMode(.template)
+//                .resizable()
+//                .frame(width: 12, height: 12)
+//                .foregroundColor(.insulin)
+            Image(systemName: "drop.circle")
                 .resizable()
-                .frame(width: 12, height: 12)
-                .foregroundColor(.insulin)
+                .aspectRatio(contentMode: .fit)
+                .frame(maxHeight: 12)
+                .foregroundColor(Color.insulin)
             Text(
                 numberFormatter
                     .string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0" +
