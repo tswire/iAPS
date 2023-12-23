@@ -366,15 +366,16 @@ struct MainChartView: View {
         return ZStack {
             Path { path in
                 for hour in 0 ..< hours + hours {
-                    if screenHours <= 12 || hour % 2 == 0 { // only show every second line if screenHours is too big
-                        let x = (
-                            firstHourPosition(viewWidth: fullSize.width) +
-                                oneSecondStep(viewWidth: fullSize.width) *
-                                CGFloat(hour) * CGFloat(1.hours.timeInterval)
-                        ) * zoomScale
-                        path.move(to: CGPoint(x: x, y: 0))
-                        path.addLine(to: CGPoint(x: x, y: fullSize.height - 20))
+                    if screenHours >= 12 && hour % 2 == 1 {
+                        continue
                     }
+                    let x = (
+                        firstHourPosition(viewWidth: fullSize.width) +
+                            oneSecondStep(viewWidth: fullSize.width) *
+                            CGFloat(hour) * CGFloat(1.hours.timeInterval)
+                    ) * zoomScale
+                    path.move(to: CGPoint(x: x, y: 0))
+                    path.addLine(to: CGPoint(x: x, y: fullSize.height - 20))
                 }
             }
             .stroke(useColour, lineWidth: 0.15)
@@ -396,10 +397,21 @@ struct MainChartView: View {
         return ZStack {
             // X time labels
             ForEach(0 ..< hours + hours, id: \.self) { hour in
-                if screenHours > 12 && hour % 2 == 1 {
-                    // only show every second time label if screenHours is too big
-                    EmptyView()
-                } else {
+                // show every other label
+                if screenHours >= 12 && hour % 2 == 0 {
+                    Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
+                        .font(.caption)
+                        .position(
+                            x: (
+                                firstHourPosition(viewWidth: fullSize.width) +
+                                    oneSecondStep(viewWidth: fullSize.width) *
+                                    CGFloat(hour) * CGFloat(1.hours.timeInterval)
+                            ) * zoomScale,
+                            y: 10.0
+                        )
+                        .foregroundColor(.secondary)
+                } else if screenHours < 12 {
+                    // show every label
                     Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
                         .font(.caption)
                         .position(
