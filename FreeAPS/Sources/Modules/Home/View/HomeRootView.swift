@@ -553,6 +553,7 @@ extension Home {
         }
 
         @ViewBuilder private func bottomPanel(_ geo: GeometryProxy) -> some View {
+            let colorIcon: Color = (colorScheme == .dark ? Color.loopGray : Color.black).opacity(0.9)
             ZStack {
                 Rectangle().fill(Color.gray.opacity(0.2)).frame(height: 50 + geo.safeAreaInsets.bottom - 10)
 
@@ -619,7 +620,7 @@ extension Home {
                     Image("statistics")
                         .renderingMode(.template)
                         .resizable()
-                        .frame(width: 28, height: 28)
+                        .frame(width: 30, height: 30)
                         .padding(8)
                         .foregroundColor(.uam)
                         .onTapGesture { state.showModal(for: .statistics) }
@@ -628,12 +629,16 @@ extension Home {
                             impactHeavy.impactOccurred()
                             state.showModal(for: .autoisf)
                         }
+                        .foregroundColor(colorIcon)
+                        .buttonStyle(.borderless)
+
                     Spacer()
                     Button { state.showModal(for: .settings) }
                     label: {
                         Image("settings")
                             .renderingMode(.template)
                             .resizable()
+//                                .foregroundColor(.secondary)
                             .frame(width: 30, height: 30)
                             .padding(8)
                     }
