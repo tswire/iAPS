@@ -600,7 +600,7 @@ extension Home {
                     Image("statistics")
                         .renderingMode(.template)
                         .resizable()
-                        .frame(width: 28, height: 28)
+                        .frame(width: 30, height: 30)
                         .padding(8)
 //                        .foregroundColor(.uam)
                         .onTapGesture { state.showModal(for: .statistics) }
@@ -609,12 +609,17 @@ extension Home {
                             impactHeavy.impactOccurred()
                             state.showModal(for: .autoisf)
                         }
+                        .foregroundColor(colorIcon)
+                        .buttonStyle(.borderless)
 
                     Spacer()
                     Button { state.showModal(for: .settings) }
                     label: {
-                        Image(systemName: "slider.vertical.3")
-                            .font(.system(size: 30))
+                        Image("settings")
+                            .renderingMode(.template)
+                            .resizable()
+//                                .foregroundColor(.secondary)
+                            .frame(width: 30, height: 30)
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
