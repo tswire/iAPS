@@ -631,11 +631,11 @@ extension Home {
                     .foregroundColor(.clear)
                     .background(
                         LinearGradient(colors: [
-                            Color(red: 0.7215686275, green: 0.3411764706, blue: 1),
-                            Color(red: 0.6235294118, green: 0.4235294118, blue: 0.9803921569),
-                            Color(red: 0.4862745098, green: 0.5450980392, blue: 0.9529411765),
+                            Color(red: 0.262745098, green: 0.7333333333, blue: 0.9137254902),
                             Color(red: 0.3411764706, green: 0.6666666667, blue: 0.9254901961),
-                            Color(red: 0.262745098, green: 0.7333333333, blue: 0.9137254902)
+                            Color(red: 0.4862745098, green: 0.5450980392, blue: 0.9529411765),
+                            Color(red: 0.6235294118, green: 0.4235294118, blue: 0.9803921569),
+                            Color(red: 0.7215686275, green: 0.3411764706, blue: 1)
                         ], startPoint: .leading, endPoint: .trailing)
                             .mask(alignment: .leading) {
                                 Rectangle()
@@ -669,32 +669,27 @@ extension Home {
 
             ZStack(alignment: .bottom) {
                 HStack {
+                    Text("Bolusing")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                    Text(bolusString)
+                        .font(.subheadline)
+                    Spacer()
                     Button {
                         state.cancelBolus()
-
                     } label: {
-                        HStack(alignment: .center) {
-                            Text("Bolusing")
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                            Text(bolusString)
-                                .font(.subheadline)
-
-                            Spacer()
-
-                            Image(systemName: "xmark.app")
-                                .font(.system(size: 30))
-                                .padding(1)
-                        }
+                        Image(systemName: "xmark.circle")
+                            .font(.system(size: 22))
+                            .padding(1)
                     }.foregroundColor(colorIcon)
                 }.padding()
 
-                bolusProgressBar(progress).offset(y: 56)
+                bolusProgressBar(progress).offset(y: 48)
             }
             .background(colorRectangle)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .frame(height: 62, alignment: .center)
-            .padding(.horizontal, 10)
+            .frame(height: 20, alignment: .center)
+            .padding(10)
         }
 
         var body: some View {
@@ -764,17 +759,16 @@ extension Home {
 
                     Spacer()
 
-                    legendPanel
-
-                    Spacer()
-
                     ZStack(alignment: .bottom) {
-                        bottomPanel(geo)
-
+                        legendPanel
                         if let progress = state.bolusProgress {
                             bolusProgressView(geo, progress)
                         }
                     }
+
+                    Spacer()
+
+                    bottomPanel(geo)
                 }
                 .background(colorBackground)
                 .edgesIgnoringSafeArea([.horizontal, .bottom])
