@@ -733,7 +733,7 @@ extension Home {
                                 )!
                             )
                             .font(.system(size: 18, weight: .bold)).foregroundColor(.secondary)
-                            .offset(x: 80, y: 4)
+                            .offset(x: 55, y: 4)
                         }
                     }.padding(.top, 10)
 
