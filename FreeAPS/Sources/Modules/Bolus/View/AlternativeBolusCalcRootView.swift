@@ -162,44 +162,62 @@ extension Bolus {
                         label: { Text("Continue without bolus") }.frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-            }
-            .blur(radius: showInfo ? 3 : 0)
-            .navigationTitle("Enact Bolus")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                leading: Button {
-                    carbsView()
-                }
-                label: {
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text("Meal")
+            }.scrollContentBackground(.hidden).background(color)
+                .blur(radius: showInfo ? 3 : 0)
+                .navigationTitle("Enact Bolus")
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(
+                    leading: Button {
+                        carbsView()
                     }
-                },
-                trailing: Button { state.hideModal() }
-                label: { Text("Close") }
+                    label: {
+                        HStack {
+                            Image(systemName: "chevron.backward")
+                            Text("Meal")
+                        }
+                    },
+                    trailing: Button { state.hideModal() }
+                    label: { Text("Close") }
+                )
+                .onAppear {
+                    configureView {
+                        state.waitForSuggestionInitial = waitForSuggestion
+                        state.waitForSuggestion = waitForSuggestion
+                        state.insulinCalculated = state.calculateInsulin()
+                    }
+                }
+                .onDisappear {
+                    if fetch, hasFatOrProtein, !keepForNextWiew, state.useCalc {
+                        state.delete(deleteTwice: true, meal: meal)
+                    } else if fetch, !keepForNextWiew, state.useCalc {
+                        state.delete(deleteTwice: false, meal: meal)
+                    }
+                }
+                .popup(isPresented: showInfo, alignment: .top, direction: .bottom) {
+                    calculationsDetailView
+                }
+
+//                .sheet(isPresented: $showInfo) {
+//                    calculationsDetailView
+//                        .presentationDetents(
+//                            [fetch ? .large : .fraction(0.85), .large],
+//                            selection: $calculatorDetent
+//                        )
+//                }
+//                .scrollContentBackground(.hidden).background(color)
+        }
+
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(red: 0.011, green: 0.058, blue: 0.109),
+                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745)
+                ]),
+                startPoint: .bottom,
+                endPoint: .top
             )
-            .onAppear {
-                configureView {
-                    state.waitForSuggestionInitial = waitForSuggestion
-                    state.waitForSuggestion = waitForSuggestion
-                    state.insulinCalculated = state.calculateInsulin()
-                }
-            }
-            .onDisappear {
-                if fetch, hasFatOrProtein, !keepForNextWiew, state.useCalc {
-                    state.delete(deleteTwice: true, meal: meal)
-                } else if fetch, !keepForNextWiew, state.useCalc {
-                    state.delete(deleteTwice: false, meal: meal)
-                }
-            }
-            .sheet(isPresented: $showInfo) {
-                calculationsDetailView
-                    .presentationDetents(
-                        [fetch ? .large : .fraction(0.85), .large],
-                        selection: $calculatorDetent
-                    )
-            }
+                :
+                LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
         }
 
         var predictionChart: some View {
@@ -500,8 +518,8 @@ extension Bolus {
         }
 
         var calculationsDetailView: some View {
-            NavigationStack {
-                ScrollView {
+            ScrollView {
+                VStack {
                     Grid(alignment: .topLeading, horizontalSpacing: 3, verticalSpacing: 0) {
                         GridRow {
                             Text("Calculations").fontWeight(.bold).gridCellColumns(3).gridCellAnchor(.center).padding(.vertical)
@@ -593,13 +611,14 @@ extension Bolus {
                     Spacer()
 
                     Button { showInfo = false }
-                    label: { Text("Got it!").frame(maxWidth: .infinity, alignment: .center) }
+                    label: { Text("OK").frame(maxWidth: .infinity, alignment: .center) }
                         .buttonStyle(.bordered)
                         .padding(.top)
                 }
-                .padding([.horizontal, .bottom])
-                .font(.system(size: 15))
             }
+            .scrollContentBackground(.hidden).background(color)
+            .padding([.horizontal, .bottom])
+            .font(.system(size: 15))
         }
 
         private func insulinRounder(_ value: Decimal) -> Decimal {

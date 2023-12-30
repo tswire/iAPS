@@ -10,6 +10,7 @@ extension Stat {
         @Environment(\.horizontalSizeClass) var sizeClass
         let resolver: Resolver
         @StateObject var state = StateModel()
+        @Environment(\.colorScheme) var colorScheme
 
         @FetchRequest(
             entity: AutoISF.entity(),
@@ -22,6 +23,19 @@ extension Stat {
 
         var slots: CGFloat = 12
         var slotwidth: CGFloat = 1
+
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(red: 0.011, green: 0.058, blue: 0.109),
+                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745)
+                ]),
+                startPoint: .bottom,
+                endPoint: .top
+            )
+                :
+                LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
+        }
 
         @ViewBuilder func historyISF() -> some View {
             autoISFview
@@ -80,8 +94,9 @@ extension Stat {
                 }
                 .onAppear(perform: configureView)
                 .navigationBarTitle("History")
-                .navigationBarTitleDisplayMode(.automatic)
-                .navigationBarItems(leading: Button("Close", action: state.hideModal))
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(trailing: Button("Close", action: state.hideModal))
+                .scrollContentBackground(.hidden).background(color)
             }
         }
 

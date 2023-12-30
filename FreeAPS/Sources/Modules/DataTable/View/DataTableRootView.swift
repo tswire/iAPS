@@ -82,19 +82,20 @@ extension DataTable {
                     case .glucose: glucoseList
                     case .meals: state.historyLayout == .threeTabs ? AnyView(mealsList) : AnyView(EmptyView())
                     }
+                }.scrollContentBackground(.hidden)
+                    .background(color)
+            }.background(color)
+                .onAppear(perform: configureView)
+                .navigationTitle("History")
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(trailing: Button("Close", action: state.hideModal))
+                .sheet(isPresented: $showManualGlucose) {
+                    addGlucoseView
                 }
-            }
-            .onAppear(perform: configureView)
-            .navigationTitle("History")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button("Close", action: state.hideModal))
-            .sheet(isPresented: $showManualGlucose) {
-                addGlucoseView
-            }
-            .sheet(isPresented: $showExternalInsulin, onDismiss: { if isAmountUnconfirmed { state.externalInsulinAmount = 0
-                state.externalInsulinDate = Date() } }) {
-                addExternalInsulinView
-            }
+                .sheet(isPresented: $showExternalInsulin, onDismiss: { if isAmountUnconfirmed { state.externalInsulinAmount = 0
+                    state.externalInsulinDate = Date() } }) {
+                    addExternalInsulinView
+                }
         }
 
         private var treatmentsList: some View {
@@ -224,6 +225,19 @@ extension DataTable {
                     Image(systemName: showFutureEntries ? "calendar.badge.minus" : "calendar.badge.plus")
                 }.frame(maxWidth: .infinity, alignment: .trailing)
             }).buttonStyle(.borderless)
+        }
+
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(red: 0.011, green: 0.058, blue: 0.109),
+                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745)
+                ]),
+                startPoint: .bottom,
+                endPoint: .top
+            )
+                :
+                LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
         }
 
         @ViewBuilder private func treatmentView(_ item: Treatment) -> some View {

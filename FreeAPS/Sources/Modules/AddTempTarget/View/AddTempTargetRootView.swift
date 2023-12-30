@@ -16,6 +16,8 @@ extension AddTempTarget {
             sortDescriptors: [NSSortDescriptor(key: "date", ascending: false)]
         ) var isEnabledArray: FetchedResults<TempTargetsSlider>
 
+        @Environment(\.colorScheme) var colorScheme
+
         private var formatter: NumberFormatter {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
@@ -130,28 +132,28 @@ extension AddTempTarget {
                     Button { state.cancel() }
                     label: { Text("Cancel Temp Target") }
                 }
-            }
-            .popover(isPresented: $isPromptPresented) {
-                Form {
-                    Section(header: Text("Enter preset name")) {
-                        TextField("Name", text: $state.newPresetName)
-                        Button {
-                            state.save()
-                            isPromptPresented = false
+            }.scrollContentBackground(.hidden).background(color)
+                .popover(isPresented: $isPromptPresented) {
+                    Form {
+                        Section(header: Text("Enter preset name")) {
+                            TextField("Name", text: $state.newPresetName)
+                            Button {
+                                state.save()
+                                isPromptPresented = false
+                            }
+                            label: { Text("Save") }
+                            Button { isPromptPresented = false }
+                            label: { Text("Cancel") }
                         }
-                        label: { Text("Save") }
-                        Button { isPromptPresented = false }
-                        label: { Text("Cancel") }
                     }
                 }
-            }
-            .onAppear {
-                configureView()
-                state.hbt = isEnabledArray.first?.hbt ?? 160
-            }
-            .navigationTitle("Enact Temp Target")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button("Close", action: state.hideModal))
+                .onAppear {
+                    configureView()
+                    state.hbt = isEnabledArray.first?.hbt ?? 160
+                }
+                .navigationTitle("Enact Temp Target")
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(trailing: Button("Close", action: state.hideModal))
         }
 
         private func presetView(for preset: TempTarget) -> some View {
@@ -235,6 +237,19 @@ extension AddTempTarget {
                 target = Decimal(round(Double(state.low.asMgdL))) }
             if target > 100 || !state.settingsManager.preferences.lowTemptargetLowersSensitivity { maxSens = 100 }
             return maxSens
+        }
+
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(red: 0.011, green: 0.058, blue: 0.109),
+                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745)
+                ]),
+                startPoint: .bottom,
+                endPoint: .top
+            )
+                :
+                LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
         }
     }
 }
