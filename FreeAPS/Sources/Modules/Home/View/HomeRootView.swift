@@ -21,11 +21,11 @@ extension Home {
         }
 
         @State var timeButtons: [Buttons] = [
-            Buttons(label: "2 hours", number: "2", active: false, hours: 2),
-            Buttons(label: "4 hours", number: "4", active: false, hours: 4),
-            Buttons(label: "6 hours", number: "6", active: false, hours: 6),
-            Buttons(label: "12 hours", number: "12", active: false, hours: 12),
-            Buttons(label: "24 hours", number: "24", active: false, hours: 24)
+            Buttons(label: "2h", number: "2", active: false, hours: 2),
+            Buttons(label: "4h", number: "4", active: false, hours: 4),
+            Buttons(label: "6h", number: "6", active: false, hours: 6),
+            Buttons(label: "12h", number: "12", active: false, hours: 12),
+            Buttons(label: "24h", number: "24", active: false, hours: 24)
         ]
 
         let buttonFont = Font.custom("TimeButtonFont", size: 14)
@@ -356,14 +356,18 @@ extension Home {
 
         var timeInterval: some View {
             HStack(alignment: .center) {
+                Text(
+                    "TDD " + (numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0")
+                ).font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
                 Group {
                     Text(
-                        "TDD " + (numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0")
-                    ).font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
-                    Text(
                         "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
-                    ).font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
+                    )
+                    Text(
+                        "7d " + (numberFormatter.string(from: (state.suggestion?.tdd7d ?? 0) as NSNumber) ?? "0")
+                    )
                 }
+                .font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
                 Text(" | ").foregroundColor(.secondary)
                     .font(.system(size: 12, weight: .light))
                 ForEach(timeButtons) { button in
@@ -371,7 +375,7 @@ extension Home {
                         state.hours = button.hours
                     }
                     .foregroundStyle(button.active ? (colorScheme == .dark ? Color.white : Color.black).opacity(0.9) : .secondary)
-                    .frame(maxHeight: 25).padding(.horizontal, 4)
+                    .frame(maxHeight: 20).padding(.horizontal, 4)
                     .background(
                         button.active ?
                             // RGB(30, 60, 95)
@@ -382,13 +386,13 @@ extension Home {
                             Color
                             .clear
                     )
-                    .cornerRadius(10)
+                    .cornerRadius(4)
                 }
+                .shadow(
+                    color: Color.black.opacity(colorScheme == .dark ? 0.75 : 0.33),
+                    radius: colorScheme == .dark ? 5 : 3
+                )
             }
-            .shadow(
-                color: Color.black.opacity(colorScheme == .dark ? 0.75 : 0.33),
-                radius: colorScheme == .dark ? 5 : 3
-            )
             .font(buttonFont)
         }
 
