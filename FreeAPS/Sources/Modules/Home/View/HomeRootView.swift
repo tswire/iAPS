@@ -355,27 +355,30 @@ extension Home {
         }
 
         var timeInterval: some View {
-            HStack(alignment: .center) {
-                Text(
-                    "TDD " + (numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0")
-                ).font(.system(size: 12, weight: .bold)).foregroundColor(.insulin)
+            HStack(alignment: .center, spacing: 4) {
+                Spacer()
                 Group {
-                    Text(
-                        "ytd. " + (numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
-                    )
-                    Text(
-                        "7d " + (numberFormatter.string(from: (state.suggestion?.tdd7d ?? 0) as NSNumber) ?? "0")
-                    )
-                }
-                .font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
-                Text(" | ").foregroundColor(.secondary)
+                    Text("TDD").foregroundColor(.insulin)
+                    Text(numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0").foregroundColor(.primary)
+                }.font(.system(size: 12, weight: .bold))
+                Group {
+                    Text("ytd.").foregroundColor(.insulin).padding(.leading, 4)
+                    Text(numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
+                        .foregroundColor(.primary)
+                    Text("Ø7d").foregroundColor(.insulin).padding(.leading, 4)
+                    Text(numberFormatter.string(from: (state.suggestion?.tdd7d ?? 0) as NSNumber) ?? "0")
+                        .foregroundColor(.primary)
+                }.font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
+                Text(" | ")
+                    .foregroundColor(.secondary)
                     .font(.system(size: 12, weight: .light))
+                    .padding(.horizontal, 8)
                 ForEach(timeButtons) { button in
                     Text(button.active ? NSLocalizedString(button.label, comment: "") : button.number).onTapGesture {
                         state.hours = button.hours
                     }
                     .foregroundStyle(button.active ? (colorScheme == .dark ? Color.white : Color.black).opacity(0.9) : .secondary)
-                    .frame(maxHeight: 20).padding(.horizontal, 4)
+                    .frame(maxHeight: 20).padding(.horizontal, 6)
                     .background(
                         button.active ?
                             // RGB(30, 60, 95)
@@ -392,6 +395,7 @@ extension Home {
                     color: Color.black.opacity(colorScheme == .dark ? 0.75 : 0.33),
                     radius: colorScheme == .dark ? 5 : 3
                 )
+                Spacer()
             }
             .font(buttonFont)
         }
