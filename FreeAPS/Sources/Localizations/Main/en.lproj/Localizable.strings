@@ -1336,6 +1336,9 @@ Enact a temp Basal or a temp target */
 "Return to Normal" = "Return to Normal";
 
 /* Alert */
+"Cancel Temp Target" = "Cancel Temp Target";
+
+/* Alert */
 "Return to Normal?" = "Return to Normal?";
 
 /* */
