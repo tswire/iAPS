@@ -391,7 +391,7 @@ final class OpenAPS {
                         promise(.success(nil))
                     }
                 } else {
-                    debug(.openAPS, "Autosens skipped, due to autosensMax=autosensMin=\(asmax)")
+                    debug(.openAPS, "Autosens skipped, due to being disabled.")
                     promise(.success(nil))
                 }
             }
