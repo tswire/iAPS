@@ -35,6 +35,25 @@ extension Bolus {
             } else { return 0 }
         }
 
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color("Background_1"),
+                    Color("Background_1"),
+                    Color("Background_2"),
+                    Color("Background_1")
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
         var body: some View {
             Form {
                 Section {
@@ -120,53 +139,53 @@ extension Bolus {
                         label: { Text("Continue without bolus") }.frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-            }
-            .alert(isPresented: $displayError) {
-                Alert(
-                    title: Text("Warning!"),
-                    message: Text("\n" + alertString() + "\n"),
-                    primaryButton: .destructive(
-                        Text("Add"),
-                        action: {
-                            state.amount = state.insulinRecommended
-                            displayError = false
-                        }
-                    ),
-                    secondaryButton: .cancel()
-                )
-            }.onAppear {
-                configureView {
-                    state.waitForSuggestionInitial = waitForSuggestion
-                    state.waitForSuggestion = waitForSuggestion
-                }
-            }
-
-            .onDisappear {
-                if fetch, hasFatOrProtein, !keepForNextWiew, !state.useCalc {
-                    state.delete(deleteTwice: true, meal: meal)
-                } else if fetch, !keepForNextWiew, !state.useCalc {
-                    state.delete(deleteTwice: false, meal: meal)
-                }
-            }
-
-            .navigationTitle("Enact Bolus")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                leading: Button {
-                    carbsView()
-                }
-                label: {
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text("Meal")
+            }.scrollContentBackground(.hidden).background(color)
+                .alert(isPresented: $displayError) {
+                    Alert(
+                        title: Text("Warning!"),
+                        message: Text("\n" + alertString() + "\n"),
+                        primaryButton: .destructive(
+                            Text("Add"),
+                            action: {
+                                state.amount = state.insulinRecommended
+                                displayError = false
+                            }
+                        ),
+                        secondaryButton: .cancel()
+                    )
+                }.onAppear {
+                    configureView {
+                        state.waitForSuggestionInitial = waitForSuggestion
+                        state.waitForSuggestion = waitForSuggestion
                     }
-                },
-                trailing: Button { state.hideModal() }
-                label: { Text("Close") }
-            )
-            .popup(isPresented: presentInfo, alignment: .center, direction: .bottom) {
-                bolusInfo
-            }
+                }
+
+                .onDisappear {
+                    if fetch, hasFatOrProtein, !keepForNextWiew, !state.useCalc {
+                        state.delete(deleteTwice: true, meal: meal)
+                    } else if fetch, !keepForNextWiew, !state.useCalc {
+                        state.delete(deleteTwice: false, meal: meal)
+                    }
+                }
+
+                .navigationTitle("Enact Bolus")
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(
+                    leading: Button {
+                        carbsView()
+                    }
+                    label: {
+                        HStack {
+                            Image(systemName: "chevron.backward")
+                            Text("Meal")
+                        }
+                    },
+                    trailing: Button { state.hideModal() }
+                    label: { Text("Close") }
+                )
+                .popup(isPresented: presentInfo, alignment: .center, direction: .bottom) {
+                    bolusInfo
+                }
         }
 
         var disabled: Bool {

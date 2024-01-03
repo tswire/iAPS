@@ -42,6 +42,25 @@ extension OverrideProfilesConfig {
             return formatter
         }
 
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color("Background_1"),
+                    Color("Background_1"),
+                    Color("Background_2"),
+                    Color("Background_1")
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
         var presetPopover: some View {
             Form {
                 Section {
@@ -271,7 +290,7 @@ extension OverrideProfilesConfig {
                 .onAppear(perform: configureView)
                 .onAppear { state.savedSettings() }
                 .navigationBarTitle("Profiles")
-                .navigationBarTitleDisplayMode(.automatic)
+                .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button("Close", action: state.hideModal))
         }
 
@@ -350,19 +369,6 @@ extension OverrideProfilesConfig {
             } catch {
                 // To do: add error
             }
-        }
-
-        private var color: LinearGradient {
-            colorScheme == .dark ? LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(red: 0.011, green: 0.058, blue: 0.109),
-                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745)
-                ]),
-                startPoint: .bottom,
-                endPoint: .top
-            )
-                :
-                LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
         }
     }
 }

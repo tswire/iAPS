@@ -109,6 +109,25 @@ extension Home {
             return scene
         }
 
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color("Background_1"),
+                    Color("Background_1"),
+                    Color("Background_2"),
+                    Color("Background_1")
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
         @ViewBuilder func header(_: GeometryProxy) -> some View {
             HStack {
                 Spacer()
@@ -477,32 +496,6 @@ extension Home {
             .modal(for: .dataTable, from: self)
         }
 
-        private func selectedProfile() -> (name: String, isOn: Bool) {
-            var profileString = ""
-            var display: Bool = false
-
-            let duration = (fetchedPercent.first?.duration ?? 0) as Decimal
-            let indefinite = fetchedPercent.first?.indefinite ?? false
-            let addedMinutes = Int(duration)
-            let date = fetchedPercent.first?.date ?? Date()
-            if date.addingTimeInterval(addedMinutes.minutes.timeInterval) > Date() || indefinite {
-                display.toggle()
-            }
-
-            if fetchedPercent.first?.enabled ?? false, !(fetchedPercent.first?.isPreset ?? false), display {
-                profileString = NSLocalizedString("Custom Profile", comment: "Custom but unsaved Profile")
-            } else if !(fetchedPercent.first?.enabled ?? false) || !display {
-                profileString = NSLocalizedString("Normal Profile", comment: "Your normal Profile. Use a short string")
-            } else {
-                let id_ = fetchedPercent.first?.id ?? ""
-                let profile = fetchedProfiles.filter({ $0.id == id_ }).first
-                if profile != nil {
-                    profileString = profile?.name?.description ?? ""
-                }
-            }
-            return (name: profileString, isOn: display)
-        }
-
         func highlightButtons() {
             for i in 0 ..< timeButtons.count {
                 timeButtons[i].active = timeButtons[i].hours == state.hours
@@ -510,15 +503,11 @@ extension Home {
         }
 
         @ViewBuilder private func bottomPanel(_: GeometryProxy) -> some View {
-            let colorRectangle: Color = colorScheme == .dark ? Color(
-                red: 0.05490196078,
-                green: 0.05490196078,
-                blue: 0.05490196078
-            ) : Color.white
-            let colorIcon: Color = (colorScheme == .dark ? Color.loopGray : Color.black).opacity(0.9)
+            let colorIcon: Color = (colorScheme == .dark ? Color.white : Color.black).opacity(0.9)
+
             ZStack {
                 Rectangle()
-                    .fill(colorRectangle)
+                    .fill(Color("Chart"))
                     .frame(height: UIScreen.main.bounds.height / 13)
                     .cornerRadius(15)
                     .shadow(
@@ -597,8 +586,8 @@ extension Home {
 //                    Button {
 //                        state.showModal(for: .overrideProfilesConfig)
 //                    } label: {
-//                        Image(systemName: "person.fill")
-//                            .font(.system(size: 30))
+//                        Image(systemName: "person")
+//                            .font(.system(size: 30, weight: .light))
 //                            .padding(8)
 //                    }
 //                    .foregroundColor(colorIcon)
@@ -661,9 +650,7 @@ extension Home {
 
         @ViewBuilder func bolusProgressView(_: GeometryProxy, _ progress: Decimal) -> some View {
             let colorRectangle: Color = colorScheme == .dark ? Color(
-                red: 0.05490196078,
-                green: 0.05490196078,
-                blue: 0.05490196078
+                "Chart"
             ) : Color.white
 
             let colorIcon = (colorScheme == .dark ? Color.white : Color.black).opacity(0.9)
@@ -707,26 +694,6 @@ extension Home {
         }
 
         var body: some View {
-            let colorBackground = colorScheme == .dark ? LinearGradient(
-                gradient: Gradient(colors: [
-                    // RGB(10, 34, 55)
-                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745),
-                    // RGB(3, 15, 28)
-                    Color(red: 0.011, green: 0.058, blue: 0.109),
-                    // RGB(10, 34, 55)
-                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-                :
-                LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
-            let colourChart: Color = colorScheme == .dark ? Color(
-                red: 0.05490196078,
-                green: 0.05490196078,
-                blue: 0.05490196078
-            ) : .white
-
             GeometryReader { geo in
                 VStack(spacing: 0) {
                     ZStack(alignment: .bottomTrailing) {
@@ -741,7 +708,7 @@ extension Home {
                                 )!
                             )
                             .font(.system(size: 18, weight: .bold)).foregroundColor(.secondary)
-                            .offset(x: 55, y: 4)
+                            .offset(x: 45, y: 4)
                         }
                     }.padding(.top, 10)
 
@@ -757,7 +724,7 @@ extension Home {
                         .padding(.horizontal, 10)
 
                     RoundedRectangle(cornerRadius: 15)
-                        .fill(colourChart)
+                        .fill(Color("Chart"))
                         .overlay(mainChart)
                         .clipShape(RoundedRectangle(cornerRadius: 15))
                         .shadow(
@@ -784,7 +751,7 @@ extension Home {
 
                     bottomPanel(geo)
                 }
-                .background(colorBackground)
+                .background(color)
                 .edgesIgnoringSafeArea([.horizontal, .bottom])
             }
             .onChange(of: state.hours) { _ in

@@ -55,6 +55,25 @@ extension Bolus {
             } else { return 0 }
         }
 
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color("Background_1"),
+                    Color("Background_1"),
+                    Color("Background_2"),
+                    Color("Background_1")
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
         var body: some View {
             Form {
                 Section {
@@ -65,7 +84,6 @@ extension Bolus {
                     }
                 } header: { Text("Predictions") }
 
-                Section {}
                 if fetch {
                     Section {
                         mealEntries
@@ -196,28 +214,13 @@ extension Bolus {
                 .popup(isPresented: showInfo, alignment: .top, direction: .bottom) {
                     calculationsDetailView
                 }
-
 //                .sheet(isPresented: $showInfo) {
 //                    calculationsDetailView
 //                        .presentationDetents(
-//                            [fetch ? .large : .fraction(0.85), .large],
+//                            [fetch ? .large : .fraction(0.9), .large],
 //                            selection: $calculatorDetent
 //                        )
 //                }
-//                .scrollContentBackground(.hidden).background(color)
-        }
-
-        private var color: LinearGradient {
-            colorScheme == .dark ? LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(red: 0.011, green: 0.058, blue: 0.109),
-                    Color(red: 0.03921568627, green: 0.1333333333, blue: 0.2156862745)
-                ]),
-                startPoint: .bottom,
-                endPoint: .top
-            )
-                :
-                LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
         }
 
         var predictionChart: some View {
