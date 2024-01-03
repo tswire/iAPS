@@ -1341,7 +1341,7 @@ Enact a temp Basal or a temp target */
 "Cancel Profile Override" = "Zrušiť prepísanie profilu?";
 
 /* Alert */
-"Cancel Temp Target" = "Zrušiť dočasný cieľ?";
+"Cancel Temp Target" = "Zrušiť dočasný cieľ";
 
 /* Alert */
 "Return to Normal?" = "Návrat do normálu?";
