@@ -8,6 +8,26 @@ extension NotificationsConfig {
         let resolver: Resolver
         @StateObject var state = StateModel()
 
+        @Environment(\.colorScheme) var colorScheme
+        var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color("Background_1"),
+                    Color("Background_1"),
+                    Color("Background_2")
+                    // Color("Background_1")
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
         @State private var systemLiveActivitySetting: Bool = {
             if #available(iOS 16.1, *) {
                 ActivityAuthorizationInfo().areActivitiesEnabled
@@ -99,6 +119,7 @@ extension NotificationsConfig {
                     })
                 }
             }
+            .scrollContentBackground(.hidden).background(color)
             .onAppear(perform: configureView)
             .navigationBarTitle("Notifications")
             .navigationBarTitleDisplayMode(.automatic)

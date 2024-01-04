@@ -68,6 +68,25 @@ extension AutoISFConf {
         }
 
         @State private var infoButtonPressed: InfoText?
+        @Environment(\.colorScheme) var colorScheme
+        var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color("Background_1"),
+                    Color("Background_1"),
+                    Color("Background_2")
+                    // Color("Background_1")
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
 
         var body: some View {
             Form {
@@ -141,6 +160,7 @@ extension AutoISFConf {
                     }
                 }
             }
+            .scrollContentBackground(.hidden).background(color)
             .onAppear(perform: configureView)
             .navigationTitle("autoISF Configuration")
             .navigationBarTitleDisplayMode(.automatic)
