@@ -28,10 +28,8 @@ extension AddTempTarget {
         private var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
-                    Color("Background_1"),
-                    Color("Background_1"),
-                    Color("Background_2")
-                    // Color("Background_1")
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -151,28 +149,36 @@ extension AddTempTarget {
                     Button { state.cancel() }
                     label: { Text("Cancel Temp Target") }
                 }
-            }.scrollContentBackground(.hidden).background(color)
-                .popover(isPresented: $isPromptPresented) {
-                    Form {
-                        Section(header: Text("Enter preset name")) {
-                            TextField("Name", text: $state.newPresetName)
-                            Button {
-                                state.save()
-                                isPromptPresented = false
-                            }
-                            label: { Text("Save") }
-                            Button { isPromptPresented = false }
-                            label: { Text("Cancel") }
+            }
+            .scrollContentBackground(.hidden).background(color)
+            .popover(isPresented: $isPromptPresented) {
+                Form {
+                    Section(header: Text("Enter preset name")) {
+                        TextField("Name", text: $state.newPresetName)
+                        Button {
+                            state.save()
+                            isPromptPresented = false
                         }
+                        label: { Text("Save") }
+                        Button { isPromptPresented = false }
+                        label: { Text("Cancel") }
                     }
                 }
-                .onAppear {
-                    configureView()
-                    state.hbt = isEnabledArray.first?.hbt ?? 160
+            }
+            .scrollContentBackground(.hidden).background(color)
+            .onAppear {
+                configureView()
+                state.hbt = isEnabledArray.first?.hbt ?? 160
+            }
+            .navigationTitle("Enact Temp Target")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        state.hideModal()
+                    }
                 }
-                .navigationTitle("Enact Temp Target")
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: Button("Close", action: state.hideModal))
+            }
         }
 
         private func presetView(for preset: TempTarget) -> some View {

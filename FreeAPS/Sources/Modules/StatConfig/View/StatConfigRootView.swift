@@ -10,10 +10,8 @@ extension StatConfig {
         var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
-                    Color("Background_1"),
-                    Color("Background_1"),
-                    Color("Background_2")
-                    // Color("Background_1")
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -91,7 +89,6 @@ extension StatConfig {
             .onAppear(perform: configureView)
             .navigationBarTitle("UI/UX")
             .navigationBarTitleDisplayMode(.automatic)
-            .navigationBarItems(trailing: Button("Close", action: state.hideModal))
         }
     }
 }

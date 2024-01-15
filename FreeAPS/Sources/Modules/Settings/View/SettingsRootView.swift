@@ -13,10 +13,8 @@ extension Settings {
         private var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
-                    Color("Background_1"),
-                    Color("Background_1"),
-                    Color("Background_2")
-                    // Color("Background_1")
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -154,15 +152,22 @@ extension Settings {
                             showShareSheet = true
                         }
                 }
-            }.scrollContentBackground(.hidden).background(color)
-                .sheet(isPresented: $showShareSheet) {
-                    ShareSheet(activityItems: state.logItems())
+            }
+            .sheet(isPresented: $showShareSheet) {
+                ShareSheet(activityItems: state.logItems())
+            }
+            .scrollContentBackground(.hidden).background(color)
+            .onAppear(perform: configureView)
+            .navigationTitle("Settings")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        state.hideSettingsModal()
+                    }
                 }
-                .onAppear(perform: configureView)
-                .navigationTitle("Settings")
-                .navigationBarItems(trailing: Button("Close", action: state.hideSettingsModal))
-                .navigationBarTitleDisplayMode(.inline)
-                .onDisappear(perform: { state.uploadProfileAndSettings(false) })
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .onDisappear(perform: { state.uploadProfileAndSettings(false) })
         }
     }
 }

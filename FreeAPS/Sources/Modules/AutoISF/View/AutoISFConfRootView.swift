@@ -69,13 +69,12 @@ extension AutoISFConf {
 
         @State private var infoButtonPressed: InfoText?
         @Environment(\.colorScheme) var colorScheme
-        var color: LinearGradient {
+
+        private var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
-                    Color("Background_1"),
-                    Color("Background_1"),
-                    Color("Background_2")
-                    // Color("Background_1")
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
                 ]),
                 startPoint: .top,
                 endPoint: .bottom

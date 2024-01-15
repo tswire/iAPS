@@ -83,7 +83,6 @@ struct AdaptsToSoftwareKeyboard: ViewModifier {
             .padding(.bottom, currentHeight).animation(.easeOut(duration: 0.25))
             .edgesIgnoringSafeArea(currentHeight == 0 ? Edge.Set() : .bottom)
             .onAppear(perform: subscribeToKeyboardChanges)
-        
     }
 
     private let keyboardHeightOnOpening = Foundation.NotificationCenter.default

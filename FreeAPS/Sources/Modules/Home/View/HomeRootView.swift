@@ -112,10 +112,9 @@ extension Home {
         private var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
-                    Color("Background_1"),
-                    Color("Background_1"),
-                    Color("Background_2"),
-                    Color("Background_1")
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue,
+                    Color.bgDarkBlue
                 ]),
                 startPoint: .top,
                 endPoint: .bottom

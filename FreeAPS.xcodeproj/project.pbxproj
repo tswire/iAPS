@@ -2652,8 +2652,8 @@
 				388E597225AD9CF10019842D /* json in Resources */,
 				38DF178E27733E6800B3528F /* Assets.xcassets in Resources */,
 				19DA48E829CD339B00EEA1E7 /* Assets.xcassets in Resources */,
-				388E596F25AD96040019842D /* javascript_disf in Resources */,
-				388E596F25AD96040019842D /* javascript_disf in Resources */,
+				388E596F25AD96040019842D /* javascript in Resources */,
+				388E596F25AD96040019842D /* javascript in Resources */,
 				B9CAAEFC2AE70836000F68BC /* branch.txt in Resources */,
 				1927C8E62744606D00347C69 /* InfoPlist.strings in Resources */,
 			);
@@ -3339,7 +3339,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_BUILD_NUMBER;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "$(DEVELOPER_TEAM)";
+				DEVELOPMENT_TEAM = M8UYM6388E;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3381,7 +3381,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_BUILD_NUMBER;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "$(DEVELOPER_TEAM)";
+				DEVELOPMENT_TEAM = M8UYM6388E;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

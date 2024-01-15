@@ -19,10 +19,8 @@ extension OverrideProfilesConfig {
         var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
-                    Color("Background_1"),
-                    Color("Background_1"),
-                    Color("Background_2")
-                    // Color("Background_1")
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -285,12 +283,19 @@ extension OverrideProfilesConfig {
                 .buttonStyle(BorderlessButtonStyle())
                 .disabled(!state.isEnabled)
                 .tint(.red)
-            }.scrollContentBackground(.hidden).background(color)
-                .onAppear(perform: configureView)
-                .onAppear { state.savedSettings() }
-                .navigationBarTitle("Profiles")
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: Button("Close", action: state.hideModal))
+            }
+            .scrollContentBackground(.hidden).background(color)
+            .onAppear(perform: configureView)
+            .onAppear { state.savedSettings() }
+            .navigationBarTitle("Profiles")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Close") {
+                        state.hideModal()
+                    }
+                }
+            }
         }
 
         @ViewBuilder private func profilesView(for preset: OverridePresets) -> some View {

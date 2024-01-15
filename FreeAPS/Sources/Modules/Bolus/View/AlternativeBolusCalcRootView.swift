@@ -58,10 +58,8 @@ extension Bolus {
         private var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
-                    Color("Background_1"),
-                    Color("Background_1"),
-                    Color("Background_2")
-                    // Color("Background_1")
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -84,6 +82,7 @@ extension Bolus {
                     }
                 } header: { Text("Predictions") }
 
+                Section {}
                 if fetch {
                     Section {
                         mealEntries
@@ -180,47 +179,52 @@ extension Bolus {
                         label: { Text("Continue without bolus") }.frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-            }.scrollContentBackground(.hidden).background(color)
-                .blur(radius: showInfo ? 3 : 0)
-                .navigationTitle("Enact Bolus")
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(
-                    leading: Button {
-                        carbsView()
-                    }
-                    label: {
-                        HStack {
-                            Image(systemName: "chevron.backward")
-                            Text("Meal")
+            }
+            .blur(radius: showInfo ? 3 : 0)
+            .navigationTitle("Enact Bolus")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if !fetch {
+                        Button("Close") {
+                            state.hideModal()
                         }
-                    },
-                    trailing: Button { state.hideModal() }
-                    label: { Text("Close") }
-                )
-                .onAppear {
-                    configureView {
-                        state.waitForSuggestionInitial = waitForSuggestion
-                        state.waitForSuggestion = waitForSuggestion
-                        state.insulinCalculated = state.calculateInsulin()
+                    } else {
+                        Button {
+                            keepForNextWiew = true
+                            state.backToCarbsView(complexEntry: true, meal, override: false)
+                        } label: {
+                            HStack {
+                                Image(systemName: "chevron.backward")
+                                Text("Meal")
+                            }
+                        }
                     }
                 }
-                .onDisappear {
-                    if fetch, hasFatOrProtein, !keepForNextWiew, state.useCalc {
-                        state.delete(deleteTwice: true, meal: meal)
-                    } else if fetch, !keepForNextWiew, state.useCalc {
-                        state.delete(deleteTwice: false, meal: meal)
-                    }
+            }
+            .scrollContentBackground(.hidden).background(color)
+            .onAppear {
+                configureView {
+                    state.waitForSuggestionInitial = waitForSuggestion
+                    state.waitForSuggestion = waitForSuggestion
+                    state.insulinCalculated = state.calculateInsulin()
                 }
-                .popup(isPresented: showInfo, alignment: .top, direction: .bottom) {
-                    calculationsDetailView
+            }
+            .onDisappear {
+                if fetch, hasFatOrProtein, !keepForNextWiew, state.useCalc {
+                    state.delete(deleteTwice: true, meal: meal)
+                } else if fetch, !keepForNextWiew, state.useCalc {
+                    state.delete(deleteTwice: false, meal: meal)
                 }
-//                .sheet(isPresented: $showInfo) {
-//                    calculationsDetailView
-//                        .presentationDetents(
-//                            [fetch ? .large : .fraction(0.9), .large],
-//                            selection: $calculatorDetent
-//                        )
-//                }
+            }
+            .popup(isPresented: showInfo, alignment: .top, direction: .bottom) {
+//            .sheet(isPresented: $showInfo) {
+                calculationsDetailView
+                    .presentationDetents(
+                        [fetch ? .large : .fraction(0.9), .large],
+                        selection: $calculatorDetent
+                    )
+            }
         }
 
         var predictionChart: some View {
@@ -614,7 +618,7 @@ extension Bolus {
                     Spacer()
 
                     Button { showInfo = false }
-                    label: { Text("OK").frame(maxWidth: .infinity, alignment: .center) }
+                    label: { Text("Got it!").frame(maxWidth: .infinity, alignment: .center) }
                         .buttonStyle(.bordered)
                         .padding(.top)
                 }
@@ -639,15 +643,6 @@ extension Bolus {
 
         var hasFatOrProtein: Bool {
             ((meal.first?.fat ?? 0) > 0) || ((meal.first?.protein ?? 0) > 0)
-        }
-
-        func carbsView() {
-            if fetch {
-                keepForNextWiew = true
-                state.backToCarbsView(complexEntry: true, meal, override: false)
-            } else {
-                state.backToCarbsView(complexEntry: false, meal, override: true)
-            }
         }
 
         var mealEntries: some View {

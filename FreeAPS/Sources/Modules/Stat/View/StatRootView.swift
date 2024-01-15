@@ -40,10 +40,8 @@ extension Stat {
         private var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
-                    Color("Background_1"),
-                    Color("Background_1"),
-                    Color("Background_2")
-                    // Color("Background_1")
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -166,11 +164,18 @@ extension Stat {
                 }
                 .pickerStyle(.segmented).background(.cyan.opacity(0.2))
                 stats()
-            }.background(color)
-                .onAppear(perform: configureView)
-                .navigationBarTitle("Statistics")
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: Button("Close", action: state.hideModal))
+            }
+            .scrollContentBackground(.hidden).background(color)
+            .onAppear(perform: configureView)
+            .navigationBarTitle("Statistics")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        state.hideModal()
+                    }
+                }
+            }
         }
     }
 }
