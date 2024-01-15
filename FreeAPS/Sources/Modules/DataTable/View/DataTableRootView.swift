@@ -144,11 +144,13 @@ extension DataTable {
             List {
                 HStack {
                     Text("Type").foregroundStyle(.secondary)
+                        .font(.caption)
                     Spacer()
                     if state.historyLayout == .twoTabs {
                         filterEntriesButton
                     } else {
                         Text("Time").foregroundStyle(.secondary)
+                            .font(.caption)
                     }
                 }
                 if !state.treatments.isEmpty {
@@ -167,6 +169,7 @@ extension DataTable {
             List {
                 HStack {
                     Text("Type").foregroundStyle(.secondary)
+                        .font(.caption)
                     Spacer()
                     filterEntriesButton
                 }
@@ -189,6 +192,7 @@ extension DataTable {
                     Spacer()
                     Text("Time").foregroundStyle(.secondary)
                 }
+                .font(.caption)
                 if !state.glucose.isEmpty {
                     ForEach(state.glucose) { item in
                         glucoseView(item, isManual: item.glucose)
