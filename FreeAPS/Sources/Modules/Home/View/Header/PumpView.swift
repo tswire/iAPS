@@ -130,7 +130,6 @@ struct PumpView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(maxHeight: 12)
                         .foregroundColor(timerColor)
-
                     Text(remainingTimeString(time: date.timeIntervalSince(timerDate))).font(.callout).fontWeight(.bold)
                 }
             }
@@ -138,27 +137,31 @@ struct PumpView: View {
     }
 
     private func remainingTimeString(time: TimeInterval) -> String {
-        guard time > 0 else {
+        guard (time + 7) > 0 else {
             return NSLocalizedString("Replace pod", comment: "View/Header when pod expired")
         }
 
-        var time = time
-        let days = Int(time / 1.days.timeInterval)
-        time -= days.days.timeInterval
-        let hours = Int(time / 1.hours.timeInterval)
-        time -= hours.hours.timeInterval
-        let minutes = Int(time / 1.minutes.timeInterval)
+//        var time = time
+//        let days = Int(time / 1.days.timeInterval)
+//        time -= days.days.timeInterval
+//        let hours = Int(time / 1.hours.timeInterval)
+//        time -= hours.hours.timeInterval
+//        let minutes = Int(time / 1.minutes.timeInterval)
 
-        if days >= 1 {
-            return "\(days)" + NSLocalizedString("d", comment: "abbreviation for days") + " \(hours)" +
-                NSLocalizedString("h", comment: "abbreviation for hours")
+        let remainingTime = time + 8 * 60 * 60
+        let hours = floor(remainingTime / 60 / 60)
+        let minutes = floor((remainingTime - (hours * 60 * 60)) / 60)
+
+        if hours >= 8 {
+            return "\(Int(hours))" + NSLocalizedString("h", comment: "abbreviation for hours")
         }
 
         if hours >= 1 {
-            return "\(hours)" + NSLocalizedString("h", comment: "abbreviation for hours")
+            return "\(Int(hours))" + NSLocalizedString("h", comment: "abbreviation for hours") + ":\(Int(minutes))" +
+                NSLocalizedString("m", comment: "abbreviation for minutes")
         }
 
-        return "\(minutes)" + NSLocalizedString("m", comment: "abbreviation for minutes")
+        return "\(Int(minutes))" + NSLocalizedString("m", comment: "abbreviation for minutes")
     }
 
     private var batteryColor: Color {
