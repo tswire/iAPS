@@ -122,15 +122,6 @@ extension PreferencesEditor {
                     settable: self
                 ),
                 Field(
-                    displayName: NSLocalizedString("Enable Autosens", comment: "Enable Autosens"),
-                    type: .boolean(keypath: \.enableAutosens),
-                    infoText: NSLocalizedString(
-                        "Switch Autosens on/off",
-                        comment: "Autosens"
-                    ),
-                    settable: self
-                ),
-                Field(
                     displayName: NSLocalizedString("Autosens Max", comment: "Autosens Max"),
                     type: .decimal(keypath: \.autosensMax),
                     infoText: NSLocalizedString(
