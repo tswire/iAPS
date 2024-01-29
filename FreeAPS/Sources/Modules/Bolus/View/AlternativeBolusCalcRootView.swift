@@ -192,7 +192,13 @@ extension Bolus {
                     } else {
                         Button {
                             keepForNextWiew = true
-                            state.backToCarbsView(complexEntry: true, meal, override: false)
+                            state.backToCarbsView(
+                                complexEntry: true,
+                                meal,
+                                override: false,
+                                deleteNothing: true,
+                                editMode: false
+                            )
                         } label: {
                             HStack {
                                 Image(systemName: "chevron.backward")
@@ -300,6 +306,32 @@ extension Bolus {
                     Text("U").foregroundColor(.secondary)
                 }.fontWeight(.bold)
                     .gridColumnAlignment(.trailing)
+            }
+        }
+
+        var calcGlucoseSecondRow: some View {
+            GridRow(alignment: .center) {
+                let currentBG = state.units == .mmolL ? state.currentBG.asMmolL : state.currentBG
+                Text(
+                    currentBG
+                        .formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))) +
+                        " " +
+                        state.units.rawValue
+                )
+
+                let secondRow = state.targetDifference
+                    .formatted(
+                        .number.grouping(.never).rounded()
+                            .precision(.fractionLength(fractionDigits))
+                    )
+                    + " / " +
+                    state.isf.formatted()
+                    + " ≈ " +
+                    self.insulinRounder(state.targetDifferenceInsulin).formatted()
+
+                Text(secondRow).foregroundColor(.secondary).gridColumnAlignment(.leading)
+
+                Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             }
         }
 

@@ -177,7 +177,13 @@ extension Bolus {
                         } else {
                             Button {
                                 keepForNextWiew = true
-                                state.backToCarbsView(complexEntry: true, meal, override: false)
+                                state.backToCarbsView(
+                                    complexEntry: true,
+                                    meal,
+                                    override: false,
+                                    deleteNothing: true,
+                                    editMode: false
+                                )
                             } label: {
                                 HStack {
                                     Image(systemName: "chevron.backward")
