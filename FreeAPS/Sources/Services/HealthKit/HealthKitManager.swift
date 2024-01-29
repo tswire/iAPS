@@ -168,13 +168,9 @@ final class BaseHealthKitManager: HealthKitManager, Injectable, CarbsObserver, P
                         ]
                     )
                 }
-
             healthKitStore.save(samplesToSave) { (success: Bool, error: Error?) -> Void in
-                if success {
-                    debug(.service, "Saved blood glucose")
-                } else {
-                    debug(.service, "Failed saving blood glucose")
-                    debug(.service, error!.localizedDescription)
+                if !success, let error = error {
+                    debug(.service, "Failed to store blood glucose in HealthKit Store! Error: " + error.localizedDescription)
                 }
             }
 //            { _, _ in }
@@ -219,11 +215,8 @@ final class BaseHealthKitManager: HealthKitManager, Injectable, CarbsObserver, P
                 }
 
             healthKitStore.save(samplesToSave) { (success: Bool, error: Error?) -> Void in
-                if success {
-                    debug(.service, "Saved carb entry")
-                } else {
-                    debug(.service, "Failed saving carb entry")
-                    debug(.service, error!.localizedDescription)
+                if !success, let error = error {
+                    debug(.service, "Failed to store carb entry in HealthKit Store! Error: " + error.localizedDescription)
                 }
             }
 //            { _, _ in }
@@ -252,8 +245,9 @@ final class BaseHealthKitManager: HealthKitManager, Injectable, CarbsObserver, P
                     value: syncID
                 )
                 self.healthKitStore.deleteObjects(of: sampleType, predicate: predicate) { _, _, error in
-                    guard let error = error else { return }
-                    warning(.service, "Cannot delete sample with syncID: \(syncID)", error: error)
+                    if let error = error {
+                        warning(.service, "Cannot delete sample with syncID: \(syncID)", error: error)
+                    }
                 }
             }
             let bolusTotal = bolus + bolusToModify
@@ -292,11 +286,8 @@ final class BaseHealthKitManager: HealthKitManager, Injectable, CarbsObserver, P
                 }
 
             healthKitStore.save(bolusSamples + basalSamples) { (success: Bool, error: Error?) -> Void in
-                if success {
-                    debug(.service, "Saved insulin delivery")
-                } else {
-                    debug(.service, "Failed saving insulin delivery")
-                    debug(.service, error!.localizedDescription)
+                if !success, let error = error {
+                    debug(.service, "Failed to store insulin entry in HealthKit Store! Error: " + error.localizedDescription)
                 }
             }
 //            { _, _ in }

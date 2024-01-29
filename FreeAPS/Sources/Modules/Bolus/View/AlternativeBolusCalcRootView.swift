@@ -303,29 +303,12 @@ extension Bolus {
             }
         }
 
-        var calcGlucoseSecondRow: some View {
-            GridRow(alignment: .center) {
-                let currentBG = state.units == .mmolL ? state.currentBG.asMmolL : state.currentBG
-                Text(
-                    currentBG
-                        .formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))) +
-                        " " +
-                        state.units.rawValue
-                )
-
-                let secondRow = state.targetDifference
-                    .formatted(
-                        .number.grouping(.never).rounded()
-                            .precision(.fractionLength(fractionDigits))
-                    )
-                    + " / " +
-                    state.isf.formatted()
-                    + " ≈ " +
-                    self.insulinRounder(state.targetDifferenceInsulin).formatted()
-
-                Text(secondRow).foregroundColor(.secondary).gridColumnAlignment(.leading)
-
-                Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+        func carbsView() {
+            if fetch {
+                keepForNextWiew = true
+                state.backToCarbsView(complexEntry: hasFatOrProtein, meal, override: false, deleteNothing: false, editMode: true)
+            } else {
+                state.backToCarbsView(complexEntry: false, meal, override: true, deleteNothing: true, editMode: false)
             }
         }
 

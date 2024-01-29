@@ -213,6 +213,15 @@ extension Bolus {
             ((meal.first?.fat ?? 0) > 0) || ((meal.first?.protein ?? 0) > 0)
         }
 
+        func carbsView() {
+            if fetch {
+                keepForNextWiew = true
+                state.backToCarbsView(complexEntry: hasFatOrProtein, meal, override: false, deleteNothing: false, editMode: true)
+            } else {
+                state.backToCarbsView(complexEntry: false, meal, override: true, deleteNothing: true, editMode: false)
+            }
+        }
+
         var mealEntries: some View {
             VStack {
                 if let carbs = meal.first?.carbs, carbs > 0 {
