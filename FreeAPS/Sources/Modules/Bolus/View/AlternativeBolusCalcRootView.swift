@@ -94,7 +94,9 @@ extension Bolus {
                         Button(action: {
                             showInfo.toggle()
                         }, label: {
-                            Image(systemName: "info.circle")
+                            Image(systemName: "info.bubble")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(colorScheme == .light ? .black : .white, .blue)
                             Text("Calculations")
                         })
                             .foregroundStyle(.blue)
