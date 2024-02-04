@@ -124,7 +124,7 @@ extension Bolus {
                         }
                     } else {
                         HStack {
-                            Text("Recommended Bolus")
+                            Text("Insulin recommended")
                             Spacer()
                             Text(
                                 formatter
