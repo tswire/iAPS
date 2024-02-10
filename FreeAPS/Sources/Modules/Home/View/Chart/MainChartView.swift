@@ -68,6 +68,8 @@ struct MainChartView: View {
         static let resume = "resume"
         static let tempbasal = "basal"
         static let bolus = " " // "💧"
+        static let meal = "🍴"
+        static let override = "👤"
     }
 
     @Binding var glucose: [BloodGlucose]
@@ -467,23 +469,26 @@ struct MainChartView: View {
     private func announcementView(fullSize: CGSize) -> some View {
         ZStack {
             ForEach(announcementDots, id: \.rect.minX) { info -> AnyView in
-                let scaledRect = scaleCenter(rect: info.rect)
-
-                let position = CGPoint(
-                    x: scaledRect.midX + 5,
-                    y: scaledRect.maxY - Config.owlOffset
-                )
+                let position = CGPoint(x: info.rect.midX, y: info.rect.maxY - Config.owlOffset)
+                let command = info.note.lowercased()
                 let type: String =
-                    info.note.contains("true") ?
-                    Command.open :
-                    info.note.contains("false") ?
+                    command.contains("true") ?
                     Command.closed :
-                    info.note.contains("suspend") ?
+                    command.contains("false") ?
+                    Command.open :
+                    command.contains("suspend") ?
                     Command.suspend :
-                    info.note.contains("resume") ?
+                    command.contains("resume") ?
                     Command.resume :
-                    info.note.contains("tempbasal") ?
-                    Command.tempbasal : Command.bolus
+                    command.contains("tempbasal") ?
+                    Command.tempbasal :
+                    command.contains("override") ?
+                    Command.override :
+                    command.contains("meal") ?
+                    Command.meal :
+                    command.contains("bolus") ?
+                    Command.bolus : ""
+
                 VStack {
                     Text(type).font(.caption2).foregroundStyle(.orange)
 //                    Image("owl").resizable().frame(maxWidth: Config.owlSeize, maxHeight: Config.owlSeize).scaledToFill()
