@@ -94,6 +94,7 @@ struct MainChartView: View {
     @Binding var displayXgridLines: Bool
     @Binding var displayYgridLines: Bool
     @Binding var thresholdLines: Bool
+    @Binding var overrideHistory: [OverrideHistory]
 
     @State var didAppearTrigger = false
     @State private var glucoseDots: [CGRect] = []
@@ -698,6 +699,30 @@ struct MainChartView: View {
     private func scaleCenter(rect: CGRect) -> CGRect {
         CGRect(origin: CGPoint(x: rect.midX * zoomScale - rect.width / 2, y: rect.origin.y), size: rect.size)
     }
+    
+    private func overridesView(fullSize: CGSize) -> some View {
+        ZStack {
+            overridesPath
+                .fill(Color.purple.opacity(colorScheme == .light ? 0.1 : 0.3))
+            overridesPath
+                .stroke(Color.purple.opacity(0.7), lineWidth: 1)
+        }
+        .onChange(of: glucose) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+        .onChange(of: suggestion) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+        .onChange(of: overrideHistory) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+        .onChange(of: triggerUpdate) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+        .onChange(of: didAppearTrigger) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+    }
 
     private func predictionsView(fullSize: CGSize) -> some View {
         Group {
@@ -1152,6 +1177,74 @@ extension MainChartView {
 
             DispatchQueue.main.async {
                 tempTargetsPath = path
+            }
+        }
+    }
+    
+    private func calculateOverridesRects(fullSize: CGSize) {
+        calculationQueue.async {
+            let latest = OverrideStorage().fetchLatestOverride().first
+            let rects = overrideHistory.compactMap { each -> CGRect in
+                let duration = each.duration
+                let xStart = timeToXCoordinate(each.date!.timeIntervalSince1970, fullSize: fullSize)
+                let xEnd = timeToXCoordinate(
+                    each.date!.addingTimeInterval(Int(duration).minutes.timeInterval).timeIntervalSince1970,
+                    fullSize: fullSize
+                )
+                let y = glucoseToYCoordinate(Int(each.target), fullSize: fullSize)
+                return CGRect(
+                    x: xStart,
+                    y: y - 3,
+                    width: xEnd - xStart,
+                    height: 8
+                )
+            }
+            if latest?.enabled ?? false {
+                var old = Array(rects)
+                let duration = Double(latest?.duration ?? 0)
+                if duration > 0 {
+                    let x1 = timeToXCoordinate((latest?.date ?? Date.now).timeIntervalSince1970, fullSize: fullSize)
+                    let plusNow = (latest?.date ?? Date.now).addingTimeInterval(Int(latest?.duration ?? 0).minutes.timeInterval)
+                    let x2 = timeToXCoordinate(plusNow.timeIntervalSince1970, fullSize: fullSize)
+                    let oneMore = CGRect(
+                        x: x1,
+                        y: glucoseToYCoordinate(
+                            Int(Double(latest?.target ?? 100)),
+                            fullSize: fullSize
+                        ),
+                        width: x2 - x1,
+                        height: 8
+                    )
+                    old.append(oneMore)
+                    let path = Path { path in
+                        path.addRects(old)
+                    }
+                    return DispatchQueue.main.async {
+                        overridesPath = path
+                    }
+                } else {
+                    let x1 = timeToXCoordinate((latest?.date ?? Date.now).timeIntervalSince1970, fullSize: fullSize)
+                    let x2 = timeToXCoordinate(Date.now.timeIntervalSince1970, fullSize: fullSize)
+                    let oneMore = CGRect(
+                        x: x1,
+                        y: glucoseToYCoordinate(Int(Double(latest?.target ?? 100)), fullSize: fullSize),
+                        width: x2 - x1 + additionalWidth(viewWidth: fullSize.width),
+                        height: 8
+                    )
+                    old.append(oneMore)
+                    let path = Path { path in
+                        path.addRects(old)
+                    }
+                    return DispatchQueue.main.async {
+                        overridesPath = path
+                    }
+                }
+            }
+            let path = Path { path in
+                path.addRects(rects)
+            }
+            DispatchQueue.main.async {
+                overridesPath = path
             }
         }
     }

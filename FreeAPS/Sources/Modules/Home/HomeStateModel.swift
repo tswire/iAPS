@@ -64,6 +64,7 @@ extension Home {
         @Published var totalBolus: Decimal = 0
         @Published var isStatusPopupPresented: Bool = false
         @Published var tins: Bool = false
+        @Published var overrideHistory: [OverrideHistory] = []
 
         let coredataContext = CoreDataStack.shared.persistentContainer.viewContext
 
@@ -83,6 +84,7 @@ extension Home {
             setupCurrentPumpTimezone()
 
             suggestion = provider.suggestion
+            overrideHistory = provider.overrideHistory()
             uploadStats = settingsManager.settings.uploadStats
             enactedSuggestion = provider.enactedSuggestion
             units = settingsManager.settings.units
@@ -214,10 +216,21 @@ extension Home {
         }
 
         func cancelProfile() {
-            coredataContext.perform { [self] in
-                let profiles = Override(context: self.coredataContext)
-                profiles.enabled = false
-                profiles.date = Date()
+            OverrideStorage().cancelProfile()
+            setupOverrideHistory()
+        }
+
+        func cancelTempTarget() {
+            storage.storeTempTargets([TempTarget.cancel(at: Date())])
+            coredataContext.performAndWait {
+                let saveToCoreData = TempTargets(context: self.coredataContext)
+                saveToCoreData.active = false
+                saveToCoreData.date = Date()
+                try? self.coredataContext.save()
+
+                let setHBT = TempTargetsSlider(context: self.coredataContext)
+                setHBT.enabled = false
+                setHBT.date = Date()
                 try? self.coredataContext.save()
             }
         }
@@ -338,6 +351,13 @@ extension Home {
                 self.carbs = self.provider.carbs(hours: self.filteredHours)
             }
         }
+        
+        private func setupOverrideHistory() {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.overrideHistory = self.provider.overrideHistory()
+            }
+        }
 
         private func setupAnnouncements() {
             DispatchQueue.main.async { [weak self] in
@@ -435,6 +455,10 @@ extension Home.StateModel:
 {
     func glucoseDidUpdate(_: [BloodGlucose]) {
         setupGlucose()
+    }
+    
+    func overrideHistoryDidUpdate(_: [OverrideHistory]) {
+        setupOverrideHistory()
     }
 
     func suggestionDidUpdate(_ suggestion: Suggestion) {
