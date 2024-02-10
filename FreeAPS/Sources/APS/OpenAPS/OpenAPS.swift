@@ -259,6 +259,12 @@ final class OpenAPS {
                     saveToCoreData.duration = 0
                     saveToCoreData.indefinite = false
                     saveToCoreData.percentage = 100
+                    let saveToHistory = OverrideHistory(context: self.coredataContext)
+                    let d: Double = -1 * date.addingTimeInterval(addedMinutes.minutes.timeInterval).timeIntervalSinceNow.minutes
+                    print("Duration: \(d) minutes")
+                    saveToHistory.duration = d
+                    saveToHistory.target = Double(overrideTarget)
+                    saveToHistory.date = overrideArray.first?.date ?? Date()
                     try? self.coredataContext.save()
                 }
             }
