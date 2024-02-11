@@ -11,6 +11,8 @@ extension Home {
         @StateObject var state = StateModel()
         @State var isStatusPopupPresented = false
         @State var showCancelAlert = false
+        @State var showCancelTTAlert = false
+        @State var triggerUpdate = false
 
         struct Buttons: Identifiable {
             let label: String
@@ -488,7 +490,9 @@ extension Home {
                     screenHours: $state.hours,
                     displayXgridLines: $state.displayXgridLines,
                     displayYgridLines: $state.displayYgridLines,
-                    thresholdLines: $state.thresholdLines
+                    thresholdLines: $state.thresholdLines,
+                    triggerUpdate: $triggerUpdate,
+                    overrideHistory: $state.overrideHistory
                 )
             }
             .padding(.bottom)
@@ -582,16 +586,16 @@ extension Home {
                     }
 
                     // MAYBE WITH A SMALL INDICATOR AT THE SYMBOL
-//                    Button {
-//                        state.showModal(for: .overrideProfilesConfig)
-//                    } label: {
-//                        Image(systemName: "person")
-//                            .font(.system(size: 30, weight: .light))
-//                            .padding(8)
-//                    }
-//                    .foregroundColor(colorIcon)
-//                    .buttonStyle(.borderless)
-//                    Spacer()
+                    Button {
+                        state.showModal(for: .overrideProfilesConfig)
+                    } label: {
+                        Image(systemName: "person")
+                            .font(.system(size: 30, weight: .light))
+                            .padding(8)
+                    }
+                    .foregroundColor(colorIcon)
+                    .buttonStyle(.borderless)
+                    Spacer()
 
                     Image("statistics")
                         .renderingMode(.template)

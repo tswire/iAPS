@@ -11,6 +11,7 @@ extension Bolus {
         // added for bolus calculator
         @Injected() var settings: SettingsManager!
         @Injected() var nsManager: NightscoutManager!
+        @Injected() var announcementStorage: AnnouncementsStorage!
 
         @Published var suggestion: Suggestion?
         @Published var predictions: Predictions?
@@ -45,11 +46,12 @@ extension Bolus {
         @Published var fifteenMinInsulin: Decimal = 0
         @Published var deltaBG: Decimal = 0
         @Published var targetDifferenceInsulin: Decimal = 0
-        @Published var targetDifference: Decimal = 0
         @Published var wholeCobInsulin: Decimal = 0
         @Published var iobInsulinReduction: Decimal = 0
         @Published var wholeCalc: Decimal = 0
+        @Published var roundedWholeCalc: Decimal = 0
         @Published var insulinCalculated: Decimal = 0
+        @Published var roundedInsulinCalculated: Decimal = 0
         @Published var fraction: Decimal = 0
         @Published var useCalc: Bool = false
         @Published var basal: Decimal = 0
@@ -107,14 +109,13 @@ extension Bolus {
             deltaBG = delta
         }
 
-        // CALCULATIONS FOR THE BOLUS CALCULATOR
         func calculateInsulin() -> Decimal {
             var conversion: Decimal = 1.0
             if units == .mmolL {
                 conversion = 0.0555
             }
             // insulin needed for the current blood glucose
-            targetDifference = (currentBG - target) * conversion
+            let targetDifference = (currentBG - target) * conversion
             targetDifferenceInsulin = targetDifference / isf
 
             // more or less insulin because of bg trend in the last 15 minutes
@@ -139,6 +140,9 @@ extension Bolus {
                     wholeCalc = (targetDifferenceInsulin + iobInsulinReduction + wholeCobInsulin)
                 }
             }
+            // rounding
+            let wholeCalcAsDouble = Double(wholeCalc)
+            roundedWholeCalc = Decimal(round(100 * wholeCalcAsDouble) / 100)
 
             // apply custom factor at the end of the calculations
             let result = wholeCalc * fraction
@@ -152,6 +156,8 @@ extension Bolus {
 
             // display no negative insulinCalculated
             insulinCalculated = max(insulinCalculated, 0)
+            let insulinCalculatedAsDouble = Double(insulinCalculated)
+            roundedInsulinCalculated = Decimal(round(100 * insulinCalculatedAsDouble) / 100)
             insulinCalculated = min(insulinCalculated, maxBolus)
 
             return apsManager

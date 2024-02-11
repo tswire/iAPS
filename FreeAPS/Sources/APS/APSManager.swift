@@ -669,7 +669,6 @@ final class BaseAPSManager: APSManager, Injectable {
         }
     }
 
-
     private func currentTemp(date: Date) -> TempBasal {
         let defaultTemp = { () -> TempBasal in
             guard let temp = storage.retrieve(OpenAPS.Monitor.tempBasal, as: TempBasal.self) else {

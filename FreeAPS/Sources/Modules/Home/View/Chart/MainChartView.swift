@@ -94,6 +94,7 @@ struct MainChartView: View {
     @Binding var displayXgridLines: Bool
     @Binding var displayYgridLines: Bool
     @Binding var thresholdLines: Bool
+    @Binding var triggerUpdate: Bool
     @Binding var overrideHistory: [OverrideHistory]
 
     @State var didAppearTrigger = false
@@ -112,6 +113,7 @@ struct MainChartView: View {
     @State private var tempBasalPath = Path()
     @State private var regularBasalPath = Path()
     @State private var tempTargetsPath = Path()
+    @State private var overridesPath = Path()
     @State private var suspensionsPath = Path()
     @State private var carbsDots: [DotInfo] = []
     @State private var fpuDots: [DotInfo] = []
@@ -204,6 +206,7 @@ struct MainChartView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 ZStack(alignment: .top) {
                     tempTargetsView(fullSize: fullSize).drawingGroup()
+                    overridesView(fullSize: fullSize).drawingGroup()
                     basalView(fullSize: fullSize).drawingGroup()
                     mainView(fullSize: fullSize).id(Config.endID)
                         .drawingGroup()
@@ -699,7 +702,7 @@ struct MainChartView: View {
     private func scaleCenter(rect: CGRect) -> CGRect {
         CGRect(origin: CGPoint(x: rect.midX * zoomScale - rect.width / 2, y: rect.origin.y), size: rect.size)
     }
-    
+
     private func overridesView(fullSize: CGSize) -> some View {
         ZStack {
             overridesPath
@@ -1180,7 +1183,7 @@ extension MainChartView {
             }
         }
     }
-    
+
     private func calculateOverridesRects(fullSize: CGSize) {
         calculationQueue.async {
             let latest = OverrideStorage().fetchLatestOverride().first
@@ -1321,6 +1324,27 @@ extension MainChartView {
 
     private func fullGlucoseWidth(viewWidth: CGFloat) -> CGFloat {
         viewWidth * CGFloat(hours)
+    }
+
+    private func additionalWidth(viewWidth: CGFloat) -> CGFloat {
+        guard let predictions = suggestion?.predictions,
+              let deliveredAt = suggestion?.deliverAt,
+              let last = glucose.last
+        else {
+            return Config.minAdditionalWidth
+        }
+
+        let iob = predictions.iob?.count ?? 0
+        let zt = predictions.zt?.count ?? 0
+        let cob = predictions.cob?.count ?? 0
+        let uam = predictions.uam?.count ?? 0
+        let max = [iob, zt, cob, uam].max() ?? 0
+
+        let lastDeltaTime = last.dateString.timeIntervalSince(deliveredAt)
+        let additionalTime = CGFloat(TimeInterval(max) * 5.minutes.timeInterval - lastDeltaTime)
+        let oneSecondWidth = oneSecondStep(viewWidth: viewWidth)
+
+        return Swift.min(Swift.max(additionalTime * oneSecondWidth, Config.minAdditionalWidth), 275)
     }
 
     private func oneSecondStep(viewWidth: CGFloat) -> CGFloat {

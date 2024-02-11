@@ -9,6 +9,7 @@ extension Home {
         @Injected() var broadcaster: Broadcaster!
         @Injected() var apsManager: APSManager!
         @Injected() var nightscoutManager: NightscoutManager!
+        @Injected() var storage: TempTargetsStorage!
         private let timer = DispatchTimer(timeInterval: 5)
         private(set) var filteredHours = 24
         @Published var glucose: [BloodGlucose] = []
@@ -351,7 +352,7 @@ extension Home {
                 self.carbs = self.provider.carbs(hours: self.filteredHours)
             }
         }
-        
+
         private func setupOverrideHistory() {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -456,7 +457,7 @@ extension Home.StateModel:
     func glucoseDidUpdate(_: [BloodGlucose]) {
         setupGlucose()
     }
-    
+
     func overrideHistoryDidUpdate(_: [OverrideHistory]) {
         setupOverrideHistory()
     }
