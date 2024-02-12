@@ -18,6 +18,24 @@ extension Bolus {
         @State private var isRemoteBolusAlertPresented: Bool = false
 
         @Environment(\.colorScheme) var colorScheme
+
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
         @FocusState private var isFocused: Bool
 
         @FetchRequest(
@@ -36,23 +54,6 @@ extension Bolus {
             if state.units == .mmolL {
                 return 1
             } else { return 0 }
-        }
-
-        private var color: LinearGradient {
-            colorScheme == .dark ? LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.bgDarkBlue,
-                    Color.bgDarkerDarkBlue
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-                :
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
         }
 
         var body: some View {
@@ -376,11 +377,12 @@ extension Bolus {
                         .foregroundColor(.blue)
                 }.padding(.bottom, 10)
             }
+            .scrollContentBackground(.hidden).background(color)
             .dynamicTypeSize(...DynamicTypeSize.xxLarge)
-            .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color(colorScheme == .dark ? UIColor.systemGray4 : UIColor.systemGray4))
-            )
+//            .background(
+//                RoundedRectangle(cornerRadius: 8, style: .continuous)
+//                    .fill(Color(colorScheme == .dark ? UIColor.systemGray4 : UIColor.systemGray4))
+//            )
         }
 
         // Localize the Oref0 error/warning strings. The default should never be returned
