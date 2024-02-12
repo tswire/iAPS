@@ -46,6 +46,7 @@ struct Preferences: JSON {
     var timestamp: Date?
     // var maxDeltaBGthreshold: Decimal = 0.2
     // start dynISF config for oref variables
+    var maxDeltaBGthreshold: Decimal = 0.2
     var adjustmentFactor: Decimal = 0.5
     var sigmoid: Bool = false
     var enableDynamicCR: Bool = false
@@ -135,6 +136,7 @@ extension Preferences {
         case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
         // case maxDeltaBGthreshold = "maxDelta_bg_threshold"
         // start dynISF config for oref variables
+        case maxDeltaBGthreshold = "maxDelta_bg_threshold"
         case adjustmentFactor
         case sigmoid
         case enableDynamicCR
