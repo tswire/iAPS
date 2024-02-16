@@ -225,8 +225,8 @@ extension Bolus {
                     state.delete(deleteTwice: false, meal: meal)
                 }
             }
-            .popup(isPresented: showInfo, alignment: .top, direction: .bottom) {
-//            .sheet(isPresented: $showInfo) {
+//            .popup(isPresented: showInfo, alignment: .top, direction: .bottom) {
+            .sheet(isPresented: $showInfo) {
                 calculationsDetailView
                     .presentationDetents(
                         [fetch ? .large : .fraction(0.9), .large],
