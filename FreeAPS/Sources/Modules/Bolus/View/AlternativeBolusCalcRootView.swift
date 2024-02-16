@@ -293,7 +293,7 @@ extension Bolus {
                     state.isf.formatted() + " " + state.units
                         .rawValue + NSLocalizedString("/U", comment: "/Insulin unit")
                 ).gridCellAnchor(.leading)
-                let target = state.units == .mmolL ? state.target.asMmolL : state.target
+                let target = state.target
                 Text(
                     target
                         .formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))) +
@@ -304,8 +304,8 @@ extension Bolus {
 
         var calcGlucoseFirstRow: some View {
             GridRow(alignment: .center) {
-                let currentBG = state.units == .mmolL ? state.currentBG.asMmolL : state.currentBG
-                let target = state.units == .mmolL ? state.target.asMmolL : state.target
+                let currentBG = state.currentBG
+                let target = state.target
 
                 Text("Glucose:").foregroundColor(.secondary)
 
@@ -334,7 +334,7 @@ extension Bolus {
 
         var calcGlucoseSecondRow: some View {
             GridRow(alignment: .center) {
-                let currentBG = state.units == .mmolL ? state.currentBG.asMmolL : state.currentBG
+                let currentBG = state.currentBG
                 Text(
                     currentBG
                         .formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))) +

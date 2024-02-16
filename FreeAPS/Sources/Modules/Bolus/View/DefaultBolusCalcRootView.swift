@@ -301,7 +301,7 @@ extension Bolus {
                     }
                     HStack {
                         Text("Target Glucose").foregroundColor(.secondary)
-                        let target = state.units == .mmolL ? state.target.asMmolL : state.target
+                        let target = state.target
                         Text(target.formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))))
                         Text(state.units.rawValue).foregroundColor(.secondary)
                     }

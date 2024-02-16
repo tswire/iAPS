@@ -116,8 +116,9 @@ extension Bolus {
                 conversion = 0.0555
             }
             // insulin needed for the current blood glucose
-            targetDifference = (currentBG - target) * conversion
+            targetDifference = (currentBG - target)
             targetDifferenceInsulin = targetDifference / isf
+            // targetDifference = (currentBG - target)
 
             // more or less insulin because of bg trend in the last 15 minutes
             fifteenMinInsulin = (deltaBG * conversion) / isf
