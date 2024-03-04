@@ -36,8 +36,17 @@ extension DataTable {
             broadcaster.register(GlucoseObserver.self, observer: self)
         }
 
+        private let processQueue =
+            DispatchQueue(label: "setupTreatments.processQueue") // Ensure that only one instance of this function can execute at a time
+
         private func setupTreatments() {
-            DispatchQueue.global().async {
+            // Log that the function is starting for testing purposes
+            debug(.service, "setupTreatments() started")
+
+            // DispatchQueue.global().async { // Original code with global concurrent queue
+
+            // Ensure that only one instance of this function can execute at a time by using a serial queue
+            processQueue.async {
                 let units = self.settingsManager.settings.units
                 let carbs = self.provider.carbs()
                     .filter { !($0.isFPU ?? false) }
