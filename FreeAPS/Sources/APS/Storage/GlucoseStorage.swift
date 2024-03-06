@@ -29,8 +29,7 @@ final class BaseGlucoseStorage: GlucoseStorage, Injectable {
     let coredataContext = CoreDataStack.shared.persistentContainer.newBackgroundContext()
 
     private enum Config {
-        static let filterTime: TimeInterval = 4.75 *
-            60 // Test to see if this works with Libre 2 or not... Before edit this was 4.75
+        static let filterTime: TimeInterval = 4.5 * 60
     }
 
     init(resolver: Resolver) {
