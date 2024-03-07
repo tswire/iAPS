@@ -18,7 +18,7 @@ extension Home {
             let label: String
             let number: String
             var active: Bool
-            let hours: Int16
+            let hours: Int
             var id: String { label }
         }
 
