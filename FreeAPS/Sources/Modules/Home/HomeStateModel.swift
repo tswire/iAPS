@@ -66,6 +66,9 @@ extension Home {
         @Published var isStatusPopupPresented: Bool = false
         @Published var tins: Bool = false
         @Published var overrideHistory: [OverrideHistory] = []
+        @Published var overrides: [Override] = []
+        @Published var alwaysUseColors: Bool = true
+        @Published var timeSettings: Bool = true
 
         let coredataContext = CoreDataStack.shared.persistentContainer.viewContext
 
@@ -118,7 +121,6 @@ extension Home {
             broadcaster.register(EnactedSuggestionObserver.self, observer: self)
             broadcaster.register(PumpBatteryObserver.self, observer: self)
             broadcaster.register(PumpReservoirObserver.self, observer: self)
-
             animatedBackground = settingsManager.settings.animatedBackground
 
             timer.eventHandler = {
@@ -217,7 +219,16 @@ extension Home {
         }
 
         func cancelProfile() {
-            OverrideStorage().cancelProfile()
+            let os = OverrideStorage()
+
+            if let activeOveride = os.fetchLatestOverride().first {
+                let presetName = os.isPresetName()
+                let nsString = presetName != nil ? presetName : activeOveride.percentage.formatted()
+
+                if let duration = os.cancelProfile() {
+                    nightscoutManager.editOverride(nsString!, duration, activeOveride.date ?? Date.now)
+                }
+            }
             setupOverrideHistory()
         }
 
@@ -360,6 +371,13 @@ extension Home {
             }
         }
 
+        private func setupOverrides() {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.overrides = self.provider.overrides()
+            }
+        }
+
         private func setupAnnouncements() {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -454,6 +472,11 @@ extension Home.StateModel:
     PumpReservoirObserver,
     PumpTimeZoneObserver
 {
+    /*
+     func overridesDidUpdate(_: [Override]) {
+         setupOverrides()
+     }*/
+
     func glucoseDidUpdate(_: [BloodGlucose]) {
         setupGlucose()
     }

@@ -198,7 +198,7 @@ extension OverrideProfilesConfig {
                     }
 
                     HStack {
-                        Button("Start new Profile") {
+                        Button("Start") {
                             showAlert.toggle()
                             alertSring = "\(state.percentage.formatted(.number)) %, " +
                                 (
@@ -274,15 +274,18 @@ extension OverrideProfilesConfig {
                         "Your profile basal insulin will be adjusted with the override percentage and your profile ISF and CR will be inversly adjusted with the percentage."
                     )
                 }
-
-                Button("Return to Normal") {
-                    state.cancelProfile()
-                    dismiss()
+                if state.isEnabled {
+                    Section {
+                        Button("Cancel Profile Override") {
+                            state.cancelProfile()
+                            dismiss()
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .buttonStyle(BorderlessButtonStyle())
+                        .disabled(!state.isEnabled)
+                        .tint(.red)
+                    } footer: { Text("").padding(.bottom, 150) }
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .buttonStyle(BorderlessButtonStyle())
-                .disabled(!state.isEnabled)
-                .tint(.red)
             }
             .scrollContentBackground(.hidden).background(color)
             .onAppear(perform: configureView)
