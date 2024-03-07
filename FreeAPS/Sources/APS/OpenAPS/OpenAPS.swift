@@ -7,9 +7,13 @@ final class OpenAPS {
     private let jsWorker = JavaScriptWorker()
     private let processQueue = DispatchQueue(label: "OpenAPS.processQueue", qos: .utility)
     private let storage: FileStorage
+    private let nightscout: NightscoutManager
+
     let coredataContext = CoreDataStack.shared.persistentContainer.viewContext // newBackgroundContext()
-    init(storage: FileStorage) {
+
+    init(storage: FileStorage, nightscout: NightscoutManager) {
         self.storage = storage
+        self.nightscout = nightscout
     }
 
     func determineBasal(currentTemp: TempBasal, clock: Date = Date()) -> Future<Suggestion?, Never> {
@@ -240,32 +244,18 @@ final class OpenAPS {
             var disableSMBs = overrideArray.first?.smbIsOff ?? false
 
             var duration: Decimal = 0
-            var newDuration: Decimal = 0
             var overrideTarget: Decimal = 0
 
             if useOverride {
                 duration = (overrideArray.first?.duration ?? 0) as Decimal
                 overrideTarget = (overrideArray.first?.target ?? 0) as Decimal
-                let advancedSettings = overrideArray.first?.advancedSettings ?? false
                 let addedMinutes = Int(duration)
                 let date = overrideArray.first?.date ?? Date()
-                if date.addingTimeInterval(addedMinutes.minutes.timeInterval) < Date(),
-                   !unlimited
-                {
+                if date.addingTimeInterval(addedMinutes.minutes.timeInterval) < Date(), !unlimited {
                     useOverride = false
-                    let saveToCoreData = Override(context: self.coredataContext)
-                    saveToCoreData.enabled = false
-                    saveToCoreData.date = Date()
-                    saveToCoreData.duration = 0
-                    saveToCoreData.indefinite = false
-                    saveToCoreData.percentage = 100
-                    let saveToHistory = OverrideHistory(context: self.coredataContext)
-                    let d: Double = -1 * date.addingTimeInterval(addedMinutes.minutes.timeInterval).timeIntervalSinceNow.minutes
-                    print("Duration: \(d) minutes")
-                    saveToHistory.duration = d
-                    saveToHistory.target = Double(overrideTarget)
-                    saveToHistory.date = overrideArray.first?.date ?? Date()
-                    try? self.coredataContext.save()
+                    if OverrideStorage().cancelProfile() != nil {
+                        debug(.nightscout, "Override ended, duration: \(duration) minutes")
+                    }
                 }
             }
 
