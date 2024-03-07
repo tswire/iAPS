@@ -124,7 +124,6 @@ final class OpenAPS {
             let wp = preferences?.weightPercentage ?? 1
             let smbMinutes = (preferences?.maxSMBBasalMinutes ?? 30) as NSDecimalNumber
             let uamMinutes = (preferences?.maxUAMSMBBasalMinutes ?? 30) as NSDecimalNumber
-            let now = Date()
             let tenDaysAgo = Date().addingTimeInterval(-10.days.timeInterval)
             let twoHoursAgo = Date().addingTimeInterval(-2.hours.timeInterval)
             var uniqueEvents = [TDD]()
@@ -133,29 +132,6 @@ final class OpenAPS {
             let sortTDD = NSSortDescriptor(key: "timestamp", ascending: false)
             requestTDD.sortDescriptors = [sortTDD]
             try? uniqueEvents = coredataContext.fetch(requestTDD)
-            // try? previousTDDfetched = coredataContext.fetch(requestTDD)
-
-            let total = uniqueEvents.compactMap({ each in each.tdd as? Decimal ?? 0 }).reduce(0, +)
-            var indeces = uniqueEvents.count
-            // Only fetch once. Use same (previous) fetch
-            let twoHoursArray = uniqueEvents.filter({ ($0.timestamp ?? Date()) >= twoHoursAgo })
-            var nrOfIndeces = twoHoursArray.count
-            let totalAmount = twoHoursArray.compactMap({ each in each.tdd as? Decimal ?? 0 }).reduce(0, +)
-
-            let currentTDD = (uniqueEvents.last?.tdd ?? 0) as Decimal
-
-            if indeces == 0 {
-                indeces = 1
-            }
-            if nrOfIndeces == 0 {
-                nrOfIndeces = 1
-            }
-
-            let average2hours = totalAmount / Decimal(nrOfIndeces)
-            let average14 = total / Decimal(indeces)
-
-            let weight = wp
-            let weighted_average = weight * average2hours + (1 - weight) * average14
 
             // check wether previous TDD was yesterday and fill full calender day TDD (dailyTDD)
             var current_TDD = TDD(context: coredataContext)
@@ -168,12 +144,12 @@ final class OpenAPS {
             if uniqueEvents.count > 1 {
                 current_TDD = uniqueEvents[0]
                 previous_TDD = uniqueEvents[1]
-                print(
-                    "CoreData: current fetched TDD \(uniqueEvents[0].tdd?.decimalValue ?? 0) from \(uniqueEvents[0].timestamp!)"
-                )
-                print(
-                    "CoreData: previous fetched TDD \(uniqueEvents[1].tdd?.decimalValue ?? 0) from \(uniqueEvents[1].timestamp!)"
-                )
+//                print(
+//                    "CoreData: current fetched TDD \(uniqueEvents[0].tdd?.decimalValue ?? 0) from \(uniqueEvents[0].timestamp!)"
+//                )
+//                print(
+//                    "CoreData: previous fetched TDD \(uniqueEvents[1].tdd?.decimalValue ?? 0) from \(uniqueEvents[1].timestamp!)"
+//                )
                 currentDay = calendar.component(.day, from: current_TDD.timestamp ?? Date())
                 previousDay = calendar.component(.day, from: previous_TDD.timestamp ?? Date())
                 // if previous TDD was yesterday
@@ -212,28 +188,22 @@ final class OpenAPS {
             }
             // finish DailyTDD storage and calculation
 
+            let cd = CoreDataStorage()
+            // Temp Targets using slider
+            let sliderArray = cd.fetchTempTargetsSlider()
+            // Overrides
+            let overrideArray = OverrideStorage().fetchNumberOfOverrides(numbers: 2)
+            // Temp Target
+            let tempTargetsArray = cd.fetchTempTargets()
+
             var hbt_ = preferences?.halfBasalExerciseTarget ?? 160
 
-            var sliderArray = [TempTargetsSlider]()
-            let requestIsEnbled = TempTargetsSlider.fetchRequest() as NSFetchRequest<TempTargetsSlider>
-            let sortIsEnabled = NSSortDescriptor(key: "date", ascending: false)
-            requestIsEnbled.sortDescriptors = [sortIsEnabled]
-            // requestIsEnbled.fetchLimit = 1
-            try? sliderArray = coredataContext.fetch(requestIsEnbled)
-
-            var overrideArray = [Override]()
-            let requestOverrides = Override.fetchRequest() as NSFetchRequest<Override>
-            let sortOverride = NSSortDescriptor(key: "date", ascending: false)
-            requestOverrides.sortDescriptors = [sortOverride]
-            // requestOverrides.fetchLimit = 1
-            try? overrideArray = coredataContext.fetch(requestOverrides)
-
-            var tempTargetsArray = [TempTargets]()
-            let requestTempTargets = TempTargets.fetchRequest() as NSFetchRequest<TempTargets>
-            let sortTT = NSSortDescriptor(key: "date", ascending: false)
-            requestTempTargets.sortDescriptors = [sortTT]
-            requestTempTargets.fetchLimit = 1
-            try? tempTargetsArray = coredataContext.fetch(requestTempTargets)
+            let total = uniqueEvents.compactMap({ each in each.tdd as? Decimal ?? 0 }).reduce(0, +)
+            var indeces = uniqueEvents.count
+            // Only fetch once. Use same (previous) fetch
+            let twoHoursArray = uniqueEvents.filter({ ($0.timestamp ?? Date()) >= twoHoursAgo })
+            var nrOfIndeces = twoHoursArray.count
+            let totalAmount = twoHoursArray.compactMap({ each in each.tdd as? Decimal ?? 0 }).reduce(0, +)
 
             var temptargetActive = tempTargetsArray.first?.active ?? false
             let isPercentageEnabled = sliderArray.first?.enabled ?? false
@@ -242,6 +212,19 @@ final class OpenAPS {
             var overridePercentage = Decimal(overrideArray.first?.percentage ?? 100)
             var unlimited = overrideArray.first?.indefinite ?? true
             var disableSMBs = overrideArray.first?.smbIsOff ?? false
+
+            let currentTDD = (uniqueEvents.last?.tdd ?? 0) as Decimal
+
+            if indeces == 0 {
+                indeces = 1
+            }
+            if nrOfIndeces == 0 {
+                nrOfIndeces = 1
+            }
+
+            let average2hours = totalAmount / Decimal(nrOfIndeces)
+            let average14 = total / Decimal(indeces)
+            let weighted_average = wp * average2hours + (1 - wp) * average14
 
             var duration: Decimal = 0
             var overrideTarget: Decimal = 0
@@ -311,11 +294,8 @@ final class OpenAPS {
                     cr: overrideArray.first?.cr ?? false,
                     smbIsAlwaysOff: overrideArray.first?.smbIsAlwaysOff ?? false,
                     start: (overrideArray.first?.start ?? 0) as Decimal,
-                    end: (overrideArray.first?.end ?? 0) as Decimal, smbMinutes: (
-                        overrideArray.first?
-                            .smbMinutes ?? smbMinutes
-                    ) as Decimal,
-
+                    end: (overrideArray.first?.end ?? 0) as Decimal,
+                    smbMinutes: (overrideArray.first?.smbMinutes ?? smbMinutes) as Decimal,
                     uamMinutes: (overrideArray.first?.uamMinutes ?? uamMinutes) as Decimal
                 )
                 storage.save(averages, as: OpenAPS.Monitor.oref2_variables)

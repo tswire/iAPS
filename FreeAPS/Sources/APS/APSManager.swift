@@ -811,17 +811,17 @@ final class BaseAPSManager: APSManager, Injectable {
                     saveToAutoISF.dura_ratio = (enacted.duraISFratio ?? 1) as NSDecimalNumber?
                     saveToAutoISF.sensitivity_ratio = (enacted.sensitivityRatio ?? 1) as NSDecimalNumber?
                     saveToAutoISF.autoISF_ratio = (enacted.autoISFratio ?? 1) as NSDecimalNumber?
-                    print("CoreData: catches autoISF Ratio: \(saveToAutoISF.autoISF_ratio ?? 0)")
+//                    print("CoreData: catches autoISF Ratio: \(saveToAutoISF.autoISF_ratio ?? 0)")
                     saveToAutoISF.isf = (enacted.isf ?? 1) as NSDecimalNumber?
                     saveToAutoISF.smb_ratio = (enacted.SMBratio ?? 1) as NSDecimalNumber?
                     saveToAutoISF.insulin_req = (enacted.insulinReq ?? 1) as NSDecimalNumber?
                     if enacted.units ?? 0 > 0 {
                         saveToAutoISF.smb = (enacted.units ?? 1) as NSDecimalNumber?
-                        print("CoreData: catches Bolus:  \(saveToAutoISF.smb ?? 0)")
+//                        print("CoreData: catches Bolus:  \(saveToAutoISF.smb ?? 0)")
                     }
                     if enacted.rate ?? 0 > 0 {
                         saveToAutoISF.tbr = (enacted.rate ?? 1) as NSDecimalNumber?
-                        print("CoreData: catches TBR:  \(saveToAutoISF.tbr ?? 0)")
+//                        print("CoreData: catches TBR:  \(saveToAutoISF.tbr ?? 0)")
                     }
 
                     try? self.coredataContext.save()
