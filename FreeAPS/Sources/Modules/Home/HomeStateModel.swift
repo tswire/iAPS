@@ -340,8 +340,8 @@ extension Home {
             offsetComponents.hour = -Int(offset)
 
             let startTime = calendar.date(byAdding: offsetComponents, to: date)!
-            print("******************")
-            print("TINS calc start time: \(startTime)")
+//            print("******************")
+//            print("TINS calc start time: \(startTime)")
 
             let bolusesForCurrentDay = boluses.filter { $0.timestamp >= startTime && $0.type == .bolus }
 
