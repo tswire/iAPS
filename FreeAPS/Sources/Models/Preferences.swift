@@ -44,9 +44,9 @@ struct Preferences: JSON {
     var noisyCGMTargetMultiplier: Decimal = 1.3
     var suspendZerosIOB: Bool = false
     var timestamp: Date?
+    var maxDeltaBGthreshold: Decimal = 0.2
     // var maxDeltaBGthreshold: Decimal = 0.2
     // start dynISF config for oref variables
-    var maxDeltaBGthreshold: Decimal = 0.2
     var adjustmentFactor: Decimal = 0.5
     var sigmoid: Bool = false
     var enableDynamicCR: Bool = false
@@ -134,9 +134,8 @@ extension Preferences {
         case noisyCGMTargetMultiplier
         case suspendZerosIOB = "suspend_zeros_iob"
         case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
-        // case maxDeltaBGthreshold = "maxDelta_bg_threshold"
-        // start dynISF config for oref variables
         case maxDeltaBGthreshold = "maxDelta_bg_threshold"
+        // start dynISF config for oref variables
         case adjustmentFactor
         case sigmoid
         case enableDynamicCR
