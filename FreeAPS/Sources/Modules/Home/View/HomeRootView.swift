@@ -242,14 +242,14 @@ extension Home {
                 return nil
             }
             var percentString = "\((fetchedPercent.first?.percentage ?? 100).formatted(.number)) %"
-            var target = (fetchedPercent.first?.target ?? 100) as Decimal
+            var ortarget = (fetchedPercent.first?.target ?? 100) as Decimal
             let indefinite = (fetchedPercent.first?.indefinite ?? false)
             let unit = state.units.rawValue
             if state.units == .mmolL {
-                target = target.asMmolL
+                ortarget = ortarget.asMmolL
             }
-            var targetString = (fetchedTargetFormatter.string(from: target as NSNumber) ?? "") + " " + unit
-            if tempTargetString != nil || target == 0 { targetString = "" }
+            var targetString = (fetchedTargetFormatter.string(from: ortarget as NSNumber) ?? "") + " " + unit
+            if tempTargetString != nil || ortarget == 0 { targetString = "" }
             percentString = percentString == "100 %" ? "" : percentString
 
             let duration = (fetchedPercent.first?.duration ?? 0) as Decimal
