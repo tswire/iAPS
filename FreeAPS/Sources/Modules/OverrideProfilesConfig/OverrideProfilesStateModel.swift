@@ -64,7 +64,7 @@ extension OverrideProfilesConfig {
                             ? target.asMgdL
                             : target
                     ) as NSDecimalNumber
-                } else { saveOverride.target = 6 }
+                } else { saveOverride.target = 0 }
                 if advancedSettings {
                     saveOverride.advancedSettings = true
                     if !isfAndCr {
