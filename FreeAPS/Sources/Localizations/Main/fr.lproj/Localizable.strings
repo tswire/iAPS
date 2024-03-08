@@ -407,6 +407,9 @@ Enact a temp Basal or a temp target */
 /* Add Simulator pump */
 "Add Simulator" = "Ajouter un simulateur";
 
+/* View/Header when pod expired */
+"Replace" = "Replace";
+
 /* Insulin model */
 "Model" = "Modèle";
 
@@ -2032,7 +2035,7 @@ Enact a temp Basal or a temp target */
 "Adjust Dynamic ISF constant" = "Adjust Dynamic ISF constant";
 
 /* Adjust Dynamic ISF constant */
-"Adjust Dynamic ISF constant" = "Adjust Dynamic ISF constant";
+"Adjust Dynamic ISF constant" = "Ajuster la constante ISF Dynamique";
 
 /* Enable Dynamic ISF, Headline */
 "Enable Dynamic ISF" = "Enable Dynamic ISF";
