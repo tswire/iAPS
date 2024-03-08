@@ -119,7 +119,7 @@ extension OverrideProfilesConfig {
                             ? target.asMgdL
                             : target
                     ) as NSDecimalNumber
-                } else { saveOverride.target = 6 }
+                } else { saveOverride.target = 0 }
 
                 if advancedSettings {
                     saveOverride.advancedSettings = true
@@ -166,7 +166,7 @@ extension OverrideProfilesConfig {
             saveOverride.id = id_
 
             if let tar = profile.target, tar == 0 {
-                saveOverride.target = 6
+                saveOverride.target = 0
             } else {
                 saveOverride.target = profile.target
             }
@@ -189,7 +189,7 @@ extension OverrideProfilesConfig {
             }
             // Saves
             coredataContext.perform { try? self.coredataContext.save() }
-            
+
             // Uploads new Override to NS
             ns.uploadOverride(profile.name ?? "", Double(saveOverride.duration ?? 0), saveOverride.date ?? Date())
         }
