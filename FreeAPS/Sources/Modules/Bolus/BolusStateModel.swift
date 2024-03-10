@@ -11,6 +11,7 @@ extension Bolus {
         // added for bolus calculator
         @Injected() var settings: SettingsManager!
         @Injected() var nsManager: NightscoutManager!
+        @Injected() var announcementStorage: AnnouncementsStorage!
 
         @Published var suggestion: Suggestion?
         @Published var predictions: Predictions?
@@ -57,6 +58,8 @@ extension Bolus {
         @Published var fattyMealFactor: Decimal = 0
         @Published var useFattyMealCorrectionFactor: Bool = false
         @Published var displayPredictions: Bool = true
+        @Published var roundedWholeCalc: Decimal = 0
+        @Published var roundedInsulinCalculated: Decimal = 0
 
         @Published var meal: [CarbsEntry]?
         @Published var carbs: Decimal = 0
@@ -107,7 +110,6 @@ extension Bolus {
             deltaBG = delta
         }
 
-        // CALCULATIONS FOR THE BOLUS CALCULATOR
         func calculateInsulin() -> Decimal {
             var conversion: Decimal = 1.0
             if units == .mmolL {
@@ -116,6 +118,7 @@ extension Bolus {
             // insulin needed for the current blood glucose
             targetDifference = (currentBG - target)
             targetDifferenceInsulin = targetDifference / isf
+            // targetDifference = (currentBG - target)
 
             // more or less insulin because of bg trend in the last 15 minutes
             fifteenMinInsulin = (deltaBG * conversion) / isf
@@ -140,6 +143,10 @@ extension Bolus {
                 }
             }
 
+            // rounding
+            let wholeCalcAsDouble = Double(wholeCalc)
+            roundedWholeCalc = Decimal(round(100 * wholeCalcAsDouble) / 100)
+
             // apply custom factor at the end of the calculations
             let result = wholeCalc * fraction
 
@@ -152,6 +159,8 @@ extension Bolus {
 
             // display no negative insulinCalculated
             insulinCalculated = max(insulinCalculated, 0)
+            let insulinCalculatedAsDouble = Double(insulinCalculated)
+            roundedInsulinCalculated = Decimal(round(100 * insulinCalculatedAsDouble) / 100)
             insulinCalculated = min(insulinCalculated, maxBolus)
 
             return apsManager
@@ -249,6 +258,32 @@ extension Bolus {
             } else {
                 nsManager.deleteNormalCarbs(mealArray)
             }
+        }
+
+        func remoteBolus() -> String? {
+            if let enactedAnnouncement = announcementStorage.recentEnacted() {
+                let components = enactedAnnouncement.notes.split(separator: ":")
+                guard components.count == 2 else { return nil }
+                let command = String(components[0]).lowercased()
+                let arguments = String(components[1]).lowercased()
+                let eventual: String = units == .mmolL ? evBG.asMmolL
+                    .formatted(.number.grouping(.never).rounded().precision(.fractionLength(1))) : evBG.formatted()
+
+                if command == "bolus" {
+                    return "\n" + NSLocalizedString("A Remote Bolus ", comment: "Remote Bolus Alert, part 1") +
+                        NSLocalizedString("was delivered", comment: "Remote Bolus Alert, part 2") + (
+                            -1 * enactedAnnouncement.createdAt
+                                .timeIntervalSinceNow
+                                .minutes
+                        )
+                        .formatted(.number.grouping(.never).rounded().precision(.fractionLength(0))) +
+                        NSLocalizedString(
+                            " minutes ago, triggered remotely from Nightscout, by a caregiver or a parent. Do you still want to bolus?\n\nPredicted eventual glucose, if you don't bolus, is: ",
+                            comment: "Remote Bolus Alert, part 3"
+                        ) + eventual + " " + units.rawValue
+                }
+            }
+            return nil
         }
     }
 }

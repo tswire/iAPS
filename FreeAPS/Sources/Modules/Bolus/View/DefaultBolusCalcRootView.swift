@@ -14,8 +14,29 @@ extension Bolus {
         @State private var presentInfo = false
         @State private var displayError = false
         @State private var keepForNextWiew: Bool = false
+        @State private var remoteBolusAlert: Alert?
+        @State private var isRemoteBolusAlertPresented: Bool = false
 
         @Environment(\.colorScheme) var colorScheme
+
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
+        @FocusState private var isFocused: Bool
 
         @FetchRequest(
             entity: Meals.entity(),
@@ -33,23 +54,6 @@ extension Bolus {
             if state.units == .mmolL {
                 return 1
             } else { return 0 }
-        }
-
-        private var color: LinearGradient {
-            colorScheme == .dark ? LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.bgDarkBlue,
-                    Color.bgDarkerDarkBlue
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-                :
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
         }
 
         var body: some View {
@@ -98,7 +102,6 @@ extension Bolus {
                                 }
                         }.contentShape(Rectangle())
                     }
-
                     HStack {
                         Text("Amount")
                         Spacer()
@@ -106,25 +109,56 @@ extension Bolus {
                             "0",
                             value: $state.amount,
                             formatter: formatter,
-                            autofocus: true,
-                            cleanInput: true
+                            cleanInput: true,
+                            useButtons: false
                         )
                         Text(!(state.amount > state.maxBolus) ? "U" : "😵").foregroundColor(.secondary)
                     }
+                    .focused($isFocused)
 
-                } header: { Text("Bolus") }
+                } header: {
+                    HStack {
+                        Text("Bolus")
+                        if isFocused {
+                            Button { isFocused = false } label: {
+                                HStack {
+                                    Text("Hide").foregroundStyle(.gray)
+                                    Image(systemName: "keyboard")
+                                        .symbolRenderingMode(.monochrome).foregroundStyle(colorScheme == .dark ? .white : .black)
+                                }.frame(maxWidth: .infinity, alignment: .trailing)
+                            }
+                            .controlSize(.mini)
+                        }
+                    }
+                }
 
                 if state.amount > 0 {
                     Section {
                         Button {
-                            keepForNextWiew = true
-                            state.add()
+                            if let remoteBolus = state.remoteBolus() {
+                                remoteBolusAlert = Alert(
+                                    title: Text("A Remote Bolus Was Just Delivered!"),
+                                    message: Text(remoteBolus),
+                                    primaryButton: .destructive(Text("Bolus"), action: {
+                                        keepForNextWiew = true
+                                        state.add()
+                                    }),
+                                    secondaryButton: .cancel()
+                                )
+                                isRemoteBolusAlertPresented = true
+                            } else {
+                                keepForNextWiew = true
+                                state.add()
+                            }
                         }
                         label: { Text(!(state.amount > state.maxBolus) ? "Enact bolus" : "Max Bolus exceeded!") }
                             .frame(maxWidth: .infinity, alignment: .center)
                             .disabled(disabled)
                             .listRowBackground(!disabled ? Color(.systemBlue) : Color(.systemGray4))
                             .tint(.white)
+                    }
+                    .alert(isPresented: $isRemoteBolusAlertPresented) {
+                        remoteBolusAlert!
                     }
                 }
 
@@ -137,65 +171,56 @@ extension Bolus {
                         label: { Text("Continue without bolus") }.frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-            }.scrollContentBackground(.hidden).background(color)
-                .alert(isPresented: $displayError) {
-                    Alert(
-                        title: Text("Warning!"),
-                        message: Text("\n" + alertString() + "\n"),
-                        primaryButton: .destructive(
-                            Text("Add"),
-                            action: {
-                                state.amount = state.insulinRecommended
-                                displayError = false
-                            }
-                        ),
-                        secondaryButton: .cancel()
-                    )
-                }.onAppear {
-                    configureView {
-                        state.waitForSuggestionInitial = waitForSuggestion
-                        state.waitForSuggestion = waitForSuggestion
-                    }
-                }
-
-                .onDisappear {
-                    if fetch, hasFatOrProtein, !keepForNextWiew, !state.useCalc {
-                        state.delete(deleteTwice: true, meal: meal)
-                    } else if fetch, !keepForNextWiew, !state.useCalc {
-                        state.delete(deleteTwice: false, meal: meal)
-                    }
-                }
-
-                .navigationTitle("Enact Bolus")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        if !fetch {
-                            Button("Close") {
-                                state.hideModal()
-                            }
-                        } else {
-                            Button {
-                                keepForNextWiew = true
-                                state.backToCarbsView(
-                                    complexEntry: true,
-                                    meal,
-                                    override: false,
-                                    deleteNothing: true,
-                                    editMode: false
-                                )
-                            } label: {
-                                HStack {
-                                    Image(systemName: "chevron.backward")
-                                    Text("Meal")
-                                }
-                            }
+            }
+            .scrollContentBackground(.hidden).background(color)
+            .alert(isPresented: $displayError) {
+                Alert(
+                    title: Text("Warning!"),
+                    message: Text("\n" + alertString() + "\n"),
+                    primaryButton: .destructive(
+                        Text("Add"),
+                        action: {
+                            state.amount = state.insulinRecommended
+                            displayError = false
                         }
+                    ),
+                    secondaryButton: .cancel()
+                )
+            }
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+            .onAppear {
+                configureView {
+                    state.waitForSuggestionInitial = waitForSuggestion
+                    state.waitForSuggestion = waitForSuggestion
+                }
+            }
+
+            .onDisappear {
+                if fetch, hasFatOrProtein, !keepForNextWiew, !state.useCalc {
+                    state.delete(deleteTwice: true, meal: meal)
+                } else if fetch, !keepForNextWiew, !state.useCalc {
+                    state.delete(deleteTwice: false, meal: meal)
+                }
+            }
+
+            .navigationTitle("Enact Bolus")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(
+                leading: Button {
+                    carbsView()
+                }
+                label: {
+                    HStack {
+                        Image(systemName: "chevron.backward")
+                        Text("Meal")
                     }
-                }
-                .popup(isPresented: presentInfo, alignment: .center, direction: .bottom) {
-                    bolusInfo
-                }
+                },
+                trailing: Button { state.hideModal() }
+                label: { Text("Close") }
+            )
+            .popup(isPresented: presentInfo, alignment: .center, direction: .bottom) {
+                bolusInfo
+            }
         }
 
         var disabled: Bool {
@@ -352,10 +377,12 @@ extension Bolus {
                         .foregroundColor(.blue)
                 }.padding(.bottom, 10)
             }
-            .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color(colorScheme == .dark ? UIColor.systemGray4 : UIColor.systemGray4))
-            )
+            .scrollContentBackground(.hidden).background(color)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+//            .background(
+//                RoundedRectangle(cornerRadius: 8, style: .continuous)
+//                    .fill(Color(colorScheme == .dark ? UIColor.systemGray4 : UIColor.systemGray4))
+//            )
         }
 
         // Localize the Oref0 error/warning strings. The default should never be returned

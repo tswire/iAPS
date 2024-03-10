@@ -13,6 +13,8 @@ extension Bolus {
         @State private var exceededMaxBolus = false
         @State private var keepForNextWiew: Bool = false
         @State private var calculatorDetent = PresentationDetent.medium
+        @State private var remoteBolusAlert: Alert?
+        @State private var isRemoteBolusAlertPresented: Bool = false
 
         private enum Config {
             static let dividerHeight: CGFloat = 2
@@ -20,6 +22,24 @@ extension Bolus {
         }
 
         @Environment(\.colorScheme) var colorScheme
+        private var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
+        @FocusState private var isFocused: Bool
 
         @FetchRequest(
             entity: Meals.entity(),
@@ -53,23 +73,6 @@ extension Bolus {
             if state.units == .mmolL {
                 return 1
             } else { return 0 }
-        }
-
-        private var color: LinearGradient {
-            colorScheme == .dark ? LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.bgDarkBlue,
-                    Color.bgDarkerDarkBlue
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-                :
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
         }
 
         var body: some View {
@@ -144,11 +147,12 @@ extension Bolus {
                             "0",
                             value: $state.amount,
                             formatter: formatter,
-                            autofocus: false,
-                            cleanInput: true
+                            cleanInput: true,
+                            useButtons: false
                         )
                         Text(exceededMaxBolus ? "😵" : " U").foregroundColor(.secondary)
                     }
+                    .focused($isFocused)
                     .onChange(of: state.amount) { newValue in
                         if newValue > state.maxBolus {
                             exceededMaxBolus = true
@@ -157,13 +161,40 @@ extension Bolus {
                         }
                     }
 
-                } header: { Text("Bolus") }
+                } header: {
+                    HStack {
+                        Text("Bolus")
+                        if isFocused {
+                            Button { isFocused = false } label: {
+                                HStack {
+                                    Text("Hide").foregroundStyle(.gray)
+                                    Image(systemName: "keyboard")
+                                        .symbolRenderingMode(.monochrome).foregroundStyle(colorScheme == .dark ? .white : .black)
+                                }.frame(maxWidth: .infinity, alignment: .trailing)
+                            }
+                            .controlSize(.mini)
+                        }
+                    }
+                }
 
                 if state.amount > 0 {
                     Section {
                         Button {
-                            keepForNextWiew = true
-                            state.add()
+                            if let remoteBolus = state.remoteBolus() {
+                                remoteBolusAlert = Alert(
+                                    title: Text("A Remote Bolus Was Just Delivered!"),
+                                    message: Text(remoteBolus),
+                                    primaryButton: .destructive(Text("Bolus"), action: {
+                                        keepForNextWiew = true
+                                        state.add()
+                                    }),
+                                    secondaryButton: .cancel()
+                                )
+                                isRemoteBolusAlertPresented = true
+                            } else {
+                                keepForNextWiew = true
+                                state.add()
+                            }
                         }
                         label: { Text(exceededMaxBolus ? "Max Bolus exceeded!" : "Enact bolus") }
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -182,35 +213,26 @@ extension Bolus {
                     }
                 }
             }
-            .blur(radius: showInfo ? 3 : 0)
+            .alert(isPresented: $isRemoteBolusAlertPresented) {
+                remoteBolusAlert!
+            }
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+            .blur(radius: showInfo ? 20 : 0)
             .navigationTitle("Enact Bolus")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if !fetch {
-                        Button("Close") {
-                            state.hideModal()
-                        }
-                    } else {
-                        Button {
-                            keepForNextWiew = true
-                            state.backToCarbsView(
-                                complexEntry: true,
-                                meal,
-                                override: false,
-                                deleteNothing: true,
-                                editMode: false
-                            )
-                        } label: {
-                            HStack {
-                                Image(systemName: "chevron.backward")
-                                Text("Meal")
-                            }
-                        }
-                    }
+            .navigationBarItems(
+                leading: Button {
+                    carbsView()
                 }
-            }
-            .scrollContentBackground(.hidden).background(color)
+                label: {
+                    HStack {
+                        Image(systemName: "chevron.backward")
+                        Text("Meal")
+                    }
+                },
+                trailing: Button { state.hideModal() }
+                label: { Text("Close") }
+            )
             .onAppear {
                 configureView {
                     state.waitForSuggestionInitial = waitForSuggestion
@@ -225,11 +247,10 @@ extension Bolus {
                     state.delete(deleteTwice: false, meal: meal)
                 }
             }
-//            .popup(isPresented: showInfo, alignment: .top, direction: .bottom) {
             .sheet(isPresented: $showInfo) {
                 calculationsDetailView
                     .presentationDetents(
-                        [fetch ? .large : .fraction(0.9), .large],
+                        [fetch ? .large : .fraction(0.85), .large],
                         selection: $calculatorDetent
                     )
             }
@@ -334,15 +355,6 @@ extension Bolus {
                 Text(secondRow).foregroundColor(.secondary).gridColumnAlignment(.leading)
 
                 Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-            }
-        }
-
-        func carbsView() {
-            if fetch {
-                keepForNextWiew = true
-                state.backToCarbsView(complexEntry: hasFatOrProtein, meal, override: false, deleteNothing: false, editMode: true)
-            } else {
-                state.backToCarbsView(complexEntry: false, meal, override: true, deleteNothing: true, editMode: false)
             }
         }
 
@@ -535,8 +547,8 @@ extension Bolus {
         }
 
         var calculationsDetailView: some View {
-            ScrollView {
-                VStack {
+            NavigationStack {
+                ScrollView {
                     Grid(alignment: .topLeading, horizontalSpacing: 3, verticalSpacing: 0) {
                         GridRow {
                             Text("Calculations").fontWeight(.bold).gridCellColumns(3).gridCellAnchor(.center).padding(.vertical)
@@ -632,10 +644,11 @@ extension Bolus {
                         .buttonStyle(.bordered)
                         .padding(.top)
                 }
+                .padding([.horizontal, .bottom])
+                .font(.system(size: 15))
+                .scrollContentBackground(.hidden).background(color)
             }
-            .scrollContentBackground(.hidden).background(color)
-            .padding([.horizontal, .bottom])
-            .font(.system(size: 15))
+            .font(.footnote)
         }
 
         private func insulinRounder(_ value: Decimal) -> Decimal {
@@ -653,6 +666,15 @@ extension Bolus {
 
         var hasFatOrProtein: Bool {
             ((meal.first?.fat ?? 0) > 0) || ((meal.first?.protein ?? 0) > 0)
+        }
+
+        func carbsView() {
+            if fetch {
+                keepForNextWiew = true
+                state.backToCarbsView(complexEntry: hasFatOrProtein, meal, override: false, deleteNothing: false, editMode: true)
+            } else {
+                state.backToCarbsView(complexEntry: false, meal, override: true, deleteNothing: true, editMode: false)
+            }
         }
 
         var mealEntries: some View {
@@ -689,6 +711,8 @@ extension Bolus {
                     }
                 }
             }
+            .frame(height: 4)
+            .padding(.vertical)
         }
     }
 

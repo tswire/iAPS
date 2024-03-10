@@ -31,6 +31,12 @@ struct ManBolusInfo {
     let value: Decimal
 }
 
+struct OverrideStruct {
+    let start: Date
+    let end: Date
+    let glucose: Int
+}
+
 typealias GlucoseYRange = (minValue: Int, minY: CGFloat, maxValue: Int, maxY: CGFloat)
 
 struct MainChartView: View {
@@ -40,8 +46,8 @@ struct MainChartView: View {
         static let topYPadding: CGFloat = 20
         static let bottomYPadding: CGFloat = 40
         static let minAdditionalWidth: CGFloat = 150
-        static let maxGlucose = 240
-        static let minGlucose = 40
+        static let maxGlucose: Int = 240
+        static let minGlucose: Int = 40
         static let yLinesCount = 5
         static let glucoseScale: CGFloat = 1 // default 2
         static let bolusSize: CGFloat = 8
@@ -68,6 +74,8 @@ struct MainChartView: View {
         static let resume = "resume"
         static let tempbasal = "basal"
         static let bolus = " " // "💧"
+        static let meal = "🍴"
+        static let override = "👤"
     }
 
     @Binding var glucose: [BloodGlucose]
@@ -88,10 +96,12 @@ struct MainChartView: View {
     @Binding var smooth: Bool
     @Binding var highGlucose: Decimal
     @Binding var lowGlucose: Decimal
-    @Binding var screenHours: Int16
+    @Binding var screenHours: Int
     @Binding var displayXgridLines: Bool
     @Binding var displayYgridLines: Bool
     @Binding var thresholdLines: Bool
+    @Binding var triggerUpdate: Bool
+    @Binding var overrideHistory: [OverrideHistory]
 
     @State var didAppearTrigger = false
     @State private var glucoseDots: [CGRect] = []
@@ -109,6 +119,7 @@ struct MainChartView: View {
     @State private var tempBasalPath = Path()
     @State private var regularBasalPath = Path()
     @State private var tempTargetsPath = Path()
+    @State private var overridesPath = Path()
     @State private var suspensionsPath = Path()
     @State private var carbsDots: [DotInfo] = []
     @State private var fpuDots: [DotInfo] = []
@@ -201,6 +212,7 @@ struct MainChartView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 ZStack(alignment: .top) {
                     tempTargetsView(fullSize: fullSize).drawingGroup()
+                    overridesView(fullSize: fullSize).drawingGroup()
                     basalView(fullSize: fullSize).drawingGroup()
                     mainView(fullSize: fullSize).id(Config.endID)
                         .drawingGroup()
@@ -467,23 +479,26 @@ struct MainChartView: View {
     private func announcementView(fullSize: CGSize) -> some View {
         ZStack {
             ForEach(announcementDots, id: \.rect.minX) { info -> AnyView in
-                let scaledRect = scaleCenter(rect: info.rect)
-
-                let position = CGPoint(
-                    x: scaledRect.midX + 5,
-                    y: scaledRect.maxY - Config.owlOffset
-                )
+                let position = CGPoint(x: info.rect.midX, y: info.rect.maxY - Config.owlOffset)
+                let command = info.note.lowercased()
                 let type: String =
-                    info.note.contains("true") ?
-                    Command.open :
-                    info.note.contains("false") ?
+                    command.contains("true") ?
                     Command.closed :
-                    info.note.contains("suspend") ?
+                    command.contains("false") ?
+                    Command.open :
+                    command.contains("suspend") ?
                     Command.suspend :
-                    info.note.contains("resume") ?
+                    command.contains("resume") ?
                     Command.resume :
-                    info.note.contains("tempbasal") ?
-                    Command.tempbasal : Command.bolus
+                    command.contains("tempbasal") ?
+                    Command.tempbasal :
+                    command.contains("override") ?
+                    Command.override :
+                    command.contains("meal") ?
+                    Command.meal :
+                    command.contains("bolus") ?
+                    Command.bolus : ""
+
                 VStack {
                     Text(type).font(.caption2).foregroundStyle(.orange)
 //                    Image("owl").resizable().frame(maxWidth: Config.owlSeize, maxHeight: Config.owlSeize).scaledToFill()
@@ -666,6 +681,14 @@ struct MainChartView: View {
         }
     }
 
+    private func scale(rect: CGRect) -> CGRect {
+        CGRect(origin: CGPoint(x: rect.origin.x * zoomScale, y: rect.origin.y), size: rect.size)
+    }
+
+    private func scaleCenter(rect: CGRect) -> CGRect {
+        CGRect(origin: CGPoint(x: rect.midX * zoomScale - rect.width / 2, y: rect.origin.y), size: rect.size)
+    }
+
     private func tempTargetsView(fullSize: CGSize) -> some View {
         ZStack {
             tempTargetsPath
@@ -686,12 +709,30 @@ struct MainChartView: View {
         }
     }
 
-    private func scale(rect: CGRect) -> CGRect {
-        CGRect(origin: CGPoint(x: rect.origin.x * zoomScale, y: rect.origin.y), size: rect.size)
-    }
-
-    private func scaleCenter(rect: CGRect) -> CGRect {
-        CGRect(origin: CGPoint(x: rect.midX * zoomScale - rect.width / 2, y: rect.origin.y), size: rect.size)
+    private func overridesView(fullSize: CGSize) -> some View {
+        ZStack {
+            overridesPath
+                .scale(x: zoomScale, anchor: .zero)
+                .fill(Color.violet.opacity(colorScheme == .light ? 0.3 : 0.6))
+            overridesPath
+                .scale(x: zoomScale, anchor: .zero)
+                .stroke(Color.violet.opacity(0.7), lineWidth: 1)
+        }
+        .onChange(of: glucose) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+        .onChange(of: suggestion) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+        .onChange(of: overrideHistory) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+        .onChange(of: triggerUpdate) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
+        .onChange(of: didAppearTrigger) { _ in
+            calculateOverridesRects(fullSize: fullSize)
+        }
     }
 
     private func predictionsView(fullSize: CGSize) -> some View {
@@ -746,6 +787,7 @@ extension MainChartView {
         calculateCarbsDots(fullSize: fullSize)
         calculateFPUsDots(fullSize: fullSize)
         calculateTempTargetsRects(fullSize: fullSize)
+        calculateOverridesRects(fullSize: fullSize)
         calculateBasalPoints(fullSize: fullSize)
         calculateSuspensions(fullSize: fullSize)
     }
@@ -1140,13 +1182,82 @@ extension MainChartView {
                     return res
                 }
             }
-
             let path = Path { path in
                 path.addRects(rects)
             }
-
             DispatchQueue.main.async {
                 tempTargetsPath = path
+            }
+        }
+    }
+
+    private func calculateOverridesRects(fullSize: CGSize) {
+        calculationQueue.async {
+            let latest = OverrideStorage().fetchLatestOverride().first
+            let rects = overrideHistory.compactMap { each -> CGRect in
+                let placeY = Int(each.target) < Config.minGlucose ? Config.minGlucose : Int(each.target)
+                let duration = each.duration
+                let xStart = timeToXCoordinate(each.date!.timeIntervalSince1970, fullSize: fullSize)
+                let xEnd = timeToXCoordinate(
+                    each.date!.addingTimeInterval(Int(duration).minutes.timeInterval).timeIntervalSince1970,
+                    fullSize: fullSize
+                )
+                let y = glucoseToYCoordinate(placeY, fullSize: fullSize)
+                return CGRect(
+                    x: xStart,
+                    y: y - 3,
+                    width: xEnd - xStart,
+                    height: 8
+                )
+            }
+            // Display active Override
+            if let last = latest, last.enabled {
+                var old = Array(rects)
+                let duration = Double(last.duration ?? 0)
+                // Looks better when target isn't == 0 in Home View Main Chart
+                let targetRaw = last.target ?? 0
+                let target = Int(targetRaw) < Config.minGlucose ? Config.minGlucose : Int(targetRaw)
+
+                if duration > 0 {
+                    let x1 = timeToXCoordinate((latest?.date ?? Date.now).timeIntervalSince1970, fullSize: fullSize)
+                    let plusNow = (last.date ?? Date.now).addingTimeInterval(Int(latest?.duration ?? 0).minutes.timeInterval)
+                    let x2 = timeToXCoordinate(plusNow.timeIntervalSince1970, fullSize: fullSize)
+                    let oneMore = CGRect(
+                        x: x1,
+                        y: glucoseToYCoordinate(Int(target), fullSize: fullSize) - 3,
+                        width: x2 - x1,
+                        height: 8
+                    )
+                    old.append(oneMore)
+                    let path = Path { path in
+                        path.addRects(old)
+                    }
+                    return DispatchQueue.main.async {
+                        overridesPath = path
+                    }
+                } else {
+                    let x1 = timeToXCoordinate((last.date ?? Date.now).timeIntervalSince1970, fullSize: fullSize)
+                    let x2 = timeToXCoordinate(Date.now.timeIntervalSince1970, fullSize: fullSize)
+                    let oneMore = CGRect(
+                        x: x1,
+                        y: glucoseToYCoordinate(Int(target), fullSize: fullSize) - 3,
+                        width: x2 - x1 + additionalWidth(viewWidth: fullSize.width),
+                        height: 8
+                    )
+                    old.append(oneMore)
+                    let path = Path { path in
+                        path.addRects(old)
+                    }
+                    return DispatchQueue.main.async {
+                        overridesPath = path
+                    }
+                }
+            }
+            let path = Path { path in
+                path.addRects(rects)
+            }
+            DispatchQueue.main.async {
+                overridesPath = path
             }
         }
     }
@@ -1223,6 +1334,27 @@ extension MainChartView {
 
     private func fullGlucoseWidth(viewWidth: CGFloat) -> CGFloat {
         viewWidth * CGFloat(hours)
+    }
+
+    private func additionalWidth(viewWidth: CGFloat) -> CGFloat {
+        guard let predictions = suggestion?.predictions,
+              let deliveredAt = suggestion?.deliverAt,
+              let last = glucose.last
+        else {
+            return Config.minAdditionalWidth
+        }
+
+        let iob = predictions.iob?.count ?? 0
+        let zt = predictions.zt?.count ?? 0
+        let cob = predictions.cob?.count ?? 0
+        let uam = predictions.uam?.count ?? 0
+        let max = [iob, zt, cob, uam].max() ?? 0
+
+        let lastDeltaTime = last.dateString.timeIntervalSince(deliveredAt)
+        let additionalTime = CGFloat(TimeInterval(max) * 5.minutes.timeInterval - lastDeltaTime)
+        let oneSecondWidth = oneSecondStep(viewWidth: viewWidth)
+
+        return Swift.min(Swift.max(additionalTime * oneSecondWidth, Config.minAdditionalWidth), 275)
     }
 
     private func oneSecondStep(viewWidth: CGFloat) -> CGFloat {
