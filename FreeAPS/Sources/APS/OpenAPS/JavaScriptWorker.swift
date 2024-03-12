@@ -14,13 +14,11 @@ final class JavaScriptWorker {
 
     private func createContext() -> JSContext {
         let context = JSContext(virtualMachine: virtualMachine)!
-
         context.exceptionHandler = { _, exception in
             if let error = exception?.toString() {
-                warning(.openAPS, "JavaScript Exception Handler: \(error)")
+                warning(.openAPS, "JavaScript Error: \(error)")
             }
         }
-
         let consoleLog: @convention(block) (String) -> Void = { message in
             if message.count > 3 { // Remove the cryptic test logs created during development of Autosens
                 debug(.openAPS, "JavaScript log: \(message)")
@@ -31,7 +29,6 @@ final class JavaScriptWorker {
             consoleLog,
             forKeyedSubscript: "_consoleLog" as NSString
         )
-
         return context
     }
 
@@ -41,19 +38,7 @@ final class JavaScriptWorker {
 
     private func evaluate(string: String) -> JSValue! {
         let ctx = commonContext ?? createContext()
-        let result = ctx.evaluateScript(string)
-
-        // Check if result is defined
-        guard let result = result else {
-            debug(.openAPS, "JavaScript Evalutation Log: JS returning UNDEFINED")
-            return nil
-        }
-
-        if !result.isObject, let log = result.toString(), log != "undefined", !log.isEmpty, !log.contains("insulinReq\":") {
-            debug(.openAPS, "JavaScript Evalutation Log: \(log)")
-        }
-
-        return result
+        return ctx.evaluateScript(string)
     }
 
     private func json(for string: String) -> RawJSON {
