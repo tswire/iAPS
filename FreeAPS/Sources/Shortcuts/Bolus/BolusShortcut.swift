@@ -35,8 +35,8 @@ import Intents
     @MainActor func perform() async throws -> some ProvidesDialog {
         do {
             let amount: Double
-            if let cq = bolusQuantity {
-                amount = cq
+            if let quantity = bolusQuantity {
+                amount = quantity
             } else {
                 amount = try await $bolusQuantity.requestValue("Enter a Bolus Amount")
             }
@@ -59,15 +59,27 @@ import Intents
 
 @available(iOS 16.0,*) final class BolusIntentRequest: BaseIntentsRequest {
     func bolus(_ bolusAmount: Double) throws -> String {
-        guard bolusAmount >= Double(settingsManager.preferences.bolusIncrement) else {
-            return "too small bolus amount"
+        guard settingsManager.settings.allowBolusShortcut else {
+            return NSLocalizedString("Bolus Shortcuts are disabled in iAPS settings", comment: "")
         }
+        guard bolusAmount >= Double(settingsManager.preferences.bolusIncrement) else {
+            return NSLocalizedString("too small bolus amount", comment: "")
+        }
+
+        guard bolusAmount <= Double(settingsManager.pumpSettings.maxBolus) else {
+            return NSLocalizedString("Max Bolus exceeded!", comment: "")
+        }
+
         let bolus = min(
             max(Decimal(bolusAmount), settingsManager.preferences.bolusIncrement),
             settingsManager.pumpSettings.maxBolus
         )
+
         let resultDisplay: String =
-            "A bolus command of \(bolus) U of insulin was sent to iAPS. Verify in iAPS app or in Nightscout if the bolus was delivered."
+            NSLocalizedString("A bolus command of ", comment: "") + bolus.formatted() + NSLocalizedString(
+                " U of insulin was sent to iAPS. Verify in iAPS app or in Nightscout if the bolus was delivered.",
+                comment: ""
+            )
 
         apsManager.enactBolus(amount: Double(bolus), isSMB: false)
         return resultDisplay
