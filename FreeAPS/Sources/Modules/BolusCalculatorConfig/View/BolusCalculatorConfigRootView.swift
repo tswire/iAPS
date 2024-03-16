@@ -34,7 +34,6 @@ extension BolusCalculatorConfig {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
             formatter.maximumFractionDigits = 1
-
             return formatter
         }
 
@@ -107,7 +106,22 @@ extension BolusCalculatorConfig {
                                 }
                             })
                     }
-                }
+                    if state.allowBolusShortcut {
+                        HStack {
+                            Text(
+                                state.allowedRemoteBolusAmount > state.settingsManager.pumpSettings
+                                    .maxBolus ? "Max Bolus exceeded!" :
+                                    "Max allowed bolus amount using shortcuts "
+                            )
+                            .foregroundStyle(
+                                state.allowedRemoteBolusAmount > state.settingsManager.pumpSettings
+                                    .maxBolus ? .red : .primary
+                            )
+                            Spacer()
+                            DecimalTextField("0", value: $state.allowedRemoteBolusAmount, formatter: conversionFormatter)
+                        }
+                    }
+                } header: { Text("Allow iOS Bolus Shortcuts") }
             }
             .scrollContentBackground(.hidden).background(color)
             .onAppear(perform: configureView)
