@@ -134,7 +134,7 @@ extension Preferences {
         case noisyCGMTargetMultiplier
         case suspendZerosIOB = "suspend_zeros_iob"
         case smbDeliveryRatioBGrange = "smb_delivery_ratio_bg_range"
-        case maxDeltaBGthreshold = "maxDelta_bg_threshold"
+        // case maxDeltaBGthreshold = "maxDelta_bg_threshold"
         // start dynISF config for oref variables
         case adjustmentFactor
         case sigmoid
