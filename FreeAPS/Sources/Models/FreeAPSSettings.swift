@@ -60,6 +60,7 @@ struct FreeAPSSettings: JSON, Equatable {
     var profilesOrTempTargets: Bool = false
     var allowBolusShortcut: Bool = false
     var allowedRemoteBolusAmount: Decimal = 0.0
+    var sgvInt: SGVInt = .sgv5min
 }
 
 extension FreeAPSSettings: Decodable {
@@ -283,6 +284,10 @@ extension FreeAPSSettings: Decodable {
 
         if let historyLayout = try? container.decode(HistoryLayout.self, forKey: .historyLayout) {
             settings.historyLayout = historyLayout
+        }
+
+        if let sgvInt = try? container.decode(SGVInt.self, forKey: .sgvInt) {
+            settings.sgvInt = sgvInt
         }
 
         if let alwaysUseColors = try? container.decode(Bool.self, forKey: .alwaysUseColors) {

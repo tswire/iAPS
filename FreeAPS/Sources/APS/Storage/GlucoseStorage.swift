@@ -28,8 +28,12 @@ final class BaseGlucoseStorage: GlucoseStorage, Injectable {
 
     let coredataContext = CoreDataStack.shared.persistentContainer.newBackgroundContext()
 
-    private enum Config {
-        static let filterTime: TimeInterval = 4.5 * 60
+    private var timeInterval: Double {
+        switch settingsManager.settings.sgvInt {
+        case .sgv1min: return 0.8 * 60
+        case .sgv3min: return 2.8 * 60
+        case .sgv5min: return 4.8 * 60
+        }
     }
 
     init(resolver: Resolver) {
@@ -187,7 +191,7 @@ final class BaseGlucoseStorage: GlucoseStorage, Injectable {
     }
 
     func isGlucoseFresh() -> Bool {
-        Date().timeIntervalSince(lastGlucoseDate()) <= Config.filterTime
+        Date().timeIntervalSince(lastGlucoseDate()) <= timeInterval
     }
 
     func filterTooFrequentGlucose(_ glucose: [BloodGlucose], at date: Date) -> [BloodGlucose] {
@@ -196,7 +200,7 @@ final class BaseGlucoseStorage: GlucoseStorage, Injectable {
         let sorted = glucose.sorted { $0.date < $1.date }
 
         for entry in sorted {
-            guard entry.dateString.addingTimeInterval(-Config.filterTime) > lastDate else {
+            guard entry.dateString.addingTimeInterval(-timeInterval) > lastDate else {
                 continue
             }
             filtered.append(entry)

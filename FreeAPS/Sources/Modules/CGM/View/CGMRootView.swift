@@ -99,6 +99,16 @@ extension CGM {
 
                     Section(header: Text("Experimental")) {
                         Toggle("Smooth Glucose Value", isOn: $state.smoothGlucose)
+                        if state.cgm == .glucoseDirect {
+                            Picker(
+                                selection: $state.sgvInt,
+                                label: Text("SGV Interval")
+                            ) {
+                                ForEach(SGVInt.allCases) { selection in
+                                    Text(selection.displayName).tag(selection)
+                                }
+                            }
+                        }
                     }
                 }
                 .scrollContentBackground(.hidden).background(color)

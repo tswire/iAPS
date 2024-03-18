@@ -52,5 +52,6 @@
   "useLiveActivity" : false,
   "useTargetButton" : false,
   "alwaysUseColors" : true,
-  "timeSettings" : true
+  "timeSettings" : true,
+  "sgvInt": "sgv5min"
 }

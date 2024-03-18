@@ -276,6 +276,7 @@
 		490D95462B77E7AC001A10DE /* OverrideStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490D95452B77E7AC001A10DE /* OverrideStorage.swift */; };
 		4963E5482A0D400700500170 /* autoISFTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4963E5472A0D400700500170 /* autoISFTableView.swift */; };
 		49AF9A962B9A266700244FFE /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AF9A952B9A266700244FFE /* Configs.swift */; };
+		49A121202BA72BAC0051CA85 /* SGVInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A1211F2BA72BAC0051CA85 /* SGVInt.swift */; };
 		5075C1608E6249A51495C422 /* TargetsEditorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDEA2DC60EDE0A3CA54DC73 /* TargetsEditorProvider.swift */; };
 		53F2382465BF74DB1A967C8B /* PumpConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8630D58BDAD6D9C650B9B39 /* PumpConfigProvider.swift */; };
 		5BFA1C2208114643B77F8CEB /* AddTempTargetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE53A13D26F101B332EFFC8 /* AddTempTargetProvider.swift */; };
@@ -873,6 +874,7 @@
 		490D95452B77E7AC001A10DE /* OverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideStorage.swift; sourceTree = "<group>"; };
 		4963E5472A0D400700500170 /* autoISFTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = autoISFTableView.swift; sourceTree = "<group>"; };
 		49AF9A952B9A266700244FFE /* Configs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
+		49A1211F2BA72BAC0051CA85 /* SGVInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGVInt.swift; sourceTree = "<group>"; };
 		4DD795BA46B193644D48138C /* TargetsEditorRootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TargetsEditorRootView.swift; sourceTree = "<group>"; };
 		500371C09F54F89A97D65FDB /* CalibrationsRootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalibrationsRootView.swift; sourceTree = "<group>"; };
 		505E09DC17A0C3D0AF4B66FE /* ISFEditorStateModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ISFEditorStateModel.swift; sourceTree = "<group>"; };
@@ -1793,6 +1795,7 @@
 				CC41E2992B1E1F460070974F /* HistoryLayout.swift */,
 				19B60B772B5E7E97002F4F74 /* Threshold.swift */,
 				192424CA2B7A64E70063CBF0 /* NIghtscoutExercise.swift */,
+				49A1211F2BA72BAC0051CA85 /* SGVInt.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -3133,6 +3136,7 @@
 				0F7A65FBD2CD8D6477ED4539 /* NotificationsConfigProvider.swift in Sources */,
 				3171D2818C7C72CD1584BB5E /* NotificationsConfigStateModel.swift in Sources */,
 				CD78BB94E43B249D60CC1A1B /* NotificationsConfigRootView.swift in Sources */,
+				49A121202BA72BAC0051CA85 /* SGVInt.swift in Sources */,
 				CE7CA3502A064973004BE681 /* CancelTempPresetIntent.swift in Sources */,
 				6B1F539F9FF75646D1606066 /* SnoozeDataFlow.swift in Sources */,
 				6FFAE524D1D9C262F2407CAE /* SnoozeProvider.swift in Sources */,

@@ -22,17 +22,21 @@ extension CGM {
         @Published var currentCalendarID: String = ""
         @Persisted(key: "CalendarManager.currentCalendarID") var storedCalendarID: String? = nil
         @Published var cgmTransmitterDeviceAddress: String? = nil
+        @Published var sgvInt: SGVInt = .sgv5min
 
         override func subscribe() {
             cgm = settingsManager.settings.cgm
             currentCalendarID = storedCalendarID ?? ""
             calendarIDs = calendarManager.calendarIDs()
             cgmTransmitterDeviceAddress = UserDefaults.standard.cgmTransmitterDeviceAddress
+            sgvInt = settingsManager.settings.sgvInt
 
             subscribeSetting(\.useCalendar, on: $createCalendarEvents) { createCalendarEvents = $0 }
             subscribeSetting(\.displayCalendarIOBandCOB, on: $displayCalendarIOBandCOB) { displayCalendarIOBandCOB = $0 }
             subscribeSetting(\.displayCalendarEmojis, on: $displayCalendarEmojis) { displayCalendarEmojis = $0 }
             subscribeSetting(\.smoothGlucose, on: $smoothGlucose, initial: { smoothGlucose = $0 })
+            subscribeSetting(\.sgvInt, on: $sgvInt) { sgvInt = $0 }
+            if cgm != .glucoseDirect { sgvInt = .sgv5min }
 
             $cgm
                 .removeDuplicates()
