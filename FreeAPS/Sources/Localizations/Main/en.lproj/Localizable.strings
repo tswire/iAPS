@@ -935,9 +935,6 @@ Enact a temp Basal or a temp target */
 /* TIR Chart */
 "Very High" = "Very High";
 
-/* TIR Chart */
-"Very Low" = "Very Low";
-
 /* */
 "glucose" = "glucose";
 
