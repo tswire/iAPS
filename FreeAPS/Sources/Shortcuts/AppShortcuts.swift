@@ -24,5 +24,12 @@ import Foundation
                 "\(.applicationName) allows to add carbs"
             ]
         )
+        AppShortcut(
+            intent: BolusIntent(),
+            phrases: [
+                "\(.applicationName) Bolus",
+                "\(.applicationName) Tries to Enact a bolus"
+            ]
+        )
     }
 }
