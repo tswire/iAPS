@@ -14,6 +14,9 @@ import Swinject
     @Injected() var glucoseStorage: GlucoseStorage!
     @Injected() var apsManager: APSManager!
 
+//    let overrideStorage = OverrideStorage()
+    let coreDataStorage = CoreDataStorage()
+
     let resolver: Resolver
 
     let coredataContext = CoreDataStack.shared.persistentContainer.viewContext
