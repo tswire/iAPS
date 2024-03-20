@@ -62,7 +62,8 @@ struct TagCloudView: View {
             case "autoISF",
                  "AIMI B30",
                  textTag where textTag.contains("disabled"),
-                 textTag where textTag.contains("final"):
+                 textTag where textTag.contains("final"),
+                 textTag where textTag.contains("Middleware"):
                 return .loopRed
             case "SMB Del.Ratio:":
                 return .loopGreen
@@ -75,8 +76,7 @@ struct TagCloudView: View {
                  textTag where textTag.contains("Ins.Req"):
                 return .insulin
             case textTag where textTag.contains("Exercise"),
-                 textTag where textTag.contains("Ratio TT"),
-                 textTag where textTag.contains("Middleware"):
+                 textTag where textTag.contains("Ratio TT"):
                 return .uam
             default:
                 return .basal

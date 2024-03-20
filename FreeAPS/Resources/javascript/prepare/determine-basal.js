@@ -3,17 +3,48 @@
 
 function generate(iob, currenttemp, glucose, profile, autosens = null, meal = null, microbolusAllowed = false, reservoir = null, clock = new Date(), pump_history, preferences, basalProfile, oref2_variables) {
     
-    let middleware_was_used = "";
-
+    var clock = new Date();
+    
+    var middleware_was_used = "";
     try {
-        const middlewareReason = middleware(iob, currenttemp, glucose, profile, autosens, meal, reservoir, clock, pump_history, preferences, basalProfile, oref2_variables);
-        middleware_was_used = middlewareReason || "Nothing changed";
-        console.log("Middleware reason: " + middleware_was_used);
+        var middlewareReason = middleware(iob, currenttemp, glucose, profile, autosens, meal, reservoir, clock, pump_history, preferences, basalProfile, oref2_variables);
+        middleware_was_used = (middlewareReason || "Nothing changed");
+        console.log("Middleware reason: " + (middlewareReason || "Nothing changed"));
     } catch (error) {
-        console.error("Invalid middleware: " + error);
-    }
+        console.log("Invalid middleware: " + error);
+    };
 
     const glucose_status = freeaps_glucoseGetLast(glucose);
+    var autosens_data = null;
 
-    return freeaps_determineBasal(glucose_status, currenttemp, iob, profile, autosens, meal || {}, freeaps_basalSetTemp, microbolusAllowed, reservoir, clock, pump_history || {}, preferences, basalProfile || {}, oref2_variables || {}); //, middleware_was_used);
+    if (autosens) {
+        autosens_data = autosens;
+    }
+    
+    var reservoir_data = null;
+    if (reservoir) {
+        reservoir_data = reservoir;
+    }
+
+    var meal_data = {};
+    if (meal) {
+        meal_data = meal;
+    }
+    
+    var pumphistory = {};
+    if (pump_history) {
+        pumphistory = pump_history;
+    }
+    
+    var basalprofile = {};
+    if (basalProfile) {
+        basalprofile = basalProfile;
+    }
+    
+    var oref2_variables_ = {};
+    if (oref2_variables) {
+        oref2_variables_ = oref2_variables;
+    }
+
+    return freeaps_determineBasal(glucose_status, currenttemp, iob, profile, autosens_data, meal_data, freeaps_basalSetTemp, microbolusAllowed, reservoir_data, clock, pumphistory, preferences, basalprofile, oref2_variables_, middleware_was_used);
 }

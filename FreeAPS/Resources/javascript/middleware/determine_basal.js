@@ -1,17 +1,25 @@
 function middleware(iob, currenttemp, glucose, profile, autosens, meal, reservoir, clock, pumphistory, preferences, basalprofile) {
-    // modify anything
-    // return any reason what has changed.
     
-    const popup = 0;
-    var reason = "message & whatever";
+    const disableAcce = 0;
     
-    // const d = new Date();
-    // let currentHour = d.getHours();
+    reason = "Nothing changed";
+    
+    var reasonAutoISF = "";
+    
+    const d = new Date();
+    let currentHour = d.getHours();
 
-    if (popup == 1) {
-        profile.mw_Reason = "Middleware:, " + reason + ", ";}
-    else {profile.mw_Reason = ""}
+    // disable acceISF during the night
+    if (disableAcce == 1) {
+        if (currentHour < 7 || currentHour > 22) {
+             profile.enable_BG_acceleration = false;
+             reasonAutoISF = "acceISF deactivated";
+             reason = "";
+            }
+        }
+    reason = reason + reasonAutoISF;
     
+    // return any reason what has changed.
     return reason;
 }
 
