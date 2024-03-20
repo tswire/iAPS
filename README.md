@@ -100,6 +100,31 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
+* 3.4.0
+	* catching up to Jons non UI features
+    * all OmniPod fixes by Joe Moran
+	* Middleware in popup as done by Jon, on iPhone it should look like this now:
+	```
+	function middleware(iob, currenttemp, glucose, profile, autosens, meal, reservoir, clock, pumphistory, preferences, basalprofile) {
+    	const disableAcce = 0;
+    	reason = "Nothing changed";
+    	var reasonAutoISF = "";
+    	const d = new Date();
+    	let currentHour = d.getHours();
+    	// disable acce_ISF betwenn 23:00 and 06:59
+    	if (disableAcce == 1) {
+        if (currentHour < 7 || currentHour > 22) {
+             profile.enable_BG_acceleration = false;
+             reasonAutoISF = "acceISF deactivated";
+             reason = "";
+            }
+        }
+    	reason = reason + reasonAutoISF;
+    	// return any reason what has changed.
+    	return reason;
+ 	}
+	```
+
 * 2.3.2
 	* introduce autosens toggle in oref1 and autoISF prefs. It allows to switch autosens off when not logging any carbs. autosensMax/Min can still be set to !=1, to allow TT setting low sensitivity (uses autosensMax as limiter)
  	*  bug fixes
@@ -108,8 +133,8 @@ Also note that you can achieve almost everything that Profiles do with the Advan
 	* again 2 decimal digits for bolus in chart (dash relevant)
  	* many experimental UI/UX changes and features from the active team around Jon, [nas10](https://github.com/10nas/iAPS.git), [@marvout](https://github.com/polscm32/iAPS.git), [@dnzxy](https://github.com/dnzxy/iAPS), [@Andreas](https://github.com/AndreasStokholm/iAPS.git)
   		* smaller time scale panel
- 		* Live Activity with Charts 
-  		* advanced calculator overhaul 
+ 		* Live Activity with Charts
+  		* advanced calculator overhaul
 * 2.2.9
 	* refer to [original release notes](https://github.com/Artificial-Pancreas/iAPS/releases)
 	* many neat things from Jon & Team, as
