@@ -136,16 +136,28 @@ final class BaseFetchGlucoseManager: FetchGlucoseManager, Injectable {
             let oldGlucoses = glucoseStorage.recent().filter {
                 $0.dateString.addingTimeInterval(31 * 60) > Date()
             }
-            
-            // smoothing for higher frequency glucose values should still bo over 15minutes
+
+            // smoothing for higher frequency glucose values should still bo over 10minutes, 3 5min intervals or ...
             var smoothFrame: Int {
                 switch settingsManager.settings.sgvInt {
-                case .sgv1min: return 15
-                case .sgv3min: return 5
+                case .sgv1min: return 11
+                case .sgv3min: return 4
                 case .sgv5min: return 3
                 }
             }
-            
+
+            var intName: String {
+                switch settingsManager.settings.sgvInt {
+                case .sgv1min:
+                    return NSLocalizedString("1 min", comment: "")
+                case .sgv3min:
+                    return NSLocalizedString("3 mins", comment: "")
+                case .sgv5min:
+                    return NSLocalizedString("5 mins", comment: "")
+                }
+            }
+            debug(.deviceManager, "Smmothing on \(intName) Glucose over \(smoothFrame) values.")
+
             var smoothedValues = oldGlucoses + filtered
             // smooth with 3 repeats
             for _ in 1 ... smoothFrame {
