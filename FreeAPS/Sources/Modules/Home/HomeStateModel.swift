@@ -74,6 +74,7 @@ extension Home {
         @Published var overrides: [Override] = []
         @Published var alwaysUseColors: Bool = true
         @Published var timeSettings: Bool = true
+        @Published var sgvInt: SGVInt = .sgv5min
 
         let coredataContext = CoreDataStack.shared.persistentContainer.viewContext
 
@@ -119,6 +120,7 @@ extension Home {
             hours = settingsManager.settings.hours
             alwaysUseColors = settingsManager.settings.alwaysUseColors
             timeSettings = settingsManager.settings.timeSettings
+            sgvInt = settingsManager.settings.sgvInt
 
             broadcaster.register(GlucoseObserver.self, observer: self)
             broadcaster.register(SuggestionObserver.self, observer: self)

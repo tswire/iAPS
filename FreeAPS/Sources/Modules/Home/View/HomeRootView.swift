@@ -492,7 +492,8 @@ extension Home {
                     displayYgridLines: $state.displayYgridLines,
                     thresholdLines: $state.thresholdLines,
                     triggerUpdate: $triggerUpdate,
-                    overrideHistory: $state.overrideHistory
+                    overrideHistory: $state.overrideHistory,
+                    sgvInt: $state.sgvInt
                 )
             }
             .padding(.bottom)

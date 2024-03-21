@@ -102,6 +102,7 @@ struct MainChartView: View {
     @Binding var thresholdLines: Bool
     @Binding var triggerUpdate: Bool
     @Binding var overrideHistory: [OverrideHistory]
+    @Binding var sgvInt: SGVInt
 
     @State var didAppearTrigger = false
     @State private var glucoseDots: [CGRect] = []
@@ -127,6 +128,17 @@ struct MainChartView: View {
     @State private var cachedMaxBasalRate: Decimal?
     private var zoomScale: Double {
         1.0 / Double(screenHours)
+    }
+
+    var downScaleInt: Double {
+        switch sgvInt {
+        case .sgv1min:
+            return 1.5
+        case .sgv3min:
+            return 1.2
+        case .sgv5min:
+            return 1
+        }
     }
 
     private let calculationQueue = DispatchQueue(
@@ -540,13 +552,13 @@ struct MainChartView: View {
 
     private func unSmoothedGlucoseView(fullSize: CGSize) -> some View {
         Path { path in
-            var lines: [CGPoint] = []
+//            var lines: [CGPoint] = []
             for rect in unSmoothedGlucoseDots {
                 let scaled = scaleCenter(rect: rect)
-                lines.append(CGPoint(x: scaled.midX, y: scaled.midY))
+//                lines.append(CGPoint(x: scaled.midX, y: scaled.midY))
                 path.addEllipse(in: scaled)
             }
-            path.addLines(lines)
+//            path.addLines(lines)
         }
         .stroke(Color.loopGray, lineWidth: 0.5)
         .onChange(of: glucose) { _ in
@@ -796,7 +808,12 @@ extension MainChartView {
         calculationQueue.async {
             let dots = glucose.concurrentMap { value -> CGRect in
                 let position = glucoseToCoordinate(value, fullSize: fullSize)
-                return CGRect(x: position.x - 2, y: position.y - 2, width: 4, height: 4)
+                return CGRect(
+                    x: position.x - 4 / (2 * downScaleInt),
+                    y: position.y - 4 / (2 * downScaleInt),
+                    width: 4 / downScaleInt,
+                    height: 4 / downScaleInt
+                )
             }
 
             let range = self.getGlucoseYRange(fullSize: fullSize)
@@ -872,7 +889,12 @@ extension MainChartView {
         calculationQueue.async {
             let dots = glucose.concurrentMap { value -> CGRect in
                 let position = UnSmoothedGlucoseToCoordinate(value, fullSize: fullSize)
-                return CGRect(x: position.x - 2, y: position.y - 2, width: 4, height: 4)
+                return CGRect(
+                    x: position.x - 2 / (2 * downScaleInt),
+                    y: position.y - 2 / (2 * downScaleInt),
+                    width: 2 / downScaleInt,
+                    height: 2 / downScaleInt
+                )
             }
 
             let range = self.getGlucoseYRange(fullSize: fullSize)
