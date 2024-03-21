@@ -136,10 +136,20 @@ final class BaseFetchGlucoseManager: FetchGlucoseManager, Injectable {
             let oldGlucoses = glucoseStorage.recent().filter {
                 $0.dateString.addingTimeInterval(31 * 60) > Date()
             }
+            
+            // smoothing for higher frequency glucose values should still bo over 15minutes
+            var smoothFrame: Int {
+                switch settingsManager.settings.sgvInt {
+                case .sgv1min: return 15
+                case .sgv3min: return 5
+                case .sgv5min: return 3
+                }
+            }
+            
             var smoothedValues = oldGlucoses + filtered
             // smooth with 3 repeats
-            for _ in 1 ... 3 {
-                smoothedValues.smoothSavitzkyGolayQuaDratic(withFilterWidth: 3)
+            for _ in 1 ... smoothFrame {
+                smoothedValues.smoothSavitzkyGolayQuaDratic(withFilterWidth: smoothFrame)
             }
             // find the new values only
             filtered = smoothedValues.filter { $0.dateString > syncDate }

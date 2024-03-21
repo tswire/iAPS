@@ -28,6 +28,7 @@ final class BaseGlucoseStorage: GlucoseStorage, Injectable {
 
     let coredataContext = CoreDataStack.shared.persistentContainer.newBackgroundContext()
 
+    // allow smaller intervalls for glucose storage
     private var timeInterval: Double {
         switch settingsManager.settings.sgvInt {
         case .sgv1min: return 0.8 * 60
