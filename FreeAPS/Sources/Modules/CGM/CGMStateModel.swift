@@ -36,7 +36,7 @@ extension CGM {
             subscribeSetting(\.displayCalendarEmojis, on: $displayCalendarEmojis) { displayCalendarEmojis = $0 }
             subscribeSetting(\.smoothGlucose, on: $smoothGlucose, initial: { smoothGlucose = $0 })
             subscribeSetting(\.sgvInt, on: $sgvInt) { sgvInt = $0 }
-            if cgm != .glucoseDirect, cgm != .simulator { sgvInt = .sgv5min }
+            if cgm != .glucoseDirect, cgm != .simulator, cgm != .libreTransmitter { sgvInt = .sgv5min }
 
             $cgm
                 .removeDuplicates()

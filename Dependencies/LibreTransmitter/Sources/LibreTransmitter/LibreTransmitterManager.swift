@@ -388,8 +388,11 @@ extension LibreTransmitterManager {
         let typeDesc = device.sensorType().debugDescription
 
         let now = Date()
+        
+        // allow smaller intervalls for glucose storage
+
         //only once per mins minute
-        let mins =  4.5
+        let mins =  0.8
         if let earlierplus = lastDirectUpdate?.addingTimeInterval(mins * 60), earlierplus >= now  {
             logger.debug("last ble update was less than \(mins) minutes ago, aborting loop update")
             return
