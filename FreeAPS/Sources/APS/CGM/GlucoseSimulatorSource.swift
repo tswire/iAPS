@@ -33,7 +33,7 @@ final class GlucoseSimulatorSource: GlucoseSource {
 
     private enum Config {
         // min time period to publish data
-        static let workInterval: TimeInterval = 300
+        static let workInterval: TimeInterval = 60
         // default BloodGlucose item at first run
         // 288 = 1 day * 24 hours * 60 minites * 60 seconds / workInterval
         static let defaultBGItems = 288

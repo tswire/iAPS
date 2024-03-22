@@ -170,5 +170,3 @@ private func linearRegressionCreator(
 
     return { x in intercept + slope * x }
 }
-
-

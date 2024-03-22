@@ -141,9 +141,9 @@ final class BaseFetchGlucoseManager: FetchGlucoseManager, Injectable {
             // the number of values used for smooting is 2*smoothFrame+1
             var smoothFrame: Int {
                 switch settingsManager.settings.sgvInt {
-                case .sgv1min: return 5  // 11 values, 10minutes of data
-                case .sgv3min: return 2  // 5 values 12 minutes of data
-                case .sgv5min: return 1  // 3 values 10 minutes of data
+                case .sgv1min: return 5 // 11 values, 10minutes of data
+                case .sgv3min: return 2 // 5 values 12 minutes of data
+                case .sgv5min: return 1 // 3 values 10 minutes of data
                 }
             }
 
@@ -157,7 +157,10 @@ final class BaseFetchGlucoseManager: FetchGlucoseManager, Injectable {
                     return NSLocalizedString("5 mins", comment: "")
                 }
             }
-            debug(.deviceManager, "Smmothing on \(intName) Glucose with frame size \(smoothFrame).")
+            debug(
+                .deviceManager,
+                "Smoothing on \(intName) Glucose with frame size \(smoothFrame) taking into account \(smoothFrame * 2 + 1) readings."
+            )
 
             var smoothedValues = oldGlucoses + filtered
             // smooth with 3 repeats

@@ -99,7 +99,7 @@ extension CGM {
 
                     Section(header: Text("Experimental")) {
                         Toggle("Smooth Glucose Value", isOn: $state.smoothGlucose)
-                        if state.cgm == .glucoseDirect {
+                        if state.cgm == .glucoseDirect || state.cgm == .simulator {
                             Picker(
                                 selection: $state.sgvInt,
                                 label: Text("SGV Interval")
