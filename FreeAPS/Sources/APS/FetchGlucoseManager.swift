@@ -138,11 +138,12 @@ final class BaseFetchGlucoseManager: FetchGlucoseManager, Injectable {
             }
 
             // smoothing for higher frequency glucose values should still bo over 10minutes, 3 5min intervals or ...
+            // the number of values used for smooting is 2*smoothFrame+1
             var smoothFrame: Int {
                 switch settingsManager.settings.sgvInt {
-                case .sgv1min: return 11
-                case .sgv3min: return 4
-                case .sgv5min: return 3
+                case .sgv1min: return 5  // 11 values, 10minutes of data
+                case .sgv3min: return 2  // 5 values 12 minutes of data
+                case .sgv5min: return 1  // 3 values 10 minutes of data
                 }
             }
 
@@ -156,12 +157,18 @@ final class BaseFetchGlucoseManager: FetchGlucoseManager, Injectable {
                     return NSLocalizedString("5 mins", comment: "")
                 }
             }
-            debug(.deviceManager, "Smmothing on \(intName) Glucose over \(smoothFrame) values.")
+            debug(.deviceManager, "Smmothing on \(intName) Glucose with frame size \(smoothFrame).")
 
             var smoothedValues = oldGlucoses + filtered
             // smooth with 3 repeats
-            for _ in 1 ... smoothFrame {
-                smoothedValues.smoothSavitzkyGolayQuaDratic(withFilterWidth: smoothFrame)
+            if settingsManager.settings.sgvInt == .sgv5min {
+                for _ in 1 ... 3 {
+                    smoothedValues.smoothSavitzkyGolayQuaDratic(withFilterWidth: smoothFrame)
+                }
+            } else {
+                for _ in 1 ... 2 {
+                    smoothedValues.smoothSavitzkyGolayQuaDratic(withFilterWidth: smoothFrame)
+                }
             }
             // find the new values only
             filtered = smoothedValues.filter { $0.dateString > syncDate }
