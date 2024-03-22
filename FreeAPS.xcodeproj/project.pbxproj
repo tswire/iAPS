@@ -275,8 +275,9 @@
 		45717281F743594AA9D87191 /* ConfigEditorRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920DDB21E5D0EB813197500D /* ConfigEditorRootView.swift */; };
 		490D95462B77E7AC001A10DE /* OverrideStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490D95452B77E7AC001A10DE /* OverrideStorage.swift */; };
 		4963E5482A0D400700500170 /* autoISFTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4963E5472A0D400700500170 /* autoISFTableView.swift */; };
-		49AF9A962B9A266700244FFE /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AF9A952B9A266700244FFE /* Configs.swift */; };
+		4973613D2BAD838400BD9C07 /* ExponentialSmoothing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4973613C2BAD838400BD9C07 /* ExponentialSmoothing.swift */; };
 		49A121202BA72BAC0051CA85 /* SGVInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A1211F2BA72BAC0051CA85 /* SGVInt.swift */; };
+		49AF9A962B9A266700244FFE /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AF9A952B9A266700244FFE /* Configs.swift */; };
 		5075C1608E6249A51495C422 /* TargetsEditorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDEA2DC60EDE0A3CA54DC73 /* TargetsEditorProvider.swift */; };
 		53F2382465BF74DB1A967C8B /* PumpConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8630D58BDAD6D9C650B9B39 /* PumpConfigProvider.swift */; };
 		5BFA1C2208114643B77F8CEB /* AddTempTargetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE53A13D26F101B332EFFC8 /* AddTempTargetProvider.swift */; };
@@ -873,8 +874,9 @@
 		47DFCE895C930F784EF11843 /* CalibrationsStateModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalibrationsStateModel.swift; sourceTree = "<group>"; };
 		490D95452B77E7AC001A10DE /* OverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideStorage.swift; sourceTree = "<group>"; };
 		4963E5472A0D400700500170 /* autoISFTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = autoISFTableView.swift; sourceTree = "<group>"; };
-		49AF9A952B9A266700244FFE /* Configs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
+		4973613C2BAD838400BD9C07 /* ExponentialSmoothing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExponentialSmoothing.swift; sourceTree = "<group>"; };
 		49A1211F2BA72BAC0051CA85 /* SGVInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGVInt.swift; sourceTree = "<group>"; };
+		49AF9A952B9A266700244FFE /* Configs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		4DD795BA46B193644D48138C /* TargetsEditorRootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TargetsEditorRootView.swift; sourceTree = "<group>"; };
 		500371C09F54F89A97D65FDB /* CalibrationsRootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalibrationsRootView.swift; sourceTree = "<group>"; };
 		505E09DC17A0C3D0AF4B66FE /* ISFEditorStateModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ISFEditorStateModel.swift; sourceTree = "<group>"; };
@@ -1828,6 +1830,7 @@
 				FE66D16A291F74F8005D6F77 /* Bundle+Extensions.swift */,
 				FEFFA7A12929FE49007B8193 /* UIDevice+Extensions.swift */,
 				CEA4F62229BE10F70011ADF7 /* SavitzkyGolayFilter.swift */,
+				4973613C2BAD838400BD9C07 /* ExponentialSmoothing.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -3121,6 +3124,7 @@
 				F5CA3DB1F9DC8B05792BBFAA /* CGMDataFlow.swift in Sources */,
 				BA00D96F7B2FF169A06FB530 /* CGMStateModel.swift in Sources */,
 				61962FCAF8A2D222553AC5A3 /* LibreConfigDataFlow.swift in Sources */,
+				4973613D2BAD838400BD9C07 /* ExponentialSmoothing.swift in Sources */,
 				BD7DA9A52AE06DFC00601B20 /* BolusCalculatorConfigDataFlow.swift in Sources */,
 				6EADD581738D64431902AC0A /* LibreConfigProvider.swift in Sources */,
 				CE94598729E9E4110047C9C6 /* WatchConfigRootView.swift in Sources */,
