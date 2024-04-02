@@ -694,6 +694,8 @@ extension Home {
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .frame(height: 20, alignment: .center)
             .padding(10)
+            .onTapGesture {
+                state.isStatusPopupPresented.toggle() }
         }
 
         var body: some View {
