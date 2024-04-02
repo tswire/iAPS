@@ -18,6 +18,23 @@ extension NotificationsConfig {
             }
         }()
 
+        var color: LinearGradient {
+            colorScheme == .dark ? LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.bgDarkBlue,
+                    Color.bgDarkerDarkBlue
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                :
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+        }
+
         private var glucoseFormatter: NumberFormatter {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
@@ -47,23 +64,6 @@ extension NotificationsConfig {
             }
 
             return footer
-        }
-
-        var color: LinearGradient {
-            colorScheme == .dark ? LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.bgDarkBlue,
-                    Color.bgDarkerDarkBlue
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-                :
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.gray.opacity(0.1)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
         }
 
         var body: some View {
@@ -102,20 +102,11 @@ extension NotificationsConfig {
                     Section(
                         header: Text("Live Activity"),
                         footer: Text(
-                            liveActivityFooterText()
-                        ),
-                        content: {
-                            if !systemLiveActivitySetting {
-                                Button("Open Settings App") {
-                                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                                }
-                            } else {
-                                Toggle("Show Live Activity", isOn: $state.useLiveActivity) }
-                        }
-                    )
-                    .onReceive(resolver.resolve(LiveActivityBridge.self)!.$systemEnabled, perform: {
-                        self.systemLiveActivitySetting = $0
-                    })
+                            "Live activity displays blood glucose live on the lock screen and on the dynamic island (if available)"
+                        )
+                    ) {
+                        Toggle("Show live activity", isOn: $state.useLiveActivity)
+                    }
                 }
             }
             .scrollContentBackground(.hidden).background(color)
