@@ -7,6 +7,8 @@ import Swinject
 
 extension Stat {
     struct autoISFTableView: BaseView {
+        @Environment(\.managedObjectContext) private var viewContext
+
         @State private var selectedEndTime = Date()
         @State private var selectedTimeIntervalIndex = 1 // Default to 2 hours
         let timeIntervalOptions = [1, 2, 4, 8] // Hours
@@ -34,9 +36,6 @@ extension Stat {
             }
         }
 
-        var slots: CGFloat = 12
-        var slotwidth: CGFloat = 1
-
         private var color: LinearGradient {
             colorScheme == .dark ? LinearGradient(
                 gradient: Gradient(colors: [
@@ -61,80 +60,75 @@ extension Stat {
             autoISFview
         }
 
+        var slots: CGFloat = 10.5
+        var slotwidth: CGFloat = 1
+
         var body: some View {
             GeometryReader { geometry in
-                ZStack {
-                    VStack(alignment: .center) {
-                        HStack {
-                            Text("Enacted autoISF Calculations & Insulin").font(.headline).bold().padding(10)
-                            Spacer()
-                        }
+                VStack(alignment: .center) {
+                    HStack {
+                        CustomDateTimePicker(selection: $selectedEndTime, minuteInterval: 15)
+                            .onChange(of: selectedEndTime) { _ in
+                                // Perform actions or fetch requests using the updated selectedEndTime
+                                fetchAutoISF()
+                            }
+                            .frame(height: 30) // Attempt to set a fixed height
+                            .clipped() // Ensure it doesn't visually overflow this frame
                         Spacer()
-                        HStack(alignment: .lastTextBaseline) {
-                            Spacer()
-                            Text("ISF factors").foregroundColor(.uam)
-                                .frame(width: 6 * slotwidth / slots * geometry.size.width, alignment: .center)
-                            Text("Insulin").foregroundColor(.insulin)
-                                .frame(width: 4 * slotwidth / slots * geometry.size.width, alignment: .center)
+                        Picker("", selection: $selectedTimeIntervalIndex) {
+                            ForEach(0 ..< timeIntervalOptions.count, id: \.self) { index in
+                                Text("\(self.timeIntervalOptions[index]) hours").tag(index)
+                            }
                         }
-                        if sizeClass == .compact {
-                            HStack {
-                                Group {
-                                    Text("Time")
-                                    Spacer()
-                                    Text("BG").foregroundColor(.loopGreen)
-                                }
-                                Spacer()
-                                Button(action: {
-                                    self.isPresented = false
-                                }) {
-                                    Text("Close")
-                                        .foregroundColor(.white)
-                                        .padding(5)
-                                        .background(Color.blue)
-                                        .cornerRadius(10)
-                                }.padding(5)
-                            }
-                            Spacer()
-                            HStack {
-                                CustomDateTimePicker(selection: $selectedEndTime, minuteInterval: 15)
-                                    .onChange(of: selectedEndTime) { _ in
-                                        // Perform actions or fetch requests using the updated selectedEndTime
-                                        fetchAutoISF()
-                                    }
-                                    .frame(height: 30) // Attempt to set a fixed height
-                                    .clipped() // Ensure it doesn't visually overflow this frame
-                                Spacer()
-                                Picker("", selection: $selectedTimeIntervalIndex) {
-                                    ForEach(0 ..< timeIntervalOptions.count, id: \.self) { index in
-                                        Text("\(self.timeIntervalOptions[index]) hours").tag(index)
-                                    }
-                                }
-                                .pickerStyle(MenuPickerStyle())
-                                .onChange(of: selectedTimeIntervalIndex) { _ in
-                                    fetchAutoISF()
-                                }
-                            }
-                            HStack(alignment: .lastTextBaseline) {
-                                Spacer()
-                                Group {
-                                    Text("req.")
-                                    Spacer()
-                                    Text("SMB")
-                                    Spacer()
-                                    Text("TBR") }
-                                    .foregroundColor(.insulin)
-                            }
-                            .frame(width: 0.95 * geometry.size.width)
-                            Divider()
+                        .pickerStyle(MenuPickerStyle())
+                        .onChange(of: selectedTimeIntervalIndex) { _ in
+                            fetchAutoISF()
                         }
-                        historyISF()
                     }
-                    .font(.caption)
+                    HStack(alignment: .lastTextBaseline) {
+                        Spacer()
+                        Text("ISF factors").foregroundColor(.uam)
+                            .frame(width: 6 * slotwidth / slots * geometry.size.width, alignment: .center)
+                        Text("Insulin").foregroundColor(.insulin)
+                            .frame(width: 4 * slotwidth / slots * geometry.size.width, alignment: .center)
+                    }
+                    HStack {
+                        Group {
+                            Text("Time")
+                            Spacer()
+                            Text("BG").foregroundColor(.loopGreen)
+                        }
+
+                        Spacer()
+                        Group {
+                            Text("final").bold()
+                            Spacer()
+                            Text("acce")
+                            Spacer()
+                            Text("bg")
+                            Spacer()
+                            Text("pp")
+                            Spacer()
+                            Text("dura") }
+                            .foregroundColor(.uam)
+                        Spacer()
+                        Group {
+                            Text("SMB")
+                            Spacer()
+                            Text("TBR")
+                            Spacer()
+                            Text("req.")
+                        }
+                        .foregroundColor(.insulin)
+                    }
+                    .frame(width: 0.95 * geometry.size.width)
+                    Divider()
+                    historyISF()
                 }
+                .font(.caption)
                 .onAppear(perform: configureView)
                 .onAppear(perform: fetchAutoISF)
-                .navigationBarTitle("History")
+                .navigationBarTitle("autoISF History")
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button("Close", action: state.hideModal))
                 .scrollContentBackground(.hidden).background(color)
@@ -156,31 +150,32 @@ extension Stat {
                     ForEach(autoISFResults, id: \.self) { entry in
                         HStack(spacing: 2) {
                             Text(timeFormatter.string(from: entry.timestamp ?? Date()))
-                                .frame(width: 1.3 / slots * geometry.size.width, alignment: .leading)
+                                .frame(width: 1.2 / slots * geometry.size.width, alignment: .leading)
 
-                            if sizeClass == .compact {
-                                Text("\(entry.bg ?? 0)")
-                                    .foregroundColor(.loopGreen)
-                                    .frame(width: 1.1 / slots * geometry.size.width, alignment: .center)
-                                Group {
-                                    Text("\(entry.autoISF_ratio ?? 1)")
-                                    Text("\(entry.acce_ratio ?? 1)")
-                                    Text("\(entry.bg_ratio ?? 1)")
-                                    Text("\(entry.pp_ratio ?? 1)")
-                                    Text("\(entry.dura_ratio ?? 1)") }
-                                    .frame(width: slotwidth / slots * geometry.size.width, alignment: .trailing)
-                                    .foregroundColor(.uam)
-                                Group {
-                                    Text("\(entry.insulin_req ?? 0)")
-                                        .frame(width: 1.5 * slotwidth / slots * geometry.size.width, alignment: .trailing)
-                                    Text("\(entry.smb ?? 0)")
-                                    Text("\(entry.tbr ?? 0)") }
-                                    .frame(width: slotwidth / slots * geometry.size.width, alignment: .trailing)
-                                    .foregroundColor(.insulin)
-                            }
+                            Text("\(entry.bg ?? 0)")
+                                .foregroundColor(.loopGreen)
+                                .frame(width: 0.85 / slots * geometry.size.width, alignment: .center)
+                            Group {
+                                Text("\(entry.autoISF_ratio ?? 1)")
+                                Text("\(entry.acce_ratio ?? 1)")
+                                Text("\(entry.bg_ratio ?? 1)")
+                                Text("\(entry.pp_ratio ?? 1)")
+                                Text("\(entry.dura_ratio ?? 1)") }
+                                .frame(width: 0.9 / slots * geometry.size.width, alignment: .trailing)
+                                .foregroundColor(.uam)
+                            Group {
+                                Text("\(entry.smb ?? 0)")
+                                Text("\(entry.tbr ?? 0)")
+                                Text("\(entry.insulin_req ?? 0)") }
+                                .frame(width: slotwidth / slots * geometry.size.width, alignment: .trailing)
+                                .foregroundColor(.insulin)
                         }
-                    }
+                    }.listRowBackground(Color.clear)
                 }
+                .scrollContentBackground(.hidden)
+                .frame(maxWidth: .infinity)
+//                .edgesIgnoringSafeArea(.all)
+                .listStyle(GroupedListStyle())
             }
         }
     }
