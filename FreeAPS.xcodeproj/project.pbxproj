@@ -276,6 +276,7 @@
 		490D95462B77E7AC001A10DE /* OverrideStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490D95452B77E7AC001A10DE /* OverrideStorage.swift */; };
 		4937816D2BBDB886005142A9 /* LandscapeOnlyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4937816C2BBDB886005142A9 /* LandscapeOnlyViewController.swift */; };
 		4937816F2BBDB940005142A9 /* LandscapeOnlyViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4937816E2BBDB940005142A9 /* LandscapeOnlyViewWrapper.swift */; };
+		493781752BBEC747005142A9 /* CustomDateTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493781742BBEC747005142A9 /* CustomDateTimePicker.swift */; };
 		4963E5482A0D400700500170 /* autoISFTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4963E5472A0D400700500170 /* autoISFTableView.swift */; };
 		49AF9A962B9A266700244FFE /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AF9A952B9A266700244FFE /* Configs.swift */; };
 		5075C1608E6249A51495C422 /* TargetsEditorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDEA2DC60EDE0A3CA54DC73 /* TargetsEditorProvider.swift */; };
@@ -901,6 +902,7 @@
 		490D95452B77E7AC001A10DE /* OverrideStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideStorage.swift; sourceTree = "<group>"; };
 		4937816C2BBDB886005142A9 /* LandscapeOnlyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandscapeOnlyViewController.swift; sourceTree = "<group>"; };
 		4937816E2BBDB940005142A9 /* LandscapeOnlyViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandscapeOnlyViewWrapper.swift; sourceTree = "<group>"; };
+		493781742BBEC747005142A9 /* CustomDateTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDateTimePicker.swift; sourceTree = "<group>"; };
 		4963E5472A0D400700500170 /* autoISFTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = autoISFTableView.swift; sourceTree = "<group>"; };
 		49AF9A952B9A266700244FFE /* Configs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		4DD795BA46B193644D48138C /* TargetsEditorRootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TargetsEditorRootView.swift; sourceTree = "<group>"; };
@@ -1875,6 +1877,7 @@
 				CEA4F62229BE10F70011ADF7 /* SavitzkyGolayFilter.swift */,
 				4937816C2BBDB886005142A9 /* LandscapeOnlyViewController.swift */,
 				4937816E2BBDB940005142A9 /* LandscapeOnlyViewWrapper.swift */,
+				493781742BBEC747005142A9 /* CustomDateTimePicker.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -2999,6 +3002,7 @@
 				38BF021F25E7F0DE00579895 /* DeviceDataManager.swift in Sources */,
 				38A504A425DD9C4000C5B9E8 /* UserDefaultsExtensions.swift in Sources */,
 				38FE826A25CC82DB001FF17A /* NetworkService.swift in Sources */,
+				493781752BBEC747005142A9 /* CustomDateTimePicker.swift in Sources */,
 				FE66D16B291F74F8005D6F77 /* Bundle+Extensions.swift in Sources */,
 				3883581C25EE79BB00E024B2 /* DecimalTextField.swift in Sources */,
 				6B1A8D2E2B156EEF00E76752 /* LiveActivityBridge.swift in Sources */,
