@@ -17,15 +17,6 @@ extension Stat {
         @StateObject var state = StateModel()
         @Environment(\.colorScheme) var colorScheme
 
-//        @FetchRequest(
-//            entity: AutoISF.entity(),
-//            sortDescriptors: [NSSortDescriptor(key: "timestamp", ascending: false)],
-//            predicate: NSPredicate(
-//                format: "timestamp > %@",
-//                Date().addingTimeInterval(-3.hours.timeInterval) as NSDate
-//            )
-//        ) var fetchedAutoISF: FetchedResults<AutoISF>
-
         private func fetchAutoISF() {
             let endTime = selectedEndTime
             // Calculate start time based on the selected interval
@@ -106,14 +97,13 @@ extension Stat {
                             }
                             Spacer()
                             HStack {
-                                DatePicker(
-                                    "",
-                                    selection: $selectedEndTime,
-                                    displayedComponents: [.date, .hourAndMinute]
-                                )
-                                .onChange(of: selectedEndTime) { _ in
-                                    fetchAutoISF()
-                                }
+                                CustomDateTimePicker(selection: $selectedEndTime, minuteInterval: 15)
+                                    .onChange(of: selectedEndTime) { _ in
+                                        // Perform actions or fetch requests using the updated selectedEndTime
+                                        fetchAutoISF()
+                                    }
+                                    .frame(height: 30) // Attempt to set a fixed height
+                                    .clipped() // Ensure it doesn't visually overflow this frame
                                 Spacer()
                                 Picker("", selection: $selectedTimeIntervalIndex) {
                                     ForEach(0 ..< timeIntervalOptions.count, id: \.self) { index in
