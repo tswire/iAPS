@@ -9,6 +9,7 @@ extension Home {
         let resolver: Resolver
 
         @StateObject var state = StateModel()
+        @State private var showingAutoISFTable = false
         @State var isStatusPopupPresented = false
         @State var showCancelAlert = false
         @State var showCancelTTAlert = false
@@ -602,12 +603,19 @@ extension Home {
                         .resizable()
                         .frame(width: 30, height: 30)
                         .padding(8)
-//                        .foregroundColor(.uam)
+                        //                        .foregroundColor(.uam)
                         .onTapGesture { state.showModal(for: .statistics) }
                         .onLongPressGesture {
                             let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
                             impactHeavy.impactOccurred()
-                            state.showModal(for: .autoisf)
+                            showingAutoISFTable = true }
+                        .fullScreenCover(isPresented: $showingAutoISFTable) {
+                            // Wrap the autoISFTableView in the LandscapeOnlyViewWrapper if you wish to attempt forcing landscape here
+                            // Or simply present the autoISFTableView if you're handling orientation through other means
+                            LandscapeOnlyViewWrapper(
+                                content: Stat
+                                    .autoISFTableView(isPresented: $showingAutoISFTable, resolver: resolver)
+                            )
                         }
                         .foregroundColor(colorIcon)
                         .buttonStyle(.borderless)

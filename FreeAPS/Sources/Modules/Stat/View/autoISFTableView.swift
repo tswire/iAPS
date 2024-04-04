@@ -7,6 +7,7 @@ import Swinject
 
 extension Stat {
     struct autoISFTableView: BaseView {
+        @Binding var isPresented: Bool // Add this to control the presentation
         @Environment(\.horizontalSizeClass) var sizeClass
         let resolver: Resolver
         @StateObject var state = StateModel()
@@ -43,54 +44,65 @@ extension Stat {
 
         var body: some View {
             GeometryReader { geometry in
-                ZStack {
-                    VStack(alignment: .center) {
-                        HStack {
-                            Text("Enacted autoISF Calculations & Insulin").font(.headline).bold().padding(10)
-                            Spacer()
-                        }
-                        Spacer()
-                        HStack(alignment: .lastTextBaseline) {
-                            Spacer()
-                            Text("ISF factors").foregroundColor(.uam)
-                                .frame(width: 6 * slotwidth / slots * geometry.size.width, alignment: .center)
-                            Text("Insulin").foregroundColor(.insulin)
-                                .frame(width: 4 * slotwidth / slots * geometry.size.width, alignment: .center)
-                        }
-                        if sizeClass == .compact {
+                VStack {
+                    ZStack {
+                        VStack(alignment: .center) {
                             HStack {
-                                Group {
-                                    Text("Time")
-                                    Spacer()
-                                    Text("BG").foregroundColor(.loopGreen)
-                                }
+                                Text("autoISF Calculations").font(.headline).bold().padding(10)
                                 Spacer()
-                                Group {
-                                    Text("final").bold()
-                                    Spacer()
-                                    Text("acce")
-                                    Spacer()
-                                    Text("bg")
-                                    Spacer()
-                                    Text("pp")
-                                    Spacer()
-                                    Text("dura") }
-                                    .foregroundColor(.uam)
-                                Spacer()
-                                Group {
-                                    Text("req.")
-                                    Spacer()
-                                    Text("SMB")
-                                    Spacer()
-                                    Text("TBR") }
-                                    .foregroundColor(.insulin)
+                                Button(action: {
+                                    self.isPresented = false
+                                }) {
+                                    Text("Close")
+                                        .foregroundColor(.white)
+                                        .padding(5)
+                                        .background(Color.blue)
+                                        .cornerRadius(10)
+                                }.padding(5)
                             }
-                            .frame(width: 0.95 * geometry.size.width)
-                            Divider()
+                            Spacer()
+                            HStack(alignment: .lastTextBaseline) {
+                                Spacer()
+                                Text("ISF factors").foregroundColor(.uam)
+                                    .frame(width: 6 * slotwidth / slots * geometry.size.width, alignment: .center)
+                                Text("Insulin").foregroundColor(.insulin)
+                                    .frame(width: 4 * slotwidth / slots * geometry.size.width, alignment: .center)
+                            }
+                            if sizeClass == .compact {
+                                HStack {
+                                    Group {
+                                        Text("Time")
+                                        Spacer()
+                                        Text("BG").foregroundColor(.loopGreen)
+                                    }
+                                    Spacer()
+                                    Group {
+                                        Text("final").bold()
+                                        Spacer()
+                                        Text("acce")
+                                        Spacer()
+                                        Text("bg")
+                                        Spacer()
+                                        Text("pp")
+                                        Spacer()
+                                        Text("dura") }
+                                        .foregroundColor(.uam)
+                                    Spacer()
+                                    Group {
+                                        Text("req.")
+                                        Spacer()
+                                        Text("SMB")
+                                        Spacer()
+                                        Text("TBR") }
+                                        .foregroundColor(.insulin)
+                                }
+                                .frame(width: 0.95 * geometry.size.width)
+                                Divider()
+                            }
+                            historyISF()
                         }
-                        historyISF()
+                        .font(.caption)
                     }
-                    .font(.caption)
                 }
                 .onAppear(perform: configureView)
                 .navigationBarTitle("History")

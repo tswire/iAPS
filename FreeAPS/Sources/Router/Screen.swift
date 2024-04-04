@@ -30,7 +30,6 @@ enum Screen: Identifiable, Hashable {
     case overrideProfilesConfig
     case snooze
     case statistics
-    case autoisf
     case watch
     case statisticsConfig
     case bolusCalculatorConfig
@@ -101,8 +100,6 @@ extension Screen {
             WatchConfig.RootView(resolver: resolver)
         case .statistics:
             Stat.RootView(resolver: resolver)
-        case .autoisf:
-            Stat.autoISFTableView(resolver: resolver)
         case .statisticsConfig:
             StatConfig.RootView(resolver: resolver)
         case .bolusCalculatorConfig:
