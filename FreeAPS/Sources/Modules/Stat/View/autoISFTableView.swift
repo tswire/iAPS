@@ -128,8 +128,7 @@ extension Stat {
                 .font(.caption)
                 .onAppear(perform: configureView)
                 .onAppear(perform: fetchAutoISF)
-                .navigationBarTitle("autoISF History")
-                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitle("")
                 .navigationBarItems(trailing: Button("Close", action: state.hideModal))
                 .scrollContentBackground(.hidden).background(color)
             }
@@ -174,9 +173,9 @@ extension Stat {
                 }
                 .scrollContentBackground(.hidden)
                 .frame(maxWidth: .infinity)
-//                .edgesIgnoringSafeArea(.all)
-                .listStyle(GroupedListStyle())
-            }
+                //                .edgesIgnoringSafeArea(.all)
+                .listStyle(PlainListStyle())
+            }.navigationBarTitle(Text("autoISF History"), displayMode: .inline)
         }
     }
 }
