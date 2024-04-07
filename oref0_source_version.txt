@@ -1,7 +1,9 @@
-oref0 branch: dev-autoISF - git version: 14234d4
+oref0 branch: dev-autoISF - git version: 98c4aff
 
 Last commits:
-14234d4 separate InsReq. tags
+98c4aff fix errors
+8962bf3 populate avgDelta towards suggestion OiAPS
+ec10989 separate InsReq. tags
 9ede939 autosens result in popup
 3e601be fix errors date and glucose
 9981d97 disable maxDelta_bg_threshold setting completely
@@ -29,5 +31,3 @@ fa4a448 middleware into popup
 8fa3e82 error fix
 f532588 FSLibre adaption for 1min readings
 328627f Pierres anhancements
-2d865a6 2.2.8.1
-6301d22 carb ration < 3 softened to 1

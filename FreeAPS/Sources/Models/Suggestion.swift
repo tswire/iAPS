@@ -40,6 +40,7 @@ struct Suggestion: JSON, Equatable {
     let minPredBG: Decimal?
     let threshold: Decimal?
     let carbRatio: Decimal?
+    let avgDelta: Decimal?
 }
 
 struct Predictions: JSON, Equatable {
@@ -97,6 +98,7 @@ extension Suggestion {
         case minPredBG
         case threshold
         case carbRatio = "CR"
+        case avgDelta
     }
 }
 
