@@ -1,4 +1,4 @@
-# iAPS with autoISF
+# iAPS with autoISF new UI
 
 ## Introduction
 
@@ -52,6 +52,14 @@ on iPhone 13 mini:
 	 />
 <img src="iAPS_iPhone_04.png"
      alt="advanced exercise TTs - missing prefs"
+	 width=350
+	 />
+<img src="iAPS_iPhone_05.png"
+     alt="autoISF history"
+	 width=350
+	 />
+<img src="iAPS_iPhone_06.png"
+     alt="LockScreen Live Activity Widget"
 	 width=350
 	 />
 
