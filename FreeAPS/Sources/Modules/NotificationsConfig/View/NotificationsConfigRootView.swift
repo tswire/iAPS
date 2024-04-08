@@ -67,21 +67,21 @@ extension NotificationsConfig {
                             }
                         } else {
                             Toggle("Show Live Activity", isOn: $state.useLiveActivity) }
+
+                        if state.useLiveActivity {
+                            Picker(
+                                selection: $state.lockScreenView,
+                                label: Text("Lock screen widget")
+                            ) {
+                                ForEach(LockScreenView.allCases) { selection in
+                                    Text(selection.displayName).tag(selection)
+                                }
+                            }
+                        }
                     }
                 )
                 .onReceive(resolver.resolve(LiveActivityBridge.self)!.$systemEnabled, perform: {
-                    self.systemLiveActivitySetting = $0
-                })
-                Section {
-                    Picker(
-                        selection: $state.lockScreenView,
-                        label: Text("Lock screen widget")
-                    ) {
-                        ForEach(LockScreenView.allCases) { selection in
-                            Text(selection.displayName).tag(selection)
-                        }
-                    }
-                } header: { Text("Lock screen widget") }
+                    self.systemLiveActivitySetting = $0 })
             }
         }
 
