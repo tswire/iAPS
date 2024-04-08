@@ -21,49 +21,45 @@ extension LiveActivityAttributes.ContentState {
             .string(from: mmol ? value.asMmolL as NSNumber : NSNumber(value: value))!
     }
 
-    init?(new bg: BloodGlucose, prev: BloodGlucose?, mmol: Bool, chart: [Readings]) {
-        guard let glucose = bg.glucose,
-              bg.dateString.timeIntervalSinceNow > -TimeInterval(minutes: 6)
-        else {
+    init?(
+        new bg: BloodGlucose,
+        prev: BloodGlucose?,
+        mmol: Bool,
+        chart: [Readings],
+        settings: FreeAPSSettings,
+        suggestion: Suggestion
+    ) {
+        guard let glucose = bg.glucose else {
             return nil
         }
 
         let formattedBG = Self.formatGlucose(glucose, mmol: mmol, forceSign: false)
 
-        let trendString: String?
         var rotationDegrees: Double = 0.0
+
         switch bg.direction {
         case .doubleUp,
              .singleUp,
              .tripleUp:
-            trendString = "arrow.up"
             rotationDegrees = -90
-
         case .fortyFiveUp:
-            trendString = "arrow.up.right"
             rotationDegrees = -45
-
         case .flat:
-            trendString = "arrow.right"
             rotationDegrees = 0
-
         case .fortyFiveDown:
-            trendString = "arrow.down.right"
             rotationDegrees = 45
-
         case .doubleDown,
              .singleDown,
              .tripleDown:
-            trendString = "arrow.down"
             rotationDegrees = 90
-
         case .notComputable,
              Optional.none,
              .rateOutOfRange,
              .some(.none):
-            trendString = nil
             rotationDegrees = 0
         }
+
+        let trendString = bg.direction?.symbol
 
         let change = prev?.glucose.map({
             Self.formatGlucose(glucose - $0, mmol: mmol, forceSign: true)
@@ -71,15 +67,33 @@ extension LiveActivityAttributes.ContentState {
 
         let chartBG = chart.map(\.glucose)
 
+        let conversionFactor: Double = settings.units == .mmolL ? 18.0 : 1.0
+        let convertedChartBG = chartBG.map { Double($0) / conversionFactor }
+
         let chartDate = chart.map(\.date)
+
+        /// glucose limits from settings
+        let highGlucose = settings.highGlucose / Decimal(conversionFactor)
+        let lowGlucose = settings.lowGlucose / Decimal(conversionFactor)
+
+        let cob = suggestion.cob ?? 0
+        let iob = suggestion.iob ?? 0
+
+        let lockScreenView = settings.lockScreenView.displayName
 
         self.init(
             bg: formattedBG,
-            trendSystemImage: trendString,
+            direction: trendString,
             change: change,
             date: bg.dateString,
-            chart: chartBG,
-            chartDate: chartDate, rotationDegrees: rotationDegrees
+            chart: convertedChartBG,
+            chartDate: chartDate,
+            rotationDegrees: rotationDegrees,
+            highGlucose: Double(highGlucose),
+            lowGlucose: Double(lowGlucose),
+            cob: cob,
+            iob: iob,
+            lockScreenView: lockScreenView
         )
     }
 }
@@ -91,10 +105,10 @@ extension LiveActivityAttributes.ContentState {
     func needsRecreation() -> Bool {
         switch activity.activityState {
         case .dismissed,
-             .ended:
+             .ended,
+             .stale:
             return true
-        case .active,
-             .stale: break
+        case .active: break
         @unknown default:
             return true
         }
@@ -104,19 +118,28 @@ extension LiveActivityAttributes.ContentState {
     }
 }
 
-@available(iOS 16.2, *) final class LiveActivityBridge: Injectable {
+@available(iOS 16.2, *) final class LiveActivityBridge: Injectable, ObservableObject {
     @Injected() private var settingsManager: SettingsManager!
     @Injected() private var glucoseStorage: GlucoseStorage!
     @Injected() private var broadcaster: Broadcaster!
+    @Injected() private var storage: FileStorage!
+
+    private let activityAuthorizationInfo = ActivityAuthorizationInfo()
+    @Published private(set) var systemEnabled: Bool
 
     private var settings: FreeAPSSettings {
         settingsManager.settings
+    }
+
+    var suggestion: Suggestion? {
+        storage.retrieve(OpenAPS.Enact.suggested, as: Suggestion.self)
     }
 
     private var currentActivity: ActiveActivity?
     private var latestGlucose: BloodGlucose?
 
     init(resolver: Resolver) {
+        systemEnabled = activityAuthorizationInfo.areActivitiesEnabled
         injectServices(resolver)
         broadcaster.register(GlucoseObserver.self, observer: self)
 
@@ -134,6 +157,20 @@ extension LiveActivityAttributes.ContentState {
             queue: nil
         ) { _ in
             self.forceActivityUpdate()
+        }
+
+        monitorForLiveActivityAuthorizationChanges()
+    }
+
+    private func monitorForLiveActivityAuthorizationChanges() {
+        Task {
+            for await activityState in activityAuthorizationInfo.activityEnablementUpdates {
+                if activityState != systemEnabled {
+                    await MainActor.run {
+                        systemEnabled = activityState
+                    }
+                }
+            }
         }
     }
 
@@ -163,24 +200,50 @@ extension LiveActivityAttributes.ContentState {
             await unknownActivity.end(nil, dismissalPolicy: .immediate)
         }
 
-        let content = ActivityContent(state: state, staleDate: state.date.addingTimeInterval(TimeInterval(6 * 60)))
-
         if let currentActivity {
             if currentActivity.needsRecreation(), UIApplication.shared.applicationState == .active {
                 // activity is no longer visible or old. End it and try to push the update again
                 await endActivity()
                 await pushUpdate(state)
             } else {
+                let content = ActivityContent(
+                    state: state,
+                    staleDate: min(state.date, Date.now).addingTimeInterval(TimeInterval(6 * 60))
+                )
                 await currentActivity.activity.update(content)
             }
         } else {
             do {
+                // always push a non-stale content as the first update
+                // pushing a stale content as the frst content results in the activity not being shown at all
+                // we want it shown though even if it is iniially stale, as we expect new BG readings to become available soon, which should then be displayed
+                let nonStale = ActivityContent(
+                    state: LiveActivityAttributes.ContentState(
+                        bg: "--",
+                        direction: nil,
+                        change: "--",
+                        date: Date.now,
+                        chart: [],
+                        chartDate: [],
+                        rotationDegrees: 0,
+                        highGlucose: Double(180),
+                        lowGlucose: Double(70),
+                        cob: 0,
+                        iob: 0,
+                        lockScreenView: "Simple"
+                    ),
+                    staleDate: Date.now.addingTimeInterval(60)
+                )
+
                 let activity = try Activity.request(
                     attributes: LiveActivityAttributes(startDate: Date.now),
-                    content: content,
+                    content: nonStale,
                     pushType: nil
                 )
                 currentActivity = ActiveActivity(activity: activity, startDate: Date.now)
+
+                // then show the actual content
+                await pushUpdate(state)
             } catch {
                 print("activity creation error: \(error)")
             }
@@ -190,7 +253,7 @@ extension LiveActivityAttributes.ContentState {
     /// ends all live activities immediateny
     private func endActivity() async {
         if let currentActivity {
-            await currentActivity.activity.end(nil, dismissalPolicy: ActivityUIDismissalPolicy.immediate)
+            await currentActivity.activity.end(nil, dismissalPolicy: .immediate)
             self.currentActivity = nil
         }
 
@@ -204,6 +267,15 @@ extension LiveActivityAttributes.ContentState {
 @available(iOS 16.2, *)
 extension LiveActivityBridge: GlucoseObserver {
     func glucoseDidUpdate(_ glucose: [BloodGlucose]) {
+        guard settings.useLiveActivity else {
+            if currentActivity != nil {
+                Task {
+                    await self.endActivity()
+                }
+            }
+            return
+        }
+
         // backfill latest glucose if contained in this update
         if glucose.count > 1 {
             latestGlucose = glucose[glucose.count - 2]
@@ -212,25 +284,30 @@ extension LiveActivityBridge: GlucoseObserver {
             self.latestGlucose = glucose.last
         }
 
-//        let last72Glucose = Array(glucose.dropLast().suffix(72))
+        // fetch glucose for chart from Core Data
         let coreDataStorage = CoreDataStorage()
-
-//        let fetchGlucose = coreDataStorage.fetchGlucose(interval: DateFilter().day)
         let sixHoursAgo = Calendar.current.date(byAdding: .hour, value: -6, to: Date()) ?? Date()
         let fetchGlucose = coreDataStorage.fetchGlucose(interval: sixHoursAgo as NSDate)
 
-        guard let bg = glucose.last, let content = LiveActivityAttributes.ContentState(
-            new: bg,
-            prev: latestGlucose,
-            mmol: settings.units == .mmolL,
-            chart: fetchGlucose
-        ) else {
-            // no bg or value stale. Don't update the activity if there already is one, just let it turn stale so that it can still be used once current bg is available again
+        guard let bg = glucose.last else {
             return
         }
 
-        Task {
-            await self.pushUpdate(content)
+        if let suggestion = suggestion {
+            let content = LiveActivityAttributes.ContentState(
+                new: bg,
+                prev: latestGlucose,
+                mmol: settings.units == .mmolL,
+                chart: fetchGlucose,
+                settings: settings,
+                suggestion: suggestion
+            )
+
+            if let content = content {
+                Task {
+                    await self.pushUpdate(content)
+                }
+            }
         }
     }
 }

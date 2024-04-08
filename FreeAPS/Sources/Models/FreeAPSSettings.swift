@@ -60,6 +60,7 @@ struct FreeAPSSettings: JSON, Equatable {
     var profilesOrTempTargets: Bool = false
     var allowBolusShortcut: Bool = false
     var allowedRemoteBolusAmount: Decimal = 0.0
+    var lockScreenView: LockScreenView = .simple
 }
 
 extension FreeAPSSettings: Decodable {
@@ -303,6 +304,10 @@ extension FreeAPSSettings: Decodable {
 
         if let allowedRemoteBolusAmount = try? container.decode(Decimal.self, forKey: .allowedRemoteBolusAmount) {
             settings.allowedRemoteBolusAmount = allowedRemoteBolusAmount
+        }
+
+        if let lockScreenView = try? container.decode(LockScreenView.self, forKey: .lockScreenView) {
+            settings.lockScreenView = lockScreenView
         }
 
         self = settings

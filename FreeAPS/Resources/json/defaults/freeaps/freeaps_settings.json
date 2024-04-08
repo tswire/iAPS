@@ -53,4 +53,6 @@
   "useTargetButton" : false,
   "alwaysUseColors" : true,
   "timeSettings" : true
+  "lockScreenView": "simple"
+
 }
