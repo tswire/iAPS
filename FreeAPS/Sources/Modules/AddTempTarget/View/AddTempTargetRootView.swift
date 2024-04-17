@@ -148,6 +148,9 @@ extension AddTempTarget {
                     label: { Text("Start") }
                     Button { state.cancel() }
                     label: { Text("Cancel Temp Target") }
+                        .disabled(state.storage?.current() == nil)
+                        .listRowBackground(state.storage?.current() == nil ? Color(.systemGray4) : Color(.systemRed))
+                        .tint(.white)
                 }
             }
             .scrollContentBackground(.hidden).background(color)
