@@ -47,7 +47,7 @@ extension AddTempTarget {
                 if state.storage?.current() != nil {
                     Section {
                         Button { state.cancel() }
-                        label: { Text("Cancel Temp Target") }
+                        label: { Text("Cancel current TempTarget") }
                             .disabled(state.storage?.current() == nil)
 //                            .listRowBackground(state.storage.current() == nil ? Color(.systemGray4) : Color(.systemRed))
 //                            .tint(.white)
