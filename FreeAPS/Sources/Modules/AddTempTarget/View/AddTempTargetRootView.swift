@@ -49,8 +49,9 @@ extension AddTempTarget {
                         Button { state.cancel() }
                         label: { Text("Cancel current TempTarget") }
                             .disabled(state.storage?.current() == nil)
-//                            .listRowBackground(state.storage.current() == nil ? Color(.systemGray4) : Color(.systemRed))
-//                            .tint(.white)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .buttonStyle(BorderlessButtonStyle())
+                            .tint(.red)
                     }
                 }
 
