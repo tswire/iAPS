@@ -585,17 +585,17 @@ extension Home {
                         Spacer()
                     }
 
-                    // MAYBE WITH A SMALL INDICATOR AT THE SYMBOL
-                    Button {
-                        state.showModal(for: .overrideProfilesConfig)
-                    } label: {
-                        Image(systemName: "person")
-                            .font(.system(size: 30, weight: .light))
-                            .padding(8)
-                    }
-                    .foregroundColor(colorIcon)
-                    .buttonStyle(.borderless)
-                    Spacer()
+                    // overide profiles
+//                    Button {
+//                        state.showModal(for: .overrideProfilesConfig)
+//                    } label: {
+//                        Image(systemName: "person")
+//                            .font(.system(size: 30, weight: .light))
+//                            .padding(8)
+//                    }
+//                    .foregroundColor(colorIcon)
+//                    .buttonStyle(.borderless)
+//                    Spacer()
 
                     Image("statistics")
                         .renderingMode(.template)
