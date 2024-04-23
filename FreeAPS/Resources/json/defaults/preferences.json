@@ -80,5 +80,8 @@
   "iTime_target" : 90,
   "b30_upperBG" : 130,
   "b30_upperdelta" :  8,
-  "b30_factor" : 7
+  "b30_factor" : 7,
+  "ketoProtect" : false,
+  "variableKetoProtect" : false,
+  "ketoProtectBasal" : 20
 }

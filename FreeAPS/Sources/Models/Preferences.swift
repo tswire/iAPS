@@ -88,6 +88,10 @@ struct Preferences: JSON {
     var B30upperLimit: Decimal = 130
     var B30upperDelta: Decimal = 8
     var B30basalFactor: Decimal = 7
+    // start keto protect
+    var ketoProtect: Bool = false
+    var variableKetoProtect: Bool = false
+    var ketoProtectBasal: Decimal = 20
 }
 
 extension Preferences {
@@ -178,6 +182,10 @@ extension Preferences {
         case B30upperLimit = "b30_upperBG"
         case B30upperDelta = "b30_upperdelta"
         case B30basalFactor = "b30_factor"
+        // start keto protect
+        case ketoProtect = "keto_protect"
+        case variableKetoProtect = "variable_keto_protect_strategy"
+        case ketoProtectBasal = "keto_protect_basal"
     }
 }
 
