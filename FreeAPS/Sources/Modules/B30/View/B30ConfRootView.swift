@@ -1,7 +1,7 @@
 import SwiftUI
 import Swinject
 
-extension AutoISFConf {
+extension AIMIB30Conf {
     struct RootView: BaseView {
         let resolver: Resolver
         @StateObject var state = StateModel()
@@ -37,34 +37,36 @@ extension AutoISFConf {
                 Section {
                     VStack(alignment: .leading, spacing: 15) {
                         HStack {
-                            Toggle("Activate autoISF", isOn: $state.autoisf)
+                            Toggle("Activate AIMI B30", isOn: $state.enableB30)
                         }
                         .padding(.bottom, 2)
-                        if !state.autoisf {
+                        if !state.enableB30 {
                             VStack(alignment: .leading) {
                                 Text(
-                                    "autoISF allows to adapt the insulin sensitivity factor (ISF) in the following scenarios of glucose behaviour:"
+                                    "Enables an increased basal rate after an EatingSoon TT and a manual bolus to saturate the infusion site with insulin to increase insulin absorption for SMB's following a meal with no carb counting."
                                 )
                                 BulletList(
-                                    listItems:
-                                    [
-                                        "accelerating/decelerating blood glucose",
-                                        "blood glucose levels according to a predefined polygon, like a Sigmoid",
-                                        "postprandial (after meal) glucose rise",
-                                        "blood glucose plateaus above target"
+                                    listItems: [
+                                        "needs an EatingSoon TT with a specific GlucoseTarget",
+                                        "once this TT is cancelled, B30 high TBR will be cancelled",
+                                        "in order to activate B30 a minimum manual Bolus needs to be given",
+                                        "you can specify how long B30 run and how high it is"
+                                    ],
+                                    listItemSpacing: 10
+                                )
+                                Text("Initiating B30 can be done by Apple Shortcuts")
+                                BulletList(
+                                    listItems: [
+                                        "setting the preconfigured TT and",
+                                        "administering a Bolus"
                                     ],
                                     listItemSpacing: 10
                                 )
                             }
-                            // .padding(10)
-                            Text("It can also adapt SMB delivery settings.")
-                            Text(
-                                "Read up on it at:\nhttps://github.com/ga-zelle/autoISF\nHit View Code to access all help documents!\niAPS version of autoISF does not include ActivityTracking."
-                            )
                         }
                     }
                 } header: { Text("Enable") }
-                if state.autoisf {
+                if state.enableB30 {
                     ForEach(state.sections.indexed(), id: \.1.id) { sectionIndex, section in
                         Section(header: Text(section.displayName)) {
                             ForEach(section.fields.indexed(), id: \.1.id) { fieldIndex, field in
@@ -106,15 +108,8 @@ extension AutoISFConf {
             }
             .scrollContentBackground(.hidden).background(color)
             .onAppear(perform: configureView)
-            .navigationTitle("autoISF Configuration")
+            .navigationTitle("AIMI B30 Configuration")
             .navigationBarTitleDisplayMode(.automatic)
-            .alert(item: $infoButtonPressed) { infoButton in
-                Alert(
-                    title: Text("\(infoButton.oref0Variable)"),
-                    message: Text("\(infoButton.description)"),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
             .onDisappear {
                 state.saveIfChanged()
             }

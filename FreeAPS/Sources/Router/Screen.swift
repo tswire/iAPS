@@ -36,6 +36,7 @@ enum Screen: Identifiable, Hashable {
     case bolusCalculatorConfig
     case dynamicISF
     case autoISFConf
+    case B30Conf
 
     var id: Int { String(reflecting: self).hashValue }
 }
@@ -111,6 +112,8 @@ extension Screen {
             Dynamic.RootView(resolver: resolver)
         case .autoISFConf:
             AutoISFConf.RootView(resolver: resolver)
+        case .B30Conf:
+            AIMIB30Conf.RootView(resolver: resolver)
         }
     }
 
