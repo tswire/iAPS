@@ -339,33 +339,6 @@ extension AutoISFConf {
                     settable: self
                 )
             ]
-            let ketoProtection = [
-                Field(
-                    displayName: "Static protection",
-                    type: .boolean(keypath: \.ketoProtect), infoText: NSLocalizedString(
-                        "Always enables a small safety TBR to reduce the ketoacidosis risk.",
-                        comment: "Keto protection"
-                    ),
-                    settable: self
-                ),
-                Field(
-                    displayName: "Variable protection",
-                    type: .boolean(keypath: \.variableKetoProtect), infoText: NSLocalizedString(
-                        "If activated the small safety TBR kicks in when IOB is in negative range as if no basal insulin has been delivered for one hour. If deactivated and static is enabled every Zero Temp is replaced with the small TBR.",
-                        comment: "Variable Keto protection"
-                    ),
-                    settable: self
-                ),
-                Field(
-                    displayName: "Safety TBR in %",
-                    type: .decimal(keypath: \.ketoProtectBasal),
-                    infoText: NSLocalizedString(
-                        "Quantity of the small safety TBR in % of Profile BR, which is given to avoid ketoacidosis. Will be limited to min = 5%, max = 50%!",
-                        comment: "safety TBR"
-                    ),
-                    settable: self
-                )
-            ]
 
             sections = [
                 FieldSection(
@@ -427,13 +400,6 @@ extension AutoISFConf {
                         comment: "AIMI B30  settings"
                     ),
                     fields: xpmB30
-                ),
-                FieldSection(
-                    displayName: NSLocalizedString(
-                        "Keto Protection settings",
-                        comment: "Keto Protect settings"
-                    ),
-                    fields: ketoProtection
                 )
             ]
         }
