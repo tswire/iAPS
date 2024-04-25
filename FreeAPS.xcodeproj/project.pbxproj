@@ -288,6 +288,10 @@
 		49CA5A082BD8EBC5001F0D3A /* B30ConfDataFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A072BD8EBC5001F0D3A /* B30ConfDataFlow.swift */; };
 		49CA5A0A2BD8EBDA001F0D3A /* B30ConfProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A092BD8EBDA001F0D3A /* B30ConfProvider.swift */; };
 		49CA5A0C2BD8EBED001F0D3A /* B30ConfStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A0B2BD8EBED001F0D3A /* B30ConfStateModel.swift */; };
+		49CA5A182BDA385E001F0D3A /* KetoProtectConfRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A172BDA385E001F0D3A /* KetoProtectConfRootView.swift */; };
+		49CA5A1A2BDA3873001F0D3A /* KetoProtectDataFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A192BDA3873001F0D3A /* KetoProtectDataFlow.swift */; };
+		49CA5A1C2BDA388C001F0D3A /* KetoProtectConfProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A1B2BDA388C001F0D3A /* KetoProtectConfProvider.swift */; };
+		49CA5A1E2BDA38A2001F0D3A /* KetoProtectConfStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A1D2BDA38A2001F0D3A /* KetoProtectConfStateModel.swift */; };
 		5075C1608E6249A51495C422 /* TargetsEditorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDEA2DC60EDE0A3CA54DC73 /* TargetsEditorProvider.swift */; };
 		53F2382465BF74DB1A967C8B /* PumpConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8630D58BDAD6D9C650B9B39 /* PumpConfigProvider.swift */; };
 		5BFA1C2208114643B77F8CEB /* AddTempTargetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE53A13D26F101B332EFFC8 /* AddTempTargetProvider.swift */; };
@@ -919,6 +923,10 @@
 		49CA5A072BD8EBC5001F0D3A /* B30ConfDataFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = B30ConfDataFlow.swift; sourceTree = "<group>"; };
 		49CA5A092BD8EBDA001F0D3A /* B30ConfProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = B30ConfProvider.swift; sourceTree = "<group>"; };
 		49CA5A0B2BD8EBED001F0D3A /* B30ConfStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = B30ConfStateModel.swift; sourceTree = "<group>"; };
+		49CA5A172BDA385E001F0D3A /* KetoProtectConfRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KetoProtectConfRootView.swift; sourceTree = "<group>"; };
+		49CA5A192BDA3873001F0D3A /* KetoProtectDataFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KetoProtectDataFlow.swift; sourceTree = "<group>"; };
+		49CA5A1B2BDA388C001F0D3A /* KetoProtectConfProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KetoProtectConfProvider.swift; sourceTree = "<group>"; };
+		49CA5A1D2BDA38A2001F0D3A /* KetoProtectConfStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KetoProtectConfStateModel.swift; sourceTree = "<group>"; };
 		4DD795BA46B193644D48138C /* TargetsEditorRootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TargetsEditorRootView.swift; sourceTree = "<group>"; };
 		500371C09F54F89A97D65FDB /* CalibrationsRootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalibrationsRootView.swift; sourceTree = "<group>"; };
 		505E09DC17A0C3D0AF4B66FE /* ISFEditorStateModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ISFEditorStateModel.swift; sourceTree = "<group>"; };
@@ -1386,6 +1394,7 @@
 		3811DE0325C9D31700A708ED /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				49CA5A152BDA3815001F0D3A /* KetoProtect */,
 				49CA5A012BD8E459001F0D3A /* B30 */,
 				CE1F2B982B011C58002EDCA0 /* AutoISF */,
 				195D80B22AF696EE00D25097 /* Dynamic */,
@@ -2132,6 +2141,25 @@
 			isa = PBXGroup;
 			children = (
 				49CA5A032BD8E4AC001F0D3A /* B30ConfRootView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		49CA5A152BDA3815001F0D3A /* KetoProtect */ = {
+			isa = PBXGroup;
+			children = (
+				49CA5A162BDA382E001F0D3A /* View */,
+				49CA5A192BDA3873001F0D3A /* KetoProtectDataFlow.swift */,
+				49CA5A1B2BDA388C001F0D3A /* KetoProtectConfProvider.swift */,
+				49CA5A1D2BDA38A2001F0D3A /* KetoProtectConfStateModel.swift */,
+			);
+			path = KetoProtect;
+			sourceTree = "<group>";
+		};
+		49CA5A162BDA382E001F0D3A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				49CA5A172BDA385E001F0D3A /* KetoProtectConfRootView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2968,6 +2996,7 @@
 				388E5A5C25B6F0770019842D /* JSON.swift in Sources */,
 				3811DF0225CA9FEA00A708ED /* Credentials.swift in Sources */,
 				19DC678529CA67A400FD9EC4 /* OverrideProfilesRootView.swift in Sources */,
+				49CA5A1C2BDA388C001F0D3A /* KetoProtectConfProvider.swift in Sources */,
 				389A572026079BAA00BC102F /* Interpolation.swift in Sources */,
 				19A910382A24EF3200C8951B /* ChartsView.swift in Sources */,
 				38B4F3C625E5017E00E76A18 /* NotificationCenter.swift in Sources */,
@@ -3012,6 +3041,7 @@
 				3811DE5C25C9D4D500A708ED /* Formatters.swift in Sources */,
 				3871F39F25ED895A0013ECB5 /* Decimal+Extensions.swift in Sources */,
 				3811DE3525C9D49500A708ED /* HomeRootView.swift in Sources */,
+				49CA5A182BDA385E001F0D3A /* KetoProtectConfRootView.swift in Sources */,
 				38E98A2925F52C9300C0CED0 /* Error+Extensions.swift in Sources */,
 				38EA05DA261F6E7C0064E39B /* SimpleLogReporter.swift in Sources */,
 				3811DE6125C9D4D500A708ED /* ViewModifiers.swift in Sources */,
@@ -3045,6 +3075,7 @@
 				38FE826A25CC82DB001FF17A /* NetworkService.swift in Sources */,
 				493781752BBEC747005142A9 /* CustomDateTimePicker.swift in Sources */,
 				FE66D16B291F74F8005D6F77 /* Bundle+Extensions.swift in Sources */,
+				49CA5A1E2BDA38A2001F0D3A /* KetoProtectConfStateModel.swift in Sources */,
 				3883581C25EE79BB00E024B2 /* DecimalTextField.swift in Sources */,
 				6B1A8D2E2B156EEF00E76752 /* LiveActivityBridge.swift in Sources */,
 				38DAB28A260D349500F74C1A /* FetchGlucoseManager.swift in Sources */,
@@ -3177,6 +3208,7 @@
 				BD2FF1A02AE29D43005D1C5D /* CheckboxToggleStyle.swift in Sources */,
 				E0D4F80527513ECF00BDF1FE /* HealthKitSample.swift in Sources */,
 				919DBD08F13BAFB180DF6F47 /* AddTempTargetStateModel.swift in Sources */,
+				49CA5A1A2BDA3873001F0D3A /* KetoProtectDataFlow.swift in Sources */,
 				8BC2F5A29AD1ED08AC0EE013 /* AddTempTargetRootView.swift in Sources */,
 				38A00B1F25FC00F7006BC0B0 /* Autotune.swift in Sources */,
 				38AAF85525FFF846004AF583 /* CurrentGlucoseView.swift in Sources */,

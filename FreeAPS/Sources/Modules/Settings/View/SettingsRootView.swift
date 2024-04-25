@@ -55,6 +55,7 @@ extension Settings {
                     Text("Oref1").navigationLink(to: .preferencesEditor, from: self)
                     Text("autoISF").navigationLink(to: .autoISFConf, from: self)
                     Text("AIMI B30").navigationLink(to: .B30Conf, from: self)
+                    Text("Keto Protection").navigationLink(to: .KetoConfig, from: self)
 //                    Text("Dynamic ISF").navigationLink(to: .dynamicISF, from: self)
                     Text("Autotune").navigationLink(to: .autotuneConfig, from: self)
                 } header: { Text("Algorithm") }
