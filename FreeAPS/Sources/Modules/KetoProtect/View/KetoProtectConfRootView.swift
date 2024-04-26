@@ -89,7 +89,7 @@ extension KetoConf {
             }
             .scrollContentBackground(.hidden).background(color)
             .onAppear(perform: configureView)
-            .navigationTitle("Keto Protection Configuration")
+            .navigationTitle("Ketoacidosis Protection Configuration")
             .navigationBarTitleDisplayMode(.automatic)
             .alert(item: $infoButtonPressed) { infoButton in
                 Alert(
