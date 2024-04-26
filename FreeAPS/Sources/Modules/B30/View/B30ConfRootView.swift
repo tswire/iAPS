@@ -57,8 +57,7 @@ extension AIMIB30Conf {
                                 Text("Initiating B30 can be done by Apple Shortcuts")
                                 BulletList(
                                     listItems: [
-                                        "setting the preconfigured TT and",
-                                        "administering a Bolus"
+                                        "https://tinyurl.com/B30shortcut"
                                     ],
                                     listItemSpacing: 10
                                 )
