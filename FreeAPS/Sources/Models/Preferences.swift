@@ -91,7 +91,9 @@ struct Preferences: JSON {
     // start keto protect
     var ketoProtect: Bool = false
     var variableKetoProtect: Bool = false
-    var ketoProtectBasal: Decimal = 20
+    var ketoProtectBasalPercent: Decimal = 20
+    var ketoProtectAbsolut: Bool = false
+    var ketoProtectBasalAbsolut: Decimal = 0
 }
 
 extension Preferences {
@@ -185,7 +187,9 @@ extension Preferences {
         // start keto protect
         case ketoProtect = "keto_protect"
         case variableKetoProtect = "variable_keto_protect_strategy"
-        case ketoProtectBasal = "keto_protect_basal"
+        case ketoProtectBasalPercent = "keto_protect_basal_percent"
+        case ketoProtectAbsolut = "keto_protect_absolute"
+        case ketoProtectBasalAbsolut = "keto_protect_basal_absolute"
     }
 }
 

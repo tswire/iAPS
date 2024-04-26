@@ -1,6 +1,8 @@
-oref0 branch: dev-autoISF - git version: f8419a4
+oref0 branch: dev-autoISF - git version: 1cbad75
 
 Last commits:
+1cbad75 introduce absolute keto safety TBR
+260b0c2 more rT's into check  setTempBasal
 f8419a4 KetoProtect
 24dada3 fix avgDelta data mgmt.
 98c4aff fix errors
@@ -29,5 +31,3 @@ fa4a448 middleware into popup
 54f6401 tags for early autoISF exit with bg_ISF < 1
 58bbf5c keep maxDelta_threshold
 6eafd34 autoISF 3.0
-51d28a8 manualBolus codes
-8fa3e82 error fix
