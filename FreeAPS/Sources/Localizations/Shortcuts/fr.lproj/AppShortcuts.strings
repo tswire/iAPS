@@ -2,32 +2,32 @@
   AppShortcuts.strings
 */
 /* -------------------------------- */
-/* oiaps Temporary Target shortcut*/
+/* oiAPS Temporary Target shortcut*/
 "Activate ${applicationName} temporary target" = "Activer une cible temporaire à ${applicationName}";
 
-/* oiaps Temporary Target shortcut Description */
+/* oiAPS Temporary Target shortcut Description */
 "${applicationName} apply a temporary target" = "${applicationName} permet d'appliquer une cible temporaire";
 
-/* oiaps Status shortcut */
+/* oiAPS Status shortcut */
 "List ${applicationName} state" = "Lister les états de ${applicationName}";
 
-/* oiaps Status shortcut Description*/
+/* oiAPS Status shortcut Description*/
 "${applicationName} state" = "Etat de ${applicationName}";
 
-/* oiaps Add carbs shortcut */
+/* oiAPS Add carbs shortcut */
 "Add carbs in ${applicationName}" = "Ajouter des glucides à ${applicationName}";
 
-/* oiaps Add carbs shortcut description */
+/* oiAPS Add carbs shortcut description */
 "${applicationName} allows to add carbs" = "${applicationName} permet d'ajouter des glucides";
 
-/* oiaps Create and apply Temporary Target shortcut*/
+/* oiAPS Create and apply Temporary Target shortcut*/
 "Create and apply a temporary target in ${applicationName}" = "Définir et appliquer une cible temporaire à ${applicationName}";
 
-/* oiaps Create and apply Temporary Target description*/
+/* oiAPS Create and apply Temporary Target description*/
 "${applicationName} allows to create and apply a temporary target" = "${applicationName} permet de définir et appliquer une cible temporaire";
 
-/* oiaps Temporary override shortcut*/
+/* oiAPS Temporary override shortcut*/
 "Activate ${applicationName} temporary override" = "Activer une surcharge temporaire à ${applicationName}";
 
-/* oiaps Temporary override shortcut Description */
+/* oiAPS Temporary override shortcut Description */
 "${applicationName} apply a temporary override" = "${applicationName} permet d'appliquer une surcharge temporaire";
