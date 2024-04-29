@@ -25,24 +25,17 @@ import Foundation
             ]
         )
         AppShortcut(
+            intent: CreateAndApplyTempTarget(),
+            phrases: [
+                "Create and apply a temporary target in \(.applicationName)",
+                "\(.applicationName) allows to create and apply a temporary target"
+            ]
+        )
+        AppShortcut(
             intent: ApplyOverrideIntent(),
             phrases: [
-                "Activate an \(.applicationName) Override Preset",
-                "Activates an \(.applicationName) Override Preset"
-            ]
-        )
-        AppShortcut(
-            intent: CancelOverrideIntent(),
-            phrases: [
-                "Cancel \(.applicationName) Overide",
-                "Cancels an active \(.applicationName) override"
-            ]
-        )
-        AppShortcut(
-            intent: BolusIntent(),
-            phrases: [
-                "\(.applicationName) Bolus",
-                "\(.applicationName) Enacts a bolus"
+                "Activate \(.applicationName) temporary override",
+                "\(.applicationName) apply a temporary override"
             ]
         )
     }
