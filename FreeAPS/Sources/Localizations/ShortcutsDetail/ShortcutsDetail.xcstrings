@@ -218,6 +218,7 @@
       }
     },
     "Allow to list and choose a specific temporary override" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -348,6 +349,7 @@
       }
     },
     "Apply a temporary override" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -596,6 +598,7 @@
       }
     },
     "Cancel a override preset" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -887,6 +890,7 @@
       }
     },
     "Confirm to apply temporary override '%@'" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1171,6 +1175,7 @@
       }
     },
     "Enable a temporary override" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1616,6 +1621,7 @@
       }
     },
     "List Temporary Override" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1798,6 +1804,7 @@
       }
     },
     "Override choice" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -2168,6 +2175,7 @@
       }
     },
     "Select Temporary override" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2370,6 +2378,7 @@
       }
     },
     "Target '%@' applied" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2456,6 +2465,7 @@
       }
     },
     "Target '%@' failed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2546,6 +2556,7 @@
       }
     },
     "Temporary Override" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -2556,6 +2567,7 @@
       }
     },
     "Temporary Override canceled" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

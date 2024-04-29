@@ -279,11 +279,6 @@
 		493781852BC3F7EA005142A9 /* WidgetBobble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493781832BC3F7E5005142A9 /* WidgetBobble.swift */; };
 		4945FCD52BC42D5100804CBC /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4945FCD42BC42D5100804CBC /* LockScreenView.swift */; };
 		495068AA2BDFEF1D0048FF3B /* CarbPresetIntentRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068A92BDFEF1D0048FF3B /* CarbPresetIntentRequest.swift */; };
-		495068B32BDFF0C30048FF3B /* overridePresetsIntentRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068AE2BDFF0C20048FF3B /* overridePresetsIntentRequest.swift */; };
-		495068B42BDFF0C30048FF3B /* ApplyOverridePresetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068AF2BDFF0C20048FF3B /* ApplyOverridePresetIntent.swift */; };
-		495068B52BDFF0C30048FF3B /* CancelOverrideIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068B02BDFF0C30048FF3B /* CancelOverrideIntent.swift */; };
-		495068B62BDFF0C30048FF3B /* overridePresetEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068B12BDFF0C30048FF3B /* overridePresetEntity.swift */; };
-		495068B72BDFF0C30048FF3B /* ListOverridePresetIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068B22BDFF0C30048FF3B /* ListOverridePresetIntent.swift */; };
 		495068BC2BDFF1B20048FF3B /* AppShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068BA2BDFF1B20048FF3B /* AppShortcuts.swift */; };
 		495068BD2BDFF1B20048FF3B /* BaseIntentsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068BB2BDFF1B20048FF3B /* BaseIntentsRequest.swift */; };
 		4963E5482A0D400700500170 /* autoISFTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4963E5472A0D400700500170 /* autoISFTableView.swift */; };
@@ -877,11 +872,6 @@
 		493781832BC3F7E5005142A9 /* WidgetBobble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBobble.swift; sourceTree = "<group>"; };
 		4945FCD42BC42D5100804CBC /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
 		495068A92BDFEF1D0048FF3B /* CarbPresetIntentRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarbPresetIntentRequest.swift; sourceTree = "<group>"; };
-		495068AE2BDFF0C20048FF3B /* overridePresetsIntentRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = overridePresetsIntentRequest.swift; sourceTree = "<group>"; };
-		495068AF2BDFF0C20048FF3B /* ApplyOverridePresetIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplyOverridePresetIntent.swift; sourceTree = "<group>"; };
-		495068B02BDFF0C30048FF3B /* CancelOverrideIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancelOverrideIntent.swift; sourceTree = "<group>"; };
-		495068B12BDFF0C30048FF3B /* overridePresetEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = overridePresetEntity.swift; sourceTree = "<group>"; };
-		495068B22BDFF0C30048FF3B /* ListOverridePresetIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListOverridePresetIntent.swift; sourceTree = "<group>"; };
 		495068BA2BDFF1B20048FF3B /* AppShortcuts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppShortcuts.swift; sourceTree = "<group>"; };
 		495068BB2BDFF1B20048FF3B /* BaseIntentsRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseIntentsRequest.swift; sourceTree = "<group>"; };
 		4963E5472A0D400700500170 /* autoISFTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = autoISFTableView.swift; sourceTree = "<group>"; };
@@ -2076,18 +2066,6 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		495068B92BDFF0FC0048FF3B /* Override */ = {
-			isa = PBXGroup;
-			children = (
-				495068AF2BDFF0C20048FF3B /* ApplyOverridePresetIntent.swift */,
-				495068B02BDFF0C30048FF3B /* CancelOverrideIntent.swift */,
-				495068B22BDFF0C30048FF3B /* ListOverridePresetIntent.swift */,
-				495068B12BDFF0C30048FF3B /* overridePresetEntity.swift */,
-				495068AE2BDFF0C20048FF3B /* overridePresetsIntentRequest.swift */,
-			);
-			path = Override;
-			sourceTree = "<group>";
-		};
 		49CA5A012BD8E459001F0D3A /* B30 */ = {
 			isa = PBXGroup;
 			children = (
@@ -2402,7 +2380,6 @@
 			children = (
 				495068BA2BDFF1B20048FF3B /* AppShortcuts.swift */,
 				495068BB2BDFF1B20048FF3B /* BaseIntentsRequest.swift */,
-				495068B92BDFF0FC0048FF3B /* Override */,
 				CE8BEF072BD2F08300AF390B /* Carbs */,
 				CE7CA3452A064973004BE681 /* TempPresets */,
 				CE7CA34B2A064973004BE681 /* State */,
@@ -2995,7 +2972,6 @@
 				38A0363B25ECF07E00FCBB52 /* GlucoseStorage.swift in Sources */,
 				190EBCC629FF138000BA767D /* StatConfigProvider.swift in Sources */,
 				CE1F2BA12B011CF5002EDCA0 /* AutoISFConfRootView.swift in Sources */,
-				495068B62BDFF0C30048FF3B /* overridePresetEntity.swift in Sources */,
 				38E98A2725F52C9300C0CED0 /* CollectionIssueReporter.swift in Sources */,
 				E00EEC0427368630002FF094 /* SecurityAssembly.swift in Sources */,
 				3811DEE825CA063400A708ED /* Injected.swift in Sources */,
@@ -3038,7 +3014,6 @@
 				3811DEA925C9D88300A708ED /* AppearanceManager.swift in Sources */,
 				CE7950242997D81700FA576E /* CGMSettingsView.swift in Sources */,
 				38D0B3D925EC07C400CB6E88 /* CarbsEntry.swift in Sources */,
-				495068B52BDFF0C30048FF3B /* CancelOverrideIntent.swift in Sources */,
 				38A9260525F012D8009E3739 /* CarbRatios.swift in Sources */,
 				38FCF3D625E8FDF40078B0D1 /* MD5.swift in Sources */,
 				3871F39C25ED892B0013ECB5 /* TempTarget.swift in Sources */,
@@ -3131,7 +3106,6 @@
 				490D95462B77E7AC001A10DE /* OverrideStorage.swift in Sources */,
 				CC6C406E2ACDD69E009B8058 /* RawFetchedProfile.swift in Sources */,
 				385CEA8225F23DFD002D6D5B /* NightscoutStatus.swift in Sources */,
-				495068B72BDFF0C30048FF3B /* ListOverridePresetIntent.swift in Sources */,
 				F90692AA274B7AAE0037068D /* HealthKitManager.swift in Sources */,
 				38887CCE25F5725200944304 /* IOBEntry.swift in Sources */,
 				38E98A2425F52C9300C0CED0 /* Logger.swift in Sources */,
@@ -3222,7 +3196,6 @@
 				38E4453B274E411700EC9A94 /* Disk+VolumeInformation.swift in Sources */,
 				7BCFACB97C821041BA43A114 /* ManualTempBasalRootView.swift in Sources */,
 				38E44534274E411700EC9A94 /* Disk+InternalHelpers.swift in Sources */,
-				495068B42BDFF0C30048FF3B /* ApplyOverridePresetIntent.swift in Sources */,
 				38A00B2325FC2B55006BC0B0 /* LRUCache.swift in Sources */,
 				3083261C4B268E353F36CD0B /* AutotuneConfigDataFlow.swift in Sources */,
 				891DECF7BC20968D7F566161 /* AutotuneConfigProvider.swift in Sources */,
@@ -3250,7 +3223,6 @@
 				E25073BC86C11C3D6A42F5AC /* CalibrationsStateModel.swift in Sources */,
 				BA90041DC8991147E5C8C3AA /* CalibrationsRootView.swift in Sources */,
 				E3A08AAE59538BC8A8ABE477 /* NotificationsConfigDataFlow.swift in Sources */,
-				495068B32BDFF0C30048FF3B /* overridePresetsIntentRequest.swift in Sources */,
 				1956FB212AFF79E200C7B4FF /* CoreDataStorage.swift in Sources */,
 				0F7A65FBD2CD8D6477ED4539 /* NotificationsConfigProvider.swift in Sources */,
 				3171D2818C7C72CD1584BB5E /* NotificationsConfigStateModel.swift in Sources */,

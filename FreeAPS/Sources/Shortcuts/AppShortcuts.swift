@@ -31,12 +31,5 @@ import Foundation
                 "\(.applicationName) allows to create and apply a temporary target"
             ]
         )
-        AppShortcut(
-            intent: ApplyOverrideIntent(),
-            phrases: [
-                "Activate \(.applicationName) temporary override",
-                "\(.applicationName) apply a temporary override"
-            ]
-        )
     }
 }
