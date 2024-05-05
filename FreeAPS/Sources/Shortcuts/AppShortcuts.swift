@@ -25,6 +25,13 @@ import Foundation
             ]
         )
         AppShortcut(
+            intent: CreateAndApplyTempTarget(),
+            phrases: [
+                "Create and apply a temporary target in \(.applicationName)",
+                "\(.applicationName) allows to create and apply a temporary target"
+            ]
+        )
+        AppShortcut(
             intent: ApplyOverrideIntent(),
             phrases: [
                 "Activate an \(.applicationName) Override Preset",
