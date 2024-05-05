@@ -1,29 +1,29 @@
 import Foundation
 
 struct FreeAPSSettings: JSON, Equatable {
-    var units: GlucoseUnits = .mgdL
-    var closedLoop: Bool = true
+    var units: GlucoseUnits = .mmolL
+    var closedLoop: Bool = false
     var allowAnnouncements: Bool = false
     var useAutotune: Bool = false
     var isUploadEnabled: Bool = false
     var useLocalGlucoseSource: Bool = false
     var localGlucosePort: Int = 8080
-    var debugOptions: Bool = true
+    var debugOptions: Bool = false
     var insulinReqPercentage: Decimal = 70
     var skipBolusScreenAfterCarbs: Bool = false
     var displayHR: Bool = false
     var cgm: CGMType = .nightscout
     var uploadGlucose: Bool = true
     var useCalendar: Bool = false
-    var displayCalendarIOBandCOB: Bool = true
+    var displayCalendarIOBandCOB: Bool = false
     var displayCalendarEmojis: Bool = false
-    var glucoseBadge: Bool = true
+    var glucoseBadge: Bool = false
     var glucoseNotificationsAlways: Bool = false
     var useAlarmSound: Bool = false
     var addSourceInfoToGlucoseNotifications: Bool = false
-    var lowGlucose: Decimal = 55
+    var lowGlucose: Decimal = 72
     var highGlucose: Decimal = 270
-    var carbsRequiredThreshold: Decimal = 110
+    var carbsRequiredThreshold: Decimal = 10
     var animatedBackground: Bool = false
     var useFPUconversion: Bool = true
     var tins: Bool = false
@@ -35,9 +35,9 @@ struct FreeAPSSettings: JSON, Equatable {
     var smoothGlucose: Bool = false
     var displayOnWatch: AwConfig = .BGTarget
     var overrideHbA1cUnit: Bool = false
-    var high: Decimal = 180
+    var high: Decimal = 145
     var low: Decimal = 70
-    var uploadStats: Bool = false
+    var uploadStats: Bool = true
     var hours: Int = 6
     var xGridLines: Bool = true
     var yGridLines: Bool = true
@@ -47,20 +47,20 @@ struct FreeAPSSettings: JSON, Equatable {
     var displayFatAndProteinOnWatch: Bool = false
     var confirmBolusFaster: Bool = false
     var onlyAutotuneBasals: Bool = false
-    var overrideFactor: Decimal = 1.2
+    var overrideFactor: Decimal = 0.8
     var useCalc: Bool = false
     var fattyMeals: Bool = false
     var fattyMealFactor: Decimal = 0.7
     var displayPredictions: Bool = true
     var useLiveActivity: Bool = false
     var historyLayout: HistoryLayout = .twoTabs
-    var useTargetButton: Bool = true
+    var useTargetButton: Bool = false
     var alwaysUseColors: Bool = true
     var timeSettings: Bool = true
-    var profilesOrTempTargets: Bool = true
-    var allowBolusShortcut: Bool = true
-    var allowedRemoteBolusAmount: Decimal = 1.0
-    var lockScreenView: LockScreenView = .detailed
+    var profilesOrTempTargets: Bool = false
+    var allowBolusShortcut: Bool = false
+    var allowedRemoteBolusAmount: Decimal = 0.0
+    var lockScreenView: LockScreenView = .simple
 }
 
 extension FreeAPSSettings: Decodable {
