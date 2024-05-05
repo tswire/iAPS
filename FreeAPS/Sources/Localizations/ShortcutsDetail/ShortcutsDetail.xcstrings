@@ -639,6 +639,7 @@
       }
     },
     "Cancel a temporary Preset" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -678,7 +679,11 @@
         }
       }
     },
+    "Cancel a Temporary Target" : {
+
+    },
     "Cancel temporary preset" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -717,6 +722,9 @@
           }
         }
       }
+    },
+    "Cancel Temporary Target" : {
+
     },
     "carbs" : {
       "localizations" : {
@@ -1671,6 +1679,9 @@
         }
       }
     },
+    "mg/dL" : {
+
+    },
     "mg/L" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2255,7 +2266,7 @@
         }
       }
     },
-    "Start ${target} ${unit} target during ${duration} min" : {
+    "Start ${target} ${unit} target for ${duration} min" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
