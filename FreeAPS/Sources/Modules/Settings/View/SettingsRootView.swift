@@ -72,7 +72,7 @@ extension Settings {
                         .navigationLink(to: .configEditor(file: OpenAPS.Middleware.determineBasal), from: self)
                     Text("Notifications").navigationLink(to: .notificationsConfig, from: self)
                     Text("Contact trick").navigationLink(to: .contactTrick, from: self)
-                   Text("App Icons").navigationLink(to: .iconConfig, from: self)
+                    Text("App Icons").navigationLink(to: .iconConfig, from: self)
                 } header: { Text("Features") }
 
                 Section {
