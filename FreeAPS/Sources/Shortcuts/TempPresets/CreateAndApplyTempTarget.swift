@@ -122,7 +122,10 @@ import Foundation
             ) {
                 let formattedTime = decimalToTimeFormattedString(decimal: finalTempTargetApply.duration)
                 return .result(
-                    dialog: IntentDialog(LocalizedStringResource("TempTarget activated for \(formattedTime)", table: "ShortcutsDetail"))
+                    dialog: IntentDialog(LocalizedStringResource(
+                        "TempTarget activated for \(formattedTime)",
+                        table: "ShortcutsDetail"
+                    ))
                 )
             } else {
                 return .result(

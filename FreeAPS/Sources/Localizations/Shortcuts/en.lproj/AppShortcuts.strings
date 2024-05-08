@@ -2,35 +2,35 @@
   AppShortcuts.strings
 */
 /* -------------------------------- */
-/* oiAPS Temporary Target shortcut*/
+/* iAPS Temporary Target shortcut*/
 "Activate ${applicationName} temporary target" = "Activate ${applicationName} temporary target";
 
-/* oiAPS Temporary Target shortcut Description */
+/* iAPS Temporary Target shortcut Description */
 "${applicationName} apply a temporary target" = "${applicationName} apply a temporary target";
 
 /* oiAPS Status shortcut */
 "List ${applicationName} state" = "List ${applicationName} state";
 
-/* oiAPS Status shortcut Description*/
+/* iAPS Status shortcut Description*/
 "${applicationName} state" = "${applicationName} state";
 
 /* oiAPS Add carbs shortcut */
 "Add carbs in ${applicationName}" = "Add carbs in ${applicationName}";
 
-/* oiAPS Add carbs shortcut description */
+/* iAPS Add carbs shortcut description */
 "${applicationName} allows to add carbs" = "${applicationName} allows to add carbs";
 
-/* oiAPS Add carbs shortcut description */
+/* iAPS Add carbs shortcut description */
 "${applicationName} allows to add carbs" = "${applicationName} allows to add carbs";
 
-/* oiAPS Create and apply Temporary Target shortcut*/
+/* iAPS Create and apply Temporary Target shortcut*/
 "Create and apply a temporary target in ${applicationName}" = "Create and apply a temporary target in ${applicationName}";
 
-/* oiAPS Create and apply Temporary Target description*/
+/* iAPS Create and apply Temporary Target description*/
 "${applicationName} allows to create and apply a temporary target" = "${applicationName} allows to create and apply a temporary target";
 
-/* oiAPS Temporary override shortcut*/
+/* iAPS Temporary override shortcut*/
 "Activate ${applicationName} temporary override" = "Activate ${applicationName} temporary override";
 
-/* oiAPS Temporary override shortcut Description */
+/* iAPS Temporary override shortcut Description */
 "${applicationName} apply a temporary override" = "${applicationName} apply a temporary override";
