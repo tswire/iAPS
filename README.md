@@ -7,7 +7,7 @@ iAPS - an artificial pancreas system for iOS based on [OpenAPS Reference](https:
 Thousands of commits later, with many new and unique features added, the iOS app has been renamed to iAPS under a new organisation, Artificial Pancreas. iAPS uses lot of frameworks published by the Loop community.
 
 
-# autoISF 
+# autoISF
 The autoISF branch is based on dev from the original [iAPS repo](https://github.com/artificial-pancreas/iaps) and includes my implementation of [autoISF by ga-zelle](https://github.com/T-o-b-i-a-s/AndroidAPS) for AAPS and some other extra features. autoISF is off by default.
 
 autoISF adjusts ISF depending on 4 different effects in glucose behaviour that autoISF checks and reacts to:
@@ -89,7 +89,7 @@ Latest version of original iAPS is maintained by Jon and the gang. It brings sig
 
 ## Dana Kit
 
-this branch has the great work from 
+this branch has the great work from
 https://github.com/bastiaanv/iAPS re. Dana pump integration included.
 
 ## autoISF Version
@@ -112,7 +112,14 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
-* 3.3.3
+* 3.6 - will resett all oref1 & autoISF settings to default values
+	* KetoProtection
+		* with a percentage or absolute small basal rate
+		* always or depending on IOB and Insulin activity
+	* more shortcut and refactoring by avouspierre
+	* ContactTrick for AppleWatch by yurique
+	* oref fixes
+* 3.3
 	* get on par with stock iAPS (Jon keeps still cranking out great features) re.
 		* data structure as introduced with and after 3.0
 			* Overrides still not available but all graphics and data is prepared
