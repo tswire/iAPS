@@ -39,6 +39,7 @@ enum Screen: Identifiable, Hashable {
     case B30Conf
     case KetoConfig
 
+    case contactTrick
     var id: Int { String(reflecting: self).hashValue }
 }
 
@@ -117,6 +118,8 @@ extension Screen {
             AIMIB30Conf.RootView(resolver: resolver)
         case .KetoConfig:
             KetoConf.RootView(resolver: resolver)
+        case .contactTrick:
+            ContactTrick.RootView(resolver: resolver)
         }
     }
 
