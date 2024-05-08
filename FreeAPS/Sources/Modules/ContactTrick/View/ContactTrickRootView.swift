@@ -313,6 +313,14 @@ extension ContactTrick {
                         }
                     }
                     Picker(
+                        selection: $entry.secondaryFontSize,
+                        label: Text("Secondary size")
+                    ) {
+                        ForEach(fontSizes, id: \.self) { s in
+                            Text("\(s)").tag(s)
+                        }
+                    }
+                    Picker(
                         selection: $entry.fontTracking,
                         label: Text("Tracking")
                     ) {
