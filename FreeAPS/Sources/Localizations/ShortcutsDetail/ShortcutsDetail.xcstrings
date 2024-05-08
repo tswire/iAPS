@@ -137,7 +137,11 @@
         }
       }
     },
+    "Activate an existing TempTarget Preset" : {
+
+    },
     "Add carbs" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -176,6 +180,9 @@
           }
         }
       }
+    },
+    "Add Carbs" : {
+
     },
     "Allow to add carbs" : {
       "localizations" : {
@@ -259,6 +266,7 @@
       }
     },
     "Allow to list and choose a specific temporary targets" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -390,6 +398,7 @@
       }
     },
     "Apply a temporary target" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -428,6 +437,9 @@
           }
         }
       }
+    },
+    "Apply TempTarget Preset" : {
+
     },
     "Applying ${carbQuantity} g at ${dateAdded}" : {
       "extractionState" : "manual",
@@ -679,7 +691,10 @@
         }
       }
     },
-    "Cancel a Temporary Target" : {
+    "Cancel active TempTarget" : {
+
+    },
+    "Cancel an active TempTarget" : {
 
     },
     "Cancel temporary preset" : {
@@ -939,6 +954,7 @@
       }
     },
     "Confirm to apply temporary target '%@'" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -977,6 +993,9 @@
           }
         }
       }
+    },
+    "Confirm to apply TempTarget '%@'" : {
+
     },
     "Create and apply a temporary target" : {
       "extractionState" : "manual",
@@ -1018,6 +1037,12 @@
           }
         }
       }
+    },
+    "Create and apply a TempTarget" : {
+
+    },
+    "Create and apply TempTarget" : {
+
     },
     "Date" : {
       "extractionState" : "manual",
@@ -1182,6 +1207,9 @@
         }
       }
     },
+    "Duration of the TempTarget" : {
+
+    },
     "Enable a temporary override" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1224,6 +1252,7 @@
       }
     },
     "Enable a temporary target" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1302,6 +1331,12 @@
           }
         }
       }
+    },
+    "Glucose Target" : {
+
+    },
+    "Glucose target in the current unit" : {
+
     },
     "Glucose unit" : {
       "extractionState" : "manual",
@@ -1548,7 +1583,11 @@
         }
       }
     },
+    "List Carb Presets" : {
+
+    },
     "List Carbs presets" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1670,6 +1709,7 @@
       }
     },
     "List Temporary Targets" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -1678,6 +1718,9 @@
           }
         }
       }
+    },
+    "List TempTarget Presets" : {
+
     },
     "mg/dL" : {
 
@@ -2266,6 +2309,9 @@
         }
       }
     },
+    "Show list and choose an existing TempTarget Preset" : {
+
+    },
     "Start ${target} ${unit} target for ${duration} min" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2660,6 +2706,7 @@
       }
     },
     "Temporary Target canceled" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2739,6 +2786,9 @@
           }
         }
       }
+    },
+    "TempTarget canceled" : {
+
     },
     "Unable to start the temp target" : {
       "localizations" : {
@@ -2861,6 +2911,12 @@
           }
         }
       }
+    },
+    "What is the duration of TempTarget ?" : {
+
+    },
+    "What is the glucose target in the current unit ?" : {
+
     },
     "What is the quantity of the carb to add ?" : {
       "localizations" : {
