@@ -41,7 +41,7 @@ extension Settings {
                     } else {
                         Text(
                             "iAPS v\(state.versionNumber) (\(state.buildNumber))\nBranch: \(state.branch)\n\(state.copyrightNotice)"
-                        )
+                        ).textCase(nil)
                     }
                 }
 
@@ -52,7 +52,7 @@ extension Settings {
                 } header: { Text("Devices") }
 
                 Section {
-                    Text("Oref1").navigationLink(to: .preferencesEditor, from: self)
+                    Text("oref").navigationLink(to: .preferencesEditor, from: self)
                     Text("autoISF").navigationLink(to: .autoISFConf, from: self)
                     Text("AIMI B30").navigationLink(to: .B30Conf, from: self)
                     Text("Ketoacidosis Protection").navigationLink(to: .KetoConfig, from: self)
