@@ -281,49 +281,49 @@ extension AutoISFConf {
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
-                        "Toggles & general Settings",
+                        "Toggles & General Settings",
                         comment: "Switch on/off experimental stuff"
                     ),
                     fields: xpmToogles
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
-                        "Acce-ISF settings",
+                        "Acce-ISF Settings",
                         comment: "Experimental settings for acceleration based autoISF 2.2"
                     ),
                     fields: xpmAcceISF
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
-                        "PP-ISF settings",
+                        "PP-ISF Settings",
                         comment: "Experimental settings for postprandial based autoISF 2.2"
                     ),
                     fields: xpmPostPrandial
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
-                        "Delta-ISF settings",
+                        "Delta-ISF Settings",
                         comment: "Experimental settings for BG delta based autoISF2.1"
                     ),
                     fields: xpmDeltaISF
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
-                        "BG-ISF settings",
+                        "BG-ISF Settings",
                         comment: "Experimental settings for BG level based autoISF2.1"
                     ),
                     fields: xpmBGISF
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
-                        "Dura-ISF settings",
+                        "Dura-ISF Settings",
                         comment: "Experimental settings for high BG plateau based autoISF2.0"
                     ),
                     fields: xpmDuraISF
                 ),
                 FieldSection(
                     displayName: NSLocalizedString(
-                        "SMB Delivery Ratio settings",
+                        "SMB Delivery Ratio Settings",
                         comment: "Experimental settings for SMB increases autoISF 2.0"
                     ),
                     fields: xpmSMB

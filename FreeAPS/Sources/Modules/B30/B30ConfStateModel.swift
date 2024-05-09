@@ -19,15 +19,6 @@ extension AIMIB30Conf {
 
             let xpmB30 = [
                 Field(
-                    displayName: "Enable B30 EatingSoon",
-                    type: .boolean(keypath: \.enableB30),
-                    infoText: NSLocalizedString(
-                        "Enables an increased basal rate after an EatingSoon TT and a manual bolus to saturate the infusion site with insulin to increase insulin absorption for SMB's following a meal with no carb counting.",
-                        comment: "Enable B30 for autoISF"
-                    ),
-                    settable: self
-                ),
-                Field(
                     displayName: "TempTarget Level in mg/dl for B30 to be enacted",
                     type: .decimal(keypath: \.B30iTimeTarget),
                     infoText: NSLocalizedString(
