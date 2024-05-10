@@ -71,7 +71,11 @@ on iPhone 13 mini:
 Watches:
 
 <img src="iAPS_AppleWatch_01.png"
-     alt="AppleWatch screen"
+     alt="AppleWatch iAPS"
+	 width=200
+	 />
+	 <img src="iAPS_AppleWatch_02.png"
+     alt="AppleWatch watchface"
 	 width=200
 	 />
 <img src="Garmin_DataField.png"
