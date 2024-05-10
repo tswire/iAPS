@@ -265,9 +265,6 @@ extension AddTempTarget {
 
         func computeSliderHigh() -> Double {
             var maxSens = Double(state.maxValue * 100)
-            if state.use_autoISF {
-                maxSens = Double(state.maxValueAS * 100)
-            }
             var target = state.low
             if target == 0 { return maxSens }
             if state.units == .mmolL {
