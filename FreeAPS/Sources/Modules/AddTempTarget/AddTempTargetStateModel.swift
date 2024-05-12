@@ -3,7 +3,7 @@ import SwiftUI
 
 extension AddTempTarget {
     final class StateModel: BaseStateModel<Provider> {
-        @Injected() private var storage: TempTargetsStorage!
+        @Injected() var storage: TempTargetsStorage!
         @Injected() var apsManager: APSManager!
 
         let coredataContext = CoreDataStack.shared.persistentContainer.viewContext
@@ -17,7 +17,6 @@ extension AddTempTarget {
         @Published var presets: [TempTarget] = []
         @Published var percentage = 100.0
         @Published var maxValue: Decimal = 1.2
-        @Published var maxValueAS: Decimal = 1.2
         @Published var use_autoISF = false
         @Published var viewPercantage = false
         @Published var hbt: Double = 160
@@ -29,7 +28,6 @@ extension AddTempTarget {
             units = settingsManager.settings.units
             presets = storage.presets()
             maxValue = settingsManager.preferences.autosensMax
-            maxValueAS = settingsManager.preferences.autoISFmax
             use_autoISF = settingsManager.preferences.autoisf
         }
 

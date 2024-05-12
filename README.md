@@ -1,4 +1,4 @@
-# iAPS with autoISF new UI
+# iAPS with autoISF
 
 ## Introduction
 
@@ -23,6 +23,11 @@ B30 enables an increased basal rate after an EatingSoon TT and a manual bolus. T
 To use it, it needs 2 conditions besides setting all preferences:
 * Setting a TT with a specific adjustable target level.
 * A bolus above a specified level, which results in a drastically increased Temp Basal Rate for a short time. If one cancels the TT, also the TBR will cease.
+
+## Ketoacidosis protection
+Ketoacidosis protection will apply a small configurable TempBasalRate always or if certain conditions arise instead of a Zero temp! The feature exists because in special cases a person could get ketoacidosis from 0% TBR. The idea is derived from sport. There could be problems when a basal rate of 0% ran for several hours. Muscles in particular could shut off.
+
+This feature enables a small safety TBR to reduce the ketoacidosis risk. Without the Variable Protection Strategy that safety TBR is always applied. The idea behind the variable protection strategy is that the safety TBR is only applied if sum of basal-IOB and bolus-IOB falls negatively below the value of the current basal rate and that current isulin activity is below 0.
 
 ## Exercise Modes & Advanced TT's
 Exercise Mode with high/low TT can be combined with autoISF. The ratio from the TT, calculated with the Half Basal Exercise target, will be adjusted with the strongest (>1) or weakest (<1) ISF-Ratio from autoISF. This can be substantial. I myself prefer to disable autoISF adjustments while exercising, relying on the TT Ratio, by setting `Exercise toggles all autoISF adjustments off` to on.
@@ -66,7 +71,11 @@ on iPhone 13 mini:
 Watches:
 
 <img src="iAPS_AppleWatch_01.png"
-     alt="AppleWatch screen"
+     alt="AppleWatch iAPS"
+	 width=200
+	 />
+	 <img src="iAPS_AppleWatch_02.png"
+     alt="AppleWatch watchface"
 	 width=200
 	 />
 <img src="Garmin_DataField.png"
@@ -83,10 +92,9 @@ For multiple alternative installation methods refer to to the parent repository 
 
 # Changes
 
-Latest version of original iAPS is maintained by Jon and the gang. It brings significant improvements for Omnipod Dash pumps and Dexcom G6 and G7sensors, Statistics, Automations with Shortcuts, Garmin watch and such a lot of cool things that make you go Uuh. Looping should be immediate and robust.
+Latest version of original iAPS is maintained by Jon and the now departed gang . It brings significant improvements for Omnipod Dash pumps and Dexcom G6 and G7sensors, Statistics, Automations with Shortcuts, Garmin watch and a lot of cool things that make you go Uuh. Looping should be immediate and robust. UI is based on the non-implemented proposals by Dan and the gang before iAPS3.0.
 
 [iAPS repo github](https://github.com/artificial-pancreas/iaps.git)
-
 
 ## autoISF Version
 Refers to the changes done to the original oref0 used in FAX, the source can be found at my [oref0-repository](https://github.com/mountrcg/oref0). Also testing autoISF 3.0 adaption
@@ -108,7 +116,15 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
-* 3.3.3
+* 3.6 - will resett all oref1 & autoISF settings to default values
+    * DANA RS and -i integration by [@bastiaanv](https://github.com/bastiaanv/iAPS)
+	* KetoProtection
+		* with a percentage or absolute small basal rate
+		* always or depending on IOB and Insulin activity
+	* more shortcut and refactoring by avouspierre
+	* ContactTrick for AppleWatch by yurique
+	* oref fixes
+* 3.3
 	* get on par with stock iAPS (Jon keeps still cranking out great features) re.
 		* data structure as introduced with and after 3.0
 			* Overrides still not available but all graphics and data is prepared
@@ -116,7 +132,7 @@ Also note that you can achieve almost everything that Profiles do with the Advan
 		* shortcuts for Bolus & Overrides as in stock iAPS (ofc overrides won't do anything)
 		* fastlane improvements
 	* tap Bolus Progress Bar for popup
-	* Live Activity with charts thanks to [nas10](https://github.com/10nas/iAPS.git), [@marvout](https://github.com/polscm32/iAPS.git), [@dnzxy](https://github.com/dnzxy/iAPS), [@Andreas](https://github.com/AndreasStokholm/iAPS.git)
+	* Live Activity with charts thanks to [@nas10](https://github.com/10nas/iAPS.git), [@marvout](https://github.com/polscm32/iAPS.git), [@dnzxy](https://github.com/dnzxy/iAPS), [@Andreas](https://github.com/AndreasStokholm/iAPS.git)
 	* oref bug fixes
 * 2.3.2
 	* introduce autosens toggle in oref1 and autoISF prefs. It allows to switch autosens off when not logging any carbs. autosensMax/Min can still be set to !=1, to allow TT setting low sensitivity (uses autosensMax as limiter)
