@@ -14,6 +14,7 @@ struct LoopView: View {
     @Binding var isLooping: Bool
     @Binding var lastLoopDate: Date
     @Binding var manualTempBasal: Bool
+    @State private var scale: CGFloat = 1.0
 
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -21,20 +22,25 @@ struct LoopView: View {
         return formatter
     }
 
-    private let rect = CGRect(x: 0, y: 0, width: 24, height: 24)
+    private let rect = CGRect(x: 0, y: 0, width: 27, height: 27)
+
     var body: some View {
         VStack(alignment: .center) {
             ZStack {
-                Circle()
-                    .strokeBorder(color, lineWidth: 4)
-                    .frame(width: rect.width, height: rect.height, alignment: .center)
-                    .mask(mask(in: rect).fill(style: FillStyle(eoFill: true)))
                 if isLooping {
-                    ProgressView()
+                    CircleProgress()
+                } else {
+                    Circle()
+                        .strokeBorder(color, lineWidth: 5)
+                        .frame(width: rect.width, height: rect.height, alignment: .center)
+                        .scaleEffect(1)
+                        .mask(mask(in: rect).fill(style: FillStyle(eoFill: true)))
                 }
             }
             if isLooping {
-                Text("looping").font(.caption2)
+                /* Text("looping").font(.caption2) */
+                Text(timeString).font(.caption2)
+                    .foregroundColor(.secondary)
             } else if manualTempBasal {
                 Text("Manual").font(.caption2)
             } else if actualSuggestion?.timestamp != nil {
@@ -92,18 +98,55 @@ struct LoopView: View {
     }
 }
 
-extension View {
-    func animateForever(
-        using animation: Animation = Animation.easeInOut(duration: 1),
-        autoreverses: Bool = false,
-        _ action: @escaping () -> Void
-    ) -> some View {
-        let repeated = animation.repeatForever(autoreverses: autoreverses)
+struct CircleProgress: View {
+    @State private var rotationAngle = 0.0
+    @State private var pulse = false
 
-        return onAppear {
-            withAnimation(repeated) {
-                action()
-            }
+    private let rect = CGRect(x: 0, y: 0, width: 27, height: 27)
+    private var backgroundGradient: AngularGradient {
+        AngularGradient(
+            gradient: Gradient(colors: [
+                Color(red: 0.262745098, green: 0.7333333333, blue: 0.9137254902),
+                Color(red: 0.3411764706, green: 0.6666666667, blue: 0.9254901961),
+                Color(red: 0.4862745098, green: 0.5450980392, blue: 0.9529411765),
+                Color(red: 0.6235294118, green: 0.4235294118, blue: 0.9803921569),
+                Color(red: 0.7215686275, green: 0.3411764706, blue: 1),
+                Color(red: 0.6235294118, green: 0.4235294118, blue: 0.9803921569),
+                Color(red: 0.4862745098, green: 0.5450980392, blue: 0.9529411765),
+                Color(red: 0.3411764706, green: 0.6666666667, blue: 0.9254901961),
+                Color(red: 0.262745098, green: 0.7333333333, blue: 0.9137254902)
+            ]),
+            center: .center,
+            startAngle: .degrees(rotationAngle),
+            endAngle: .degrees(rotationAngle + 360)
+        )
+    }
+
+    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .trim(from: 0, to: 1)
+                .stroke(backgroundGradient, style: StrokeStyle(lineWidth: pulse ? 10 : 5))
+                .scaleEffect(pulse ? 0.7 : 1)
+                .animation(
+                    Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true),
+                    value: pulse
+                )
+                .onReceive(timer) { _ in
+                    rotationAngle = (rotationAngle + 24).truncatingRemainder(dividingBy: 360)
+                }
+                .onAppear {
+                    self.pulse = true
+                }
         }
+        .frame(width: rect.width, height: rect.height, alignment: .center)
+    }
+}
+
+struct CircleProgress_Previews: PreviewProvider {
+    static var previews: some View {
+        CircleProgress()
     }
 }
