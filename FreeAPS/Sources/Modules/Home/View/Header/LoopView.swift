@@ -2,21 +2,6 @@ import SwiftDate
 import SwiftUI
 import UIKit
 
-private var backgroundGradient: RadialGradient {
-    RadialGradient(
-        gradient: Gradient(colors: [
-            Color(red: 0.262745098, green: 0.7333333333, blue: 0.9137254902),
-            Color(red: 0.3411764706, green: 0.6666666667, blue: 0.9254901961),
-            Color(red: 0.4862745098, green: 0.5450980392, blue: 0.9529411765),
-            Color(red: 0.6235294118, green: 0.4235294118, blue: 0.9803921569),
-            Color(red: 0.7215686275, green: 0.3411764706, blue: 1)
-        ]),
-        center: .center,
-        startRadius: 27.0,
-        endRadius: 0.0
-    )
-}
-
 struct LoopView: View {
     private enum Config {
         static let lag: TimeInterval = 30
@@ -37,7 +22,7 @@ struct LoopView: View {
         return formatter
     }
 
-    let rect = CGRect(x: 0, y: 0, width: 27, height: 27)
+    private let rect = CGRect(x: 0, y: 0, width: 27, height: 27)
 
     var body: some View {
         VStack(alignment: .center) {
@@ -117,6 +102,7 @@ struct CircleProgress: View {
     @State private var rotationAngle = 0.0
     @State private var pulse = false
 
+    private let rect = CGRect(x: 0, y: 0, width: 27, height: 27)
     private var backgroundGradient: AngularGradient {
         AngularGradient(
             gradient: Gradient(colors: [
@@ -136,26 +122,26 @@ struct CircleProgress: View {
         )
     }
 
-    let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack {
             Circle()
                 .trim(from: 0, to: 1)
-                .stroke(backgroundGradient, style: StrokeStyle(lineWidth: pulse ? 13 : 5))
-                .scaleEffect(pulse ? 0.6 : 1)
+                .stroke(backgroundGradient, style: StrokeStyle(lineWidth: pulse ? 10 : 5))
+                .scaleEffect(pulse ? 0.7 : 1)
                 .animation(
-                    Animation.easeInOut(duration: 2.5).repeatForever(autoreverses: true),
+                    Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true),
                     value: pulse
                 )
                 .onReceive(timer) { _ in
-                    rotationAngle = (rotationAngle + 10).truncatingRemainder(dividingBy: 360)
+                    rotationAngle = (rotationAngle + 24).truncatingRemainder(dividingBy: 360)
                 }
                 .onAppear {
                     self.pulse = true
                 }
         }
-        .frame(width: 27, height: 27)
+        .frame(width: rect.width, height: rect.height, alignment: .center)
     }
 }
 
