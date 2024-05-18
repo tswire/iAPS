@@ -335,21 +335,61 @@ extension Home {
             let date = Date()
             let calendar = Calendar.current
             let offset = hours
-
             var offsetComponents = DateComponents()
-            //        offsetComponents.hour = -offset.rawValue
             offsetComponents.hour = -Int(offset)
-
             let startTime = calendar.date(byAdding: offsetComponents, to: date)!
-//            print("******************")
-//            print("TINS calc start time: \(startTime)")
 
             let bolusesForCurrentDay = boluses.filter { $0.timestamp >= startTime && $0.type == .bolus }
+            guard let basalInsulinForCurrentDay = getDeliveredBasal() else { return "" }
 
-            let totalBolus = bolusesForCurrentDay.map { $0.amount ?? 0 }.reduce(0, +)
-            let roundedTotalBolus = Decimal(round(100 * Double(totalBolus)) / 100)
+            /// add all boluses for specified time together
+            let totalBoluses = bolusesForCurrentDay.map { $0.amount ?? 0 }.reduce(0, +)
+            /// final TINS value, i.e. boluses AND delivered basal
+            let total = totalBoluses + basalInsulinForCurrentDay
+            debug(.default, "totalBoluses: \(totalBoluses)")
+            debug(.default, "basalInsulinForCurrentDay: \(basalInsulinForCurrentDay)")
 
-            return "\(roundedTotalBolus)"
+            calculatedTins = AllFormatters.numberFormatter.string(from: total as NSNumber) ?? "NaN"
+
+            return calculatedTins
+        }
+
+        private func getDeliveredBasal() -> Decimal? {
+            let date = Date()
+            let calendar = Calendar.current
+            let offset = hours
+            var offsetComponents = DateComponents()
+            offsetComponents.hour = -Int(offset)
+            let startTime = calendar.date(byAdding: offsetComponents, to: date)!
+
+            /// retrieve basal entries in defined time
+            let basalEntriesForCurrentDay = tempBasals.filter { $0.timestamp >= startTime && $0.type == .tempBasal }
+
+            /// sort basal entries in order to prepare for the duration calculation
+            let basalEntriesForCurrentDaySorted = basalEntriesForCurrentDay.sorted { $0.timestamp < $1.timestamp }
+            /// empty array to append basal entries
+            var basalDurations: [Double] = []
+            /// calculate every basal entries duration
+            for (index, basalEntry) in basalEntriesForCurrentDaySorted.enumerated() {
+                /// proof if a next entry exists
+                if index + 1 < basalEntriesForCurrentDaySorted.count {
+                    let nextEntry = basalEntriesForCurrentDaySorted[index + 1]
+                    /// calculate difference of timestamps, result is in seconds
+                    let durationInSeconds = nextEntry.timestamp.timeIntervalSince(basalEntry.timestamp)
+                    let durationInHours = durationInSeconds / 3600 /// conversion to hours
+                    basalDurations.append(durationInHours)
+                }
+            }
+            /// calculate how much insulin was given, i.e. rate * duration for every entry
+            let basalInsulinForCurrentDay = zip(basalEntriesForCurrentDaySorted, basalDurations).map { basalEntry, duration in
+                if let rate = basalEntry.rate {
+                    return rate * Decimal(duration)
+                } else {
+                    return 0
+                }
+            }.reduce(0, +)
+
+            return basalInsulinForCurrentDay > 0 ? basalInsulinForCurrentDay : nil
         }
 
         private func setupSuspensions() {
