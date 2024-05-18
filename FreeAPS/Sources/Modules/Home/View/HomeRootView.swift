@@ -23,11 +23,11 @@ extension Home {
         }
 
         @State var timeButtons: [Buttons] = [
-            Buttons(label: "2h", number: "2", active: false, hours: 2),
-            Buttons(label: "4h", number: "4", active: false, hours: 4),
+            Buttons(label: "3h", number: "3", active: false, hours: 3),
             Buttons(label: "6h", number: "6", active: false, hours: 6),
             Buttons(label: "12h", number: "12", active: false, hours: 12),
-            Buttons(label: "24h", number: "24", active: false, hours: 24)
+            Buttons(label: "24h", number: "24", active: false, hours: 24),
+            Buttons(label: "36h", number: "36", active: false, hours: 36)
         ]
 
         let buttonFont = Font.custom("TimeButtonFont", size: 14)
@@ -315,12 +315,22 @@ extension Home {
                         .padding(.leading, 8)
                 }
                 if state.tins {
-                    Text(
-                        "TINS: \(state.calculateTINS())" +
-                            NSLocalizedString(" U", comment: "Unit in number of units delivered (keep the space character!)")
-                    )
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.insulin)
+                    HStack {
+                        Text(
+                            "TINS: \(state.calculatedTins)" +
+                                NSLocalizedString(" U", comment: "Unit in number of units delivered (keep the space character!)")
+                        )
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.insulin)
+                        .onChange(of: state.hours) { _ in
+                            state.calculatedTins = state.calculateTINS()
+                        }
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                state.calculatedTins = state.calculateTINS()
+                            }
+                        }
+                    }
                 }
 
                 if let tempTargetString = tempTargetString {
