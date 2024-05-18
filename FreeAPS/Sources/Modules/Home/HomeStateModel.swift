@@ -354,8 +354,8 @@ extension Home {
             let totalBoluses = bolusesForCurrentDay.map { $0.amount ?? 0 }.reduce(0, +)
             /// final TINS value, i.e. boluses AND delivered basal
             let total = totalBoluses + basalInsulinForCurrentDay
-            debug(.default, "totalBoluses: \(totalBoluses)")
-            debug(.default, "basalInsulinForCurrentDay: \(basalInsulinForCurrentDay)")
+            debug(.default, "TINS Bolus \(startTime): \(numberFormatter.string(from: totalBoluses as NSNumber) ?? "NaN")")
+            debug(.default, "TINS Basal: \(numberFormatter.string(from: basalInsulinForCurrentDay as NSNumber) ?? "NaN")")
 
             calculatedTins = numberFormatter.string(from: total as NSNumber) ?? "NaN"
 
