@@ -74,6 +74,14 @@ extension Home {
         @Published var overrides: [Override] = []
         @Published var alwaysUseColors: Bool = true
         @Published var timeSettings: Bool = true
+        @Published var calculatedTins: String = ""
+
+        static let numberFormatter: NumberFormatter = {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.maximumFractionDigits = 2
+            return formatter
+        }()
 
         let coredataContext = CoreDataStack.shared.persistentContainer.viewContext
 
@@ -349,7 +357,7 @@ extension Home {
             debug(.default, "totalBoluses: \(totalBoluses)")
             debug(.default, "basalInsulinForCurrentDay: \(basalInsulinForCurrentDay)")
 
-            calculatedTins = AllFormatters.numberFormatter.string(from: total as NSNumber) ?? "NaN"
+            calculatedTins = Home.StateModel.numberFormatter.string(from: total as NSNumber) ?? "NaN"
 
             return calculatedTins
         }
