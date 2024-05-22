@@ -5,6 +5,7 @@ import Swinject
 extension NightscoutConfig {
     struct RootView: BaseView {
         let resolver: Resolver
+        let displayClose: Bool
         @StateObject var state = StateModel()
         @State var importAlert: Alert?
         @State var isImportAlertPresented = false
@@ -70,6 +71,13 @@ extension NightscoutConfig {
                     Button("Connect") { state.connect() }
                         .disabled(state.url.isEmpty || state.connecting)
                     Button("Delete") { state.delete() }.foregroundColor(.red).disabled(state.connecting)
+                }
+
+                Section {
+                    Button("Open Nighstcout") {
+                        UIApplication.shared.open(URL(string: state.url)!, options: [:], completionHandler: nil)
+                    }
+                    .disabled(state.url.isEmpty || state.connecting)
                 }
 
                 Section {
@@ -146,6 +154,7 @@ extension NightscoutConfig {
             .onAppear(perform: configureView)
             .navigationBarTitle("Nightscout Config")
             .navigationBarTitleDisplayMode(.automatic)
+            .navigationBarItems(leading: displayClose ? Button("Close", action: state.hideModal) : nil)
             .alert(isPresented: $isImportAlertPresented) {
                 importAlert!
             }
