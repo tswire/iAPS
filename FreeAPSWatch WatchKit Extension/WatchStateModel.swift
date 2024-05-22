@@ -27,6 +27,9 @@ class WatchStateModel: NSObject, ObservableObject {
     @Published var carbsRequired: Decimal?
     @Published var iob: Decimal?
     @Published var cob: Decimal?
+    @Published var tdd: Decimal?
+    @Published var lowGlucose: Decimal?
+    @Published var highGlucose: Decimal?
     @Published var tempTargets: [TempTargetWatchPreset] = []
     @Published var overrides: [OverridePresets_] = []
     @Published var bolusAfterCarbs = true
@@ -185,6 +188,9 @@ class WatchStateModel: NSObject, ObservableObject {
         carbsRequired = state.carbsRequired
         iob = state.iob
         cob = state.cob
+        tdd = state.tdd
+        lowGlucose = state.lowGlucose
+        highGlucose = state.highGlucose
         tempTargets = state.tempTargets
         overrides = state.overrides
         bolusAfterCarbs = state.bolusAfterCarbs ?? true

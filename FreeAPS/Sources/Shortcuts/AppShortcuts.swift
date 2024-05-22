@@ -7,14 +7,14 @@ import Foundation
             intent: ApplyTempPresetIntent(),
             phrases: [
                 "Activate \(.applicationName) TemTarget Preset",
-                "Activates an available \(.applicationName) temporary target preset"
+                "Activates an available \(.applicationName) TempTarget Preset"
             ]
         )
         AppShortcut(
             intent: CreateAndApplyTempTarget(),
             phrases: [
                 "New \(.applicationName) TempTarget",
-                "Creates and applies a newly configured \(.applicationName) temporary target"
+                "Creates and applies a newly configured \(.applicationName) TempTarget"
             ]
         )
         AppShortcut(
@@ -35,7 +35,7 @@ import Foundation
             intent: AddCarbPresentIntent(),
             phrases: [
                 "\(.applicationName) Carbs",
-                "Adds carbs to \(.applicationName)"
+                "Adds Carbs to \(.applicationName)"
             ]
         )
         AppShortcut(
@@ -49,14 +49,14 @@ import Foundation
             intent: CancelOverrideIntent(),
             phrases: [
                 "Cancel \(.applicationName) Overide",
-                "Cancels an active \(.applicationName) override"
+                "Cancels an active \(.applicationName) Override"
             ]
         )
         AppShortcut(
             intent: BolusIntent(),
             phrases: [
                 "\(.applicationName) Bolus",
-                "Enacts a new \(.applicationName) bolus"
+                "Enacts a new \(.applicationName) Bolus"
             ]
         )
     }
