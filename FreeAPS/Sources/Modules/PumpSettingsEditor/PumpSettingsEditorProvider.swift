@@ -19,7 +19,7 @@ extension PumpSettingsEditor {
         }
 
         func save(settings: PumpSettings) -> AnyPublisher<Void, Error> {
-            func save(_ settings: PumpSettings) {
+            func save() {
                 storage.save(settings, as: OpenAPS.Settings.settings)
                 processQueue.async {
                     self.broadcaster.notify(PumpSettingsObserver.self, on: self.processQueue) {
@@ -29,7 +29,7 @@ extension PumpSettingsEditor {
             }
 
             guard let pump = deviceManager?.pumpManager else {
-                save(settings)
+                save()
                 return Just(()).setFailureType(to: Error.self).eraseToAnyPublisher()
             }
             // Don't ask why 🤦‍♂️
@@ -44,21 +44,8 @@ extension PumpSettingsEditor {
                 self.processQueue.async {
                     pump.syncDeliveryLimits(limits: limits) { result in
                         switch result {
-                        case let .success(actual):
-                            // Store the limits from the pumpManager to ensure the correct values
-                            // Example: Dana pumps don't allow to set these limits, only to fetch them
-                            // This will ensure we always have the correct values stored
-                            save(PumpSettings(
-                                insulinActionCurve: settings.insulinActionCurve,
-                                maxBolus: Decimal(
-                                    actual.maximumBolus?
-                                        .doubleValue(for: .internationalUnit()) ?? Double(settings.maxBolus)
-                                ),
-                                maxBasal: Decimal(
-                                    actual.maximumBasalRate?
-                                        .doubleValue(for: .internationalUnitsPerHour) ?? Double(settings.maxBasal)
-                                )
-                            ))
+                        case .success:
+                            save()
                             promise(.success(()))
                         case let .failure(error):
                             promise(.failure(error))

@@ -37,8 +37,6 @@ public class DanaKitPumpManager: DeviceManager {
     
     public let localizedTitle = LocalizedString("Dana-i/RS", comment: "Generic title of the DanaKit pump manager")
     
-    private var connectionCallback: ((ConnectionResultShort) -> Void)? = nil
-    
     public init(state: DanaKitPumpManagerState, dateGenerator: @escaping () -> Date = Date.init) {
         self.state = state
         self.oldState = DanaKitPumpManagerState(rawValue: state.rawValue)
@@ -164,9 +162,9 @@ extension DanaKitPumpManager: PumpManager {
     }
     
     public static var onboardingSupportedBasalRates: [Double] {
-        // 0.01 units for rates between 0.00-3U/hr
+        // 0.05 units for rates between 0.00-3U/hr
         // 0 U/hr is a supported scheduled basal rate
-        return (0...300).map { Double($0) / 100 }
+        return (0...60).map { Double($0) / 20 }
     }
     
     public static var onboardingSupportedBolusVolumes: [Double] {
@@ -283,105 +281,35 @@ extension DanaKitPumpManager: PumpManager {
         syncPump(completion)
     }
     
-     /// Extention from ensureCurrentPumpData, but overrides the stale data check
+    /// Extention from ensureCurrentPumpData, but overrides the stale data check
     public func syncPump(_ completion: ((Date?) -> Void)?) {
-        self.log.info("Syncing pump data")
-
-        self.ensureConnected { result in
-            switch result {
-            case .failure:
-                completion?(nil)
-                return
-            case .success:
-                await self.syncUserOptions()
-                await self.syncTime()
-                let events = await self.syncHistory()
-                self.state.lastStatusDate = Date.now
-                
-                self.disconnect()
-                
-                self.issueHeartbeatIfNeeded()
-                self.notifyStateDidChange()
-                
-                self.pumpDelegate.notify { (delegate) in
-                    delegate?.pumpManager(self, hasNewPumpEvents: events, lastReconciliation: self.state.lastStatusDate, completion: { _ in })
-                    delegate?.pumpManager(self, didReadReservoirValue: self.state.reservoirLevel, at: Date.now, completion: { _ in })
-                    delegate?.pumpManagerDidUpdateState(self)
-                }
-                
-                completion?(Date.now)
-            }
-        }
-    }
-    
-    private func syncUserOptions() async {
-        do {
-            let userOptionPacket = generatePacketGeneralGetUserOption()
-            let userOptionResult = try await DanaKitPumpManager.bluetoothManager.writeMessage(userOptionPacket)
-            guard userOptionResult.success else {
-                log.error("Failed to fetch user options...")
-                return
-            }
+        delegateQueue.async {
+            self.log.info("Syncing pump data")
             
-            let dataUserOption = userOptionResult.data as! PacketGeneralGetUserOption
-            self.state.lowReservoirRate = dataUserOption.lowReservoirRate
-            self.state.isTimeDisplay24H = dataUserOption.isTimeDisplay24H
-            self.state.isButtonScrollOnOff = dataUserOption.isButtonScrollOnOff
-            self.state.beepAndAlarm = dataUserOption.beepAndAlarm
-            self.state.lcdOnTimeInSec = dataUserOption.lcdOnTimeInSec
-            self.state.backlightOnTimInSec = dataUserOption.backlightOnTimInSec
-            self.state.selectedLanguage = dataUserOption.selectedLanguage
-            self.state.units = dataUserOption.units
-            self.state.shutdownHour = dataUserOption.shutdownHour
-            self.state.cannulaVolume = dataUserOption.cannulaVolume
-            self.state.refillAmount = dataUserOption.refillAmount
-            self.state.targetBg = dataUserOption.targetBg
-            self.state.units = dataUserOption.units
-        } catch {
-            self.log.error("Failed to sync user options: \(error.localizedDescription)")
-        }
-    }
+            self.ensureConnected { result in
+                switch result {
+                case .failure:
+                    self.log.error("Connection failure")
+                    completion?(nil)
+                    return
+                case .success:
+                    let events = await self.syncHistory()
+                    self.state.lastStatusDate = Date.now
+                    
+                    self.disconnect()
 
-    private func syncTime() async {
-        do {
-            if self.state.usingUtc {
-                // Only the Dana-i supports command with timezone...
-                let timeUtcWithTimezonePacket = generatePacketGeneralGetPumpTimeUtcWithTimezone()
-                let resultTimeUtcWithTimezone = try await DanaKitPumpManager.bluetoothManager.writeMessage(timeUtcWithTimezonePacket)
-                guard resultTimeUtcWithTimezone.success else {
-                    log.error("Failed to fetch pump time with utc...")
-                    self.disconnect()
-                    return
+                    self.issueHeartbeatIfNeeded()
+                    self.notifyStateDidChange()
+                    
+                    self.pumpDelegate.notify { (delegate) in
+                        delegate?.pumpManager(self, hasNewPumpEvents: events, lastReconciliation: Date.now, completion: { _ in })
+                        delegate?.pumpManager(self, didReadReservoirValue: self.state.reservoirLevel, at: Date.now, completion: { _ in })
+                        delegate?.pumpManagerDidUpdateState(self)
+                    }
+                    
+                    completion?(Date.now)
                 }
-                
-                
-                guard let dataTime = resultTimeUtcWithTimezone.data as? PacketGeneralGetPumpTimeUtcWithTimezone else {
-                    log.error("No data received (time utc with timezone)...")
-                    self.disconnect()
-                    return
-                }
-                
-                self.state.pumpTime = dataTime.time
-            } else {
-                let timePacket = generatePacketGeneralGetPumpTime()
-                let resultTime = try await DanaKitPumpManager.bluetoothManager.writeMessage(timePacket)
-                guard resultTime.success else {
-                    log.error("Failed to fetch pump time...")
-                    self.disconnect()
-                    return
-                }
-                
-                
-                guard let dataTime = resultTime.data as? PacketGeneralGetPumpTime else {
-                    log.error("No data received (time utc with timezone)...")
-                    self.disconnect()
-                    return
-                }
-                
-                self.state.pumpTime = dataTime.time
             }
-        } catch {
-            self.log.error("Failed to sync time: \(error.localizedDescription)")
         }
     }
     
@@ -525,7 +453,7 @@ extension DanaKitPumpManager: PumpManager {
                             self.disconnect()
                             
                             self.log.error("Pump rejected command. Data: \(result.rawData.base64EncodedString())")
-                            completion(PumpManagerError.deviceState(transformBolusError(code: result.rawData[DataStart])))
+                            completion(PumpManagerError.uncertainDelivery)
                             return
                         }
                         
@@ -1003,6 +931,16 @@ extension DanaKitPumpManager: PumpManager {
                     return
                 case .success:
                     do {
+                        let packet = try generatePacketBasalSetProfileRate(options: PacketBasalSetProfileRate(profileNumber: self.state.basalProfileNumber, profileBasalRate: basal))
+                        let result = try await DanaKitPumpManager.bluetoothManager.writeMessage(packet)
+                        
+                        guard result.success else {
+                            self.disconnect()
+                            self.log.error("Pump rejected command (setting rates)")
+                            completion(PumpManagerError.configuration(DanaKitPumpManagerError.failedBasalAdjustment))
+                            return
+                        }
+                        
                         let activatePacket = generatePacketBasalSetProfileNumber(options: PacketBasalSetProfileNumber(profileNumber: self.state.basalProfileNumber))
                         let activateResult = try await DanaKitPumpManager.bluetoothManager.writeMessage(activatePacket)
                         
@@ -1161,10 +1099,9 @@ extension DanaKitPumpManager: PumpManager {
     }
     
     private func ensureConnected(_ completion: @escaping (ConnectionResultShort) async -> Void) {
-        self.connectionCallback = { result in
+        let block: (ConnectionResultShort) -> Void = { result in
             Task {
                 DanaKitPumpManager.bluetoothManager.resetConnectionCompletion()
-                self.connectionCallback = nil
                 await completion(result)
             }
         }
@@ -1172,90 +1109,74 @@ extension DanaKitPumpManager: PumpManager {
         // Device still has an active connection with pump and is probably busy with something
         if DanaKitPumpManager.bluetoothManager.isConnected && DanaKitPumpManager.bluetoothManager.peripheral?.state == .connected {
             self.logDeviceCommunication("Dana - Failed to connect: Already connected", type: .connection)
-            self.connectionCallback?(.failure)
+            block(.failure)
             
         // We stored the peripheral. We can quickly reconnect
         } else if DanaKitPumpManager.bluetoothManager.peripheral != nil {
-            self.startTimeout(seconds: TimeInterval.seconds(15))
+            let connectionTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: false, block: { timer in
+                self.logDeviceCommunication("Dana - Failed to connect: Timeout reached...", type: .connection)
+                self.log.error("Failed to connect: Timeout reached...")
+                block(.failure)
+            })
             
             self.connect(DanaKitPumpManager.bluetoothManager.peripheral!) { result in
-                guard let connectionCallback = self.connectionCallback else {
-                    // We've already hit the timeout function above
-                    // Exit if we every hit this...
-                    return
-                }
+                connectionTimer.invalidate()
                 
                 switch result {
                 case .success:
                     self.logDeviceCommunication("Dana - Connected", type: .connection)
-                    connectionCallback(.success)
+                    block(.success)
                 case .failure(let err):
                     self.logDeviceCommunication("Dana - Failed to connect: " + err.localizedDescription, type: .connection)
-                    connectionCallback(.failure)
+                    block(.failure)
                 case .requestedPincode:
                     self.logDeviceCommunication("Dana - Requested pincode", type: .connection)
-                    connectionCallback(.failure)
+                    block(.failure)
                 case .invalidBle5Keys:
                     self.logDeviceCommunication("Dana - Invalid ble 5 keys", type: .connection)
-                    connectionCallback(.failure)
+                    block(.failure)
                 }
             }
             // No active connection and no stored peripheral. We have to scan for device before being able to send command
         } else if !DanaKitPumpManager.bluetoothManager.isConnected && self.state.bleIdentifier != nil {
             do {
-                self.startTimeout(seconds: TimeInterval.seconds(30))
+                let connectionTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: { timer in
+                    self.logDeviceCommunication("Dana - Failed to connect: Timeout reached...", type: .connection)
+                    self.log.error("Failed to connect: Timeout reached...")
+                    block(.failure)
+                })
                 
                 try DanaKitPumpManager.bluetoothManager.connect(self.state.bleIdentifier!) { result in
-                    guard let connectionCallback = self.connectionCallback else {
-                        // We've already hit the timeout function above
-                        // Exit if we every hit this...
-                        return
-                    }
+                    connectionTimer.invalidate()
                     
                     switch result {
                     case .success:
                         self.logDeviceCommunication("Dana - Connected", type: .connection)
-                        connectionCallback(.success)
+                        block(.success)
                     case .failure(let err):
                         self.logDeviceCommunication("Dana - Failed to connect: " + err.localizedDescription, type: .connection)
-                        connectionCallback(.failure)
+                        block(.failure)
                     case .requestedPincode:
                         self.logDeviceCommunication("Dana - Requested pincode", type: .connection)
-                        connectionCallback(.failure)
+                        block(.failure)
                     case .invalidBle5Keys:
                         self.logDeviceCommunication("Dana - Invalid ble 5 keys", type: .connection)
-                        connectionCallback(.failure)
+                        block(.failure)
                     }
                 }
             } catch {
                 self.logDeviceCommunication("Dana - Failed to connect: " + error.localizedDescription, type: .connection)
-                self.connectionCallback?(.failure)
+                block(.failure)
             }
             
             // Should never reach, but is only possible if device is not onboard (we have no ble identifier to connect to)
         } else {
             self.log.error("Pump is not onboarded")
             self.logDeviceCommunication("Dana - Pump is not onboarded", type: .connection)
-            self.connectionCallback?(.failure)
+            block(.failure)
         }
     }
-
-    private func startTimeout(seconds: TimeInterval) {
-        Task {
-            do {
-                try await Task.sleep(nanoseconds: UInt64(seconds) * 1000000000)
-                guard self.connectionCallback != nil else {
-                    return
-                }
-                
-                self.logDeviceCommunication("Dana - Failed to connect: Timeout reached...", type: .connection)
-                self.log.error("Failed to connect: Timeout reached...")
-                
-                self.connectionCallback?(.failure)
-                self.connectionCallback = nil
-            } catch{}
-        }
-    }
+    
     private func logDeviceCommunication(_ message: String, type: DeviceLogEntryType = .send) {
         let address = String(format: "%04X", self.state.bleIdentifier ?? "")
         // Not dispatching here; if delegate queue is blocked, timestamps will be delayed

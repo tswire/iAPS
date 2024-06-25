@@ -7,7 +7,6 @@ enum Screen: Identifiable, Hashable {
     case settings
     case configEditor(file: String)
     case nighscoutConfig
-    case nighscoutConfigDirect
     case pumpConfig
     case pumpSettingsEditor
     case basalProfileEditor
@@ -22,7 +21,6 @@ enum Screen: Identifiable, Hashable {
     case autotuneConfig
     case dataTable
     case cgm
-    case cgmDirect
     case healthkit
     case libreConfig
     case calibrations
@@ -57,9 +55,7 @@ extension Screen {
         case let .configEditor(file):
             ConfigEditor.RootView(resolver: resolver, file: file)
         case .nighscoutConfig:
-            NightscoutConfig.RootView(resolver: resolver, displayClose: false)
-        case .nighscoutConfigDirect:
-            NightscoutConfig.RootView(resolver: resolver, displayClose: true)
+            NightscoutConfig.RootView(resolver: resolver)
         case .pumpConfig:
             PumpConfig.RootView(resolver: resolver)
         case .pumpSettingsEditor:
@@ -87,9 +83,7 @@ extension Screen {
         case .dataTable:
             DataTable.RootView(resolver: resolver)
         case .cgm:
-            CGM.RootView(resolver: resolver, displayClose: false)
-        case .cgmDirect:
-            CGM.RootView(resolver: resolver, displayClose: true)
+            CGM.RootView(resolver: resolver)
         case .healthkit:
             AppleHealthKit.RootView(resolver: resolver)
         case .libreConfig:
