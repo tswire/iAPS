@@ -20,7 +20,7 @@
 "Setting up DanaRS v1" = "Sette opp DanaRS v1"
 
 /* Subtext for danars v1 */
-"During the pairing process, your DanaRS v3 will show a pairing prompt while you iPhone will show a prompt for a pairing code. On your pump, select OK and type the code on your iPhone. After that, iAPS is ready to communicate with your DanaRS v1" = "Under sammenkoblingsprosessen vil DanaRS v3 vise en sammenkoblingsmelding mens din iPhone vil vise en forespørsel om en sammenkoblingskode. På pumpen velger du OK og skriver inn koden på iPhone. Etter det er iAPS klar til å kommunisere med DanaRS v1"
+"During the pairing process, your DanaRS v3 will show a pairing prompt while you iPhone will show a prompt for a pairing code. On your pump, select OK and type the code on your iPhone. After that, Loop is ready to communicate with your DanaRS v1" = "Under sammenkoblingsprosessen vil DanaRS v3 vise en sammenkoblingsmelding mens din iPhone vil vise en forespørsel om en sammenkoblingskode. På pumpen velger du OK og skriver inn koden på iPhone. Etter det er Loop klar til å kommunisere med DanaRS v1"
 
 /* check password text for danars v1 */
 "Before starting with the pairing process, it is recommended to check, and if needed update, the pump password. You can do this by going to the pump settings -> user settings -> password. The default password is 1234, if this is your password, please consider changing it" = "Før du starter med sammenkoblingsprosessen, anbefales det å sjekke, og om nødvendig oppdatere, pumpepassordet. Du kan gjøre dette ved å gå til pumpeinnstillingene -&gt; brukerinnstillinger -&gt; passord. Standardpassordet er 1234, hvis dette er passordet ditt, bør du vurdere å endre det"
@@ -35,16 +35,16 @@
 "Setting up DanaRS v3" = "Sette opp DanaRS v3"
 
 /* Subtext for danars v3 */
-"During the pairing process, your DanaRS v3 will show a pairing prompt while you iPhone will show a prompt for two pairing codes. On your pump, select OK and type the two codes on your iPhone. After that, iAPS is ready to communicate with your DanaRS v3" = "Under sammenkoblingsprosessen vil DanaRS v3 vise en sammenkoblingsforespørsel, mens iPhone vil vise en forespørsel om to sammenkoblingskoder. På pumpen velger du OK og skriver inn de to kodene på iPhone. Etter det er iAPS klar til å kommunisere med DanaRS v3"
+"During the pairing process, your DanaRS v3 will show a pairing prompt while you iPhone will show a prompt for two pairing codes. On your pump, select OK and type the two codes on your iPhone. After that, Loop is ready to communicate with your DanaRS v3" = "Under sammenkoblingsprosessen vil DanaRS v3 vise en sammenkoblingsforespørsel, mens iPhone vil vise en forespørsel om to sammenkoblingskoder. På pumpen velger du OK og skriver inn de to kodene på iPhone. Etter det er Loop klar til å kommunisere med DanaRS v3"
 
 /* Title for dana-i explaination */
 "Setting up Dana-i" = "Setter opp Dana-i"
 
 /* General subtext for dana */
-"After setting up the insulin type and bolus speed, you will see a screen with all found Dana pumps. Select the pump you want to link with iAPS." = "Etter å ha satt opp insulintype og bolushastighet, vil du se en skjerm med alle funnet Dana-pumper. Velg pumpen du vil koble til iAPS."
+"After setting up the insulin type and bolus speed, you will see a screen with all found Dana pumps. Select the pump you want to link with %1$@." = "Etter å ha satt opp insulintype og bolushastighet, vil du se en skjerm med alle funnet Dana-pumper. Velg pumpen du vil koble til %1$@."
 
 /* Subtext for dana-i */
-"During the pairing process, your Dana-i will show a pairing prompt while you iPhone will show a prompt for a pairing code. On you pump, select OK and type the 6-digit code in screen on your iPhone. After that, iAPS is ready to communicate with your Dana-i" = "Under sammenkoblingsprosessen vil Dana-i-en din vise en sammenkoblingsforespørsel mens iPhone-en din viser en forespørsel om en sammenkoblingskode. På pumpen, velg OK og skriv inn den 6-sifrede koden på skjermen på din iPhone. Etter det er iAPS klar til å kommunisere med din Dana-i"
+"During the pairing process, your Dana-i will show a pairing prompt while you iPhone will show a prompt for a pairing code. On you pump, select OK and type the 6-digit code in screen on your iPhone. After that, %1$@ is ready to communicate with your Dana-i" = "Under sammenkoblingsprosessen vil Dana-i-en din vise en sammenkoblingsforespørsel mens iPhone-en din viser en forespørsel om en sammenkoblingskode. På pumpen, velg OK og skriv inn den 6-sifrede koden på skjermen på din iPhone. Etter det er %1$@ klar til å kommunisere med din Dana-i"
 
 /* Dana-i/RS invalid ble5 keys */
 "ERROR: Failed to pair device" = "FEIL: Kunne ikke pare enheten"
@@ -154,6 +154,15 @@
 /* Error description when pump is busy (with bolussing probably) */
 "Action has been canceled, because the pump is busy" = "Handlingen er avbrutt fordi pumpen er opptatt"
 
+/* Error description when pump has an active blockage */
+"A bolus timeout is active. The loop cycle cannot be completed till the timeout is inactive" = "En bolus-tidsavbrudd er aktiv. Sløyfesyklusen kan ikke fullføres før tidsavbruddet er inaktivt"
+
+/* Error description when pump has reached the bolus max */
+"The max bolus limit is reached. Please try a lower amount or increase the limit" = "Den maksimale bolusgrensen er nådd. Prøv et lavere beløp eller øk grensen"
+
+/* Error description when pump has reached the daily max */
+"The max daily insulin limit is reached. Please try a lower amount or increase the limit" = "Den maksimale daglige insulingrensen er nådd. Prøv et lavere beløp eller øk grensen"
+
 /* dana AB limitation warning title */
 "Only Automatic Bolus is supported" = "Kun automatisk bolus støttes"
 
@@ -188,7 +197,7 @@
 "U/hr" = "U/t";
 
 /* Header for insulin remaining on pod settings screen */
-"Insulin Remaining" = "Insulin gjenværende";
+"Insulin Remaining" = "Insulin som gjenstår";
 
 /* Text for Dana pump name */
 "Pump name" = "Pumpenavn"
@@ -301,7 +310,7 @@
 "Pump battery 0%" = "Pumpebatteri 0 %"
 
 /* Alert body for batteryZeroPercent */
-"Pump battery is empty. Replace it now!" = "Pumpebatteriet er tomt. Bytt den nå!"
+"Pump battery is empty. Replace it now!" = "Pumpebatteriet er tomt. Bytt den ut nå!"
 
 /* Alert title for pumpError */
 "Pump error" = "Pumpefeil"
@@ -388,7 +397,7 @@
 "Yes, Enable silent tones" = "Ja, aktiver stille toner"
 
 /* Description for basal profile number */
-"Set the basal profile the pump should use. Note, that it will overwrite the profile that is in the pump, with the one in iAPS" = "Still inn basalprofilen pumpen skal bruke. Merk at den vil overskrive profilen som er i pumpen, med den i iAPS"
+"Set the basal profile the pump should use. Note, that it will overwrite the profile that is in the pump, with the one in %1$@" = "Still inn basalprofilen pumpen skal bruke. Merk at den vil overskrive profilen som er i pumpen, med den i %1$@"
 
 
 /* Error message for reservoir view when reservoir empty

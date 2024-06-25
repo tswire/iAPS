@@ -164,6 +164,12 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             self.state.eventualBGRaw = eBG
 
             self.state.isf = self.suggestion?.isf
+            let isfIsString = self.isfAsString()
+            self.state.isfString = isfIsString
+
+            self.state.target = self.suggestion?.current_target
+            let targetIsString = self.targetAsString()
+            self.state.targetString = targetIsString
 
             let overrideArray = overrideStorage.fetchLatestOverride()
 
@@ -245,6 +251,26 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
         )!
     }
 
+    private func isfAsString() -> String? {
+        guard let isfValue = state.isf else {
+            return nil
+        }
+        let units = settingsManager.settings.units
+        return glucoseFormatter.string(
+            from: (units == .mmolL ? isfValue.asMmolL : isfValue) as NSNumber
+        )!
+    }
+
+    private func targetAsString() -> String? {
+        guard let targetValue = state.target else {
+            return nil
+        }
+        let units = settingsManager.settings.units
+        return glucoseFormatter.string(
+            from: (units == .mmolL ? targetValue.asMmolL : targetValue) as NSNumber
+        )!
+    }
+
     private func convertTrendToDirectionText(trend: String) -> String {
         switch trend {
         case "↑↑↑":
@@ -277,7 +303,7 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             conversion = 0.0555
         }
         let isf = state.isf ?? 0
-        let target = suggestion?.current_target ?? 0
+        let target = state.target ?? 0
         let carbratio = suggestion?.carbRatio ?? 0
         let bg = delta.first?.glucose ?? 0
         let cob = state.cob ?? 0
@@ -288,13 +314,13 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
         var insulinCalculated: Decimal = 0
         // insulin needed for the current blood glucose
         let targetDifference = (Decimal(bg) - target) * conversion
-        let targetDifferenceInsulin = targetDifference / isf
+        let targetDifferenceInsulin = targetDifference / (isf * conversion)
         // more or less insulin because of bg trend in the last 15 minutes
         var bgDelta: Int = 0
         if delta.count >= 3 {
             bgDelta = Int((delta.first?.glucose ?? 0) - delta[2].glucose)
         }
-        let fifteenMinInsulin = (Decimal(bgDelta) * conversion) / isf
+        let fifteenMinInsulin = (Decimal(bgDelta) * conversion) / (isf * conversion)
         // determine whole COB for which we want to dose insulin for and then determine insulin for wholeCOB
         let wholeCobInsulin = cob / carbratio
         // determine how much the calculator reduces/ increases the bolus because of IOB
@@ -365,7 +391,7 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
     private var eventualFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 2
+        formatter.maximumFractionDigits = 1
         return formatter
     }
 
