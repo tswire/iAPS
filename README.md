@@ -116,6 +116,11 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
+* 3.6.6
+	* reverted 3.6.4 as it resulted in numerous crashes
+ 	* bug fixing for mmol/L conversions and oref variable push  
+* 3.6.4
+	* submodele implementation as in Trio
 * 3.6.2
 	* Split out Preferences for AIMI B30
 	* Contact Trick improvements by [Yurique](https://github.com/Yurique/)
